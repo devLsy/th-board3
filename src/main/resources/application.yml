@@ -10,7 +10,7 @@ file.path: D:/upload/
 
 mybatis:
   mapper-locations: mapper/**/*.xml
-  type-aliases-package: study.thboard3.*.model
+  type-aliases-package: study.dev.*.model
   configuration:
     jdbc-type-for-null: null
 
