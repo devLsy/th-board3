@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class BoardVo extends CmmVo{
 
+    private Long no;            //rownum
     private Long boardSno;      //게시글 순번
     private String title;       //제목
     private String content;     //내용
