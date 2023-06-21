@@ -19,71 +19,76 @@
     </select>
 
     <!--게시글 전체 카운트-->
-<!--    <select id="selectBoardCnt" parameterType="map" resultType="int">-->
-<!--        SELECT COUNT(*)-->
-<!--          FROM BOARD_INFO-->
-<!--        WHERE USE_YN = 'Y'-->
-<!--    </select>-->
+    <select id="selectBoardCnt" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+          FROM BOARD_INFO
+        WHERE USE_YN = 'Y'
+    </select>
 
     <!--게시글 작성-->
-<!--    <insert id="insertBoard" parameterType="BoardVo">-->
-<!--        <selectKey keyProperty="boardSno" resultType="INTEGER" order="BEFORE">-->
-<!--            SELECT BOARD_SNO_SEQ.NEXTVAL FROM DUAL-->
-<!--        </selectKey>-->
-<!--        /* 게시글 작성 */-->
-<!--        INSERT INTO BOARD_INFO-->
-<!--            (-->
-<!--                BOARD_SNO-->
-<!--              , TITLE-->
-<!--              , CONTENT-->
-<!--              , USER_ID-->
-<!--              , REG_DATE-->
-<!--            )-->
-<!--        VALUES-->
-<!--            (-->
-<!--                #{boardSno}-->
-<!--              , #{title}-->
-<!--              , #{content}-->
-<!--              , #{userId}-->
-<!--              , SYSDATE-->
-<!--            )-->
-<!--    </insert>-->
+    <insert id="insertBoard" parameterType="BoardVo">
+        <selectKey keyProperty="boardSno" resultType="Long" order="BEFORE">
+            SELECT BOARD_SNO_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        /* 게시글 작성 */
+        INSERT INTO BOARD_INFO
+            (
+                BOARD_SNO
+              , TITLE
+              , CONTENT
+              , USER_ID
+              , REG_DATE
+            )
+        VALUES
+            (
+                #{boardSno}
+              , #{title}
+              , #{content}
+              , #{userId}
+              , SYSDATE
+            )
+    </insert>
 
     <!--게시글 상세-->
-<!--    <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">-->
-<!--        /* 게시글 상세 조회 */-->
-<!--        SELECT BOARD_SNO AS boardSno-->
-<!--             , TITLE AS title-->
-<!--             , CONTENT AS content-->
-<!--             , USER_ID AS userId-->
-<!--             , USE_YN AS useYn-->
-<!--             , REG_DATE AS regDate-->
-<!--             , MOD_DATE AS modDate-->
-<!--          FROM BOARD_INFO-->
-<!--        <where>-->
-<!--            <if test="boardSno !=null and boardSno !=''">-->
-<!--                BOARD_SNO = #{boardSno}-->
-<!--            </if>-->
-<!--        </where>-->
-<!--    </select>-->
+    <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">
+        /* 게시글 상세 조회 */
+        SELECT BOARD_SNO AS boardSno
+             , TITLE AS title
+             , CONTENT AS content
+             , USER_ID AS userId
+             , USE_YN AS useYn
+             , REG_DATE AS regDate
+             , MOD_DATE AS modDate
+          FROM BOARD_INFO
+        <where>
+            <if test="boardSno !=null and boardSno !=''">
+                BOARD_SNO = #{boardSno}
+            </if>
+        </where>
+    </select>
 
     <!--게시글 수정-->
-<!--    <update id="updateBoard" parameterType="BoardVo">-->
-<!--        /* 게시글 수정 */-->
-<!--        UPDATE BOARD_INFO-->
-<!--           SET TITLE = #{title}-->
-<!--             , CONTENT = #{content}-->
-<!--             , MOD_DATE = SYSDATE-->
-<!--         WHERE BOARD_SNO = #{boardSno}-->
-<!--    </update>-->
+    <update id="updateBoard" parameterType="BoardVo">
+        /* 게시글 수정 */
+        UPDATE BOARD_INFO
+           SET
+               <if test="title != null and title != ''">
+               TITLE = #{title}
+               </if>
+                <if test="content != null and content != ''">
+             , CONTENT = #{content}
+                </if>
+             , MOD_DATE = SYSDATE
+         WHERE BOARD_SNO = #{boardSno}
+    </update>
 
     <!--게시글 삭제-->
-<!--    <update id="deleteBoard" parameterType="map">-->
-<!--        /* 게시글 삭제 */-->
-<!--        UPDATE BOARD_INFO-->
-<!--           SET USE_YN = 'N'-->
-<!--         WHERE BOARD_SNO = #{boardSno}-->
-<!--    </update>-->
+    <update id="deleteBoard" parameterType="map">
+        /* 게시글 삭제 */
+        UPDATE BOARD_INFO
+           SET USE_YN = 'N'
+         WHERE BOARD_SNO = #{boardSno}
+    </update>
 
 
 
