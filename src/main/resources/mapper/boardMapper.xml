@@ -20,6 +20,7 @@
               , USER_INFO B
           WHERE 1=1
             AND A.USER_ID = B.USER_ID
+            AND A.USE_YN = 'Y'
     </select>
 
     <!--게시글 전체 카운트-->
