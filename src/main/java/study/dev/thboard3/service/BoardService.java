@@ -2,6 +2,8 @@ package study.dev.thboard3.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.dev.thboard3.mapper.BoardMapper;
@@ -30,8 +32,9 @@ public class BoardService {
      * @param boardVo
      */
     @Transactional
-    public void insertBoard(BoardVo boardVo) throws Exception{
+    public ResponseEntity insertBoardProc(BoardVo boardVo) throws Exception{
         boardMapper.insertBoard(boardVo);
+        return new ResponseEntity(boardVo.getBoardSno(), HttpStatus.OK);
     }
 
     /**
@@ -55,7 +58,8 @@ public class BoardService {
      * 게시글 수정 
      * @param boardVo
      */
-    public void updateBoard(BoardVo boardVo) {
+    @Transactional
+    public void updateBoard(BoardVo boardVo) throws Exception{
         boardMapper.updateBoard(boardVo);
     }
 
@@ -63,7 +67,8 @@ public class BoardService {
      * 게시글 삭제 
      * @param boardSno
      */
-    public void deleteBoard(Long boardSno) {
+    @Transactional
+    public void deleteBoard(Long boardSno) throws Exception{
         boardMapper.deleteBoard(boardSno);
     }
 

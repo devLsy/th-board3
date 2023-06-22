@@ -8,10 +8,8 @@
     <main>
         <div class="container-fluid px-4">
             <h1 class="mt-4">게시글 목록</h1>
-                <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-            </form>
                 <div class="card mb-4">
-                    <form id="frm" action="/del" method="post">
+                    <form id="frm">
                     <div class="card-body">
                         <table id="boardList" class="table table-striped">
                             <thead>
@@ -22,21 +20,22 @@
                                     <th>작성자</th>
                                     <th>등록일</th>
                                     <th>수정일</th>
-                                    <th></th>
                                 </tr>
                                 <tr th:each=" list : ${list} ">
                                     <td th:text="${list.no}"></td>
                                     <td th:text="${list.title}"></td>
                                     <td th:text="${list.content}"></td>
-                                    <td th:text="${list.userNm}"></td>
+                                    <td th:text="${list.userName}"></td>
                                     <td th:text="${list.regDate}"></td>
                                     <td th:text="${list.modDate}"></td>
-                                    <td></td>
                                 </tr>
                             </thead>
                         </table>
                     </div>
                     </form>
+                </div>
+                <div class="input-group">
+                    <a th:href="@{/reg}" class="btn btn-success">등록</a>
                 </div>
         </div>
     </main>
@@ -45,7 +44,7 @@
     <script layout:fragment="script" th:inline="javascript" type="text/javascript">
 
         $(document).ready(function () {
-            console.log("load");
+
 
         });
 
