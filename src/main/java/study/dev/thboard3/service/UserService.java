@@ -52,6 +52,14 @@ public class UserService {
     }
 
     /**
+     * 사용 유저 전체 카운트 조회
+     * @return
+     */
+    public int selectAllUsers() {
+        return userMapper.selectAllUsers();
+    }
+
+    /**
      * 사용자 상세 정보
      * @param userId
      * @return

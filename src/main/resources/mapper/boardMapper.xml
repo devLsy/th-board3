@@ -11,7 +11,7 @@
               , A.TITLE AS title                               /* 제목 */
               , A.CONTENT AS content                           /* 내용 */
               , A.USER_ID AS userId                            /* 작성자 아이디 */
-              , B.USER_NAME AS userNm 						   /* 작성자 */
+              , B.USER_NAME AS userName 						   /* 작성자 */
               , A.USE_YN AS useYn                             /* 사용여부 */
               , TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI') AS regDate   /* 등록날짜 */
               , TO_CHAR(A.MOD_DATE, 'YYYY-MM-DD HH24:MI') AS modDate                          /* 수정날짜 */

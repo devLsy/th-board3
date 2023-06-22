@@ -21,6 +21,9 @@ public interface UserMapper {
     /* 아이디로 카운트 조회 */
     int selectIdCnt(@Param("userId") String userId);
 
+    /* 사용 유저 전체 카운트 조회 */
+    int selectAllUsers();
+
     /* 사용자 상세 정보 */
     UserVo selectUserDetail(@Param("userId") String userId);
 

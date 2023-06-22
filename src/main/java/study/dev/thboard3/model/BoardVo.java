@@ -10,7 +10,7 @@ public class BoardVo extends CmmVo{
     private String title;       //제목
     private String content;     //내용
     private String userId;      //작성자 아이디
-    private String userNm;      //작성자
+    private String userName;      //작성자
     private char useYn;         //사용여부
     private Integer replyCnt;   //댓글개수
 
