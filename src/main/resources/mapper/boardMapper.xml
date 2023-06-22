@@ -11,7 +11,7 @@
               , TITLE AS title                               /* 제목 */
               , CONTENT AS content                           /* 내용 */
               , USER_ID AS userId                            /* 작성자 아이디 */
-              , USE_YN AS userYn                             /* 사용여부 */
+              , USE_YN AS useYn                             /* 사용여부 */
               , TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS regDate   /* 등록일 */
               , MOD_DATE AS modDate                          /* 수정일 */
               , REPLY_CNT AS replyCnt                        /* 댓글 개수 */

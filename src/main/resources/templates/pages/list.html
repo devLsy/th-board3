@@ -25,11 +25,12 @@
                                     <th></th>
                                 </tr>
                                 <tr th:each=" list : ${list} ">
-                                    <td th:text="${list.boardSno}"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td th:text="${list.no}"></td>
+                                    <td th:text="${list.title}"></td>
+                                    <td th:text="${list.content}"></td>
+                                    <td th:text="${list.userId}"></td>
+                                    <td th:text="${list.regDate}"></td>
+                                    <td th:text="${list.modDate}"></td>
                                     <td></td>
                                 </tr>
                             </thead>
