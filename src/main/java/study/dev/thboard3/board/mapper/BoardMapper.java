@@ -1,8 +1,8 @@
-package study.dev.thboard3.mapper;
+package study.dev.thboard3.board.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import study.dev.thboard3.model.BoardVo;
+import study.dev.thboard3.board.model.BoardVo;
 
 import java.util.List;
 

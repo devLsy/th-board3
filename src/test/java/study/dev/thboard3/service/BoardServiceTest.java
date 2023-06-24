@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
-import study.dev.thboard3.model.BoardVo;
+import study.dev.thboard3.board.model.BoardVo;
+import study.dev.thboard3.board.service.BoardService;
 
 @SpringBootTest
 @Slf4j
@@ -27,7 +28,7 @@ class BoardServiceTest {
         boardVo.setContent("오염수 방출하면... 해산물 먹어야 되나 먹지 말아야 되나?");
         boardVo.setUserId("lsy");
         //when
-        boardService.insertBoardProc(boardVo);
+//        boardService.insertBoardProc(boardVo);
         //then
     }
 

@@ -1,4 +1,4 @@
-package study.dev.thboard3.service;
+package study.dev.thboard3.board.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,13 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import study.dev.thboard3.mapper.BoardMapper;
-import study.dev.thboard3.model.BoardVo;
+import study.dev.thboard3.board.mapper.BoardMapper;
+import study.dev.thboard3.board.model.BoardVo;
 import study.dev.thboard3.model.enu.ResultCode;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static study.dev.thboard3.cmm.utils.ValidatorUtils.invokeErrors;
 
 @Service
 @Slf4j
@@ -38,7 +40,10 @@ public class BoardService {
      */
     @Transactional
     public ResponseEntity insertBoardProc(BoardVo boardVo, BindingResult br) throws Exception{
-
+        //parameter 검증 실패
+        if (br.hasErrors()) {
+            invokeErrors(this.getClass().getName(), br);
+        }
         //결과 코드값
         Map<Object, Object> resultMap = new HashMap<>();
         //쿼리 성공 여부
@@ -51,7 +56,7 @@ public class BoardService {
         } else {
             resultMap.put("code", ResultCode.FAIL.getCode());
         }
-        return new ResponseEntity(resultMap, HttpStatus.OK);
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
     /**

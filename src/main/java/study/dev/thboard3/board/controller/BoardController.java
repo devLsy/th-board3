@@ -1,13 +1,12 @@
-package study.dev.thboard3.controller;
+package study.dev.thboard3.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import study.dev.thboard3.model.BoardVo;
-import study.dev.thboard3.service.BoardService;
+import study.dev.thboard3.board.model.BoardVo;
+import study.dev.thboard3.board.service.BoardService;
 
 @Controller
 @RequiredArgsConstructor

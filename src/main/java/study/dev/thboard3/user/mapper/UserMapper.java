@@ -1,8 +1,8 @@
-package study.dev.thboard3.mapper;
+package study.dev.thboard3.user.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import study.dev.thboard3.model.UserVo;
+import study.dev.thboard3.user.model.UserVo;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface UserMapper {
     List<UserVo> selectUserList();
 
     /* 사용자 정보 저장 */
-    void insertUser(UserVo userVo);
+    int insertUser(UserVo userVo);
 
     /* 사용자 정보 확인(로그인 시 활용) */
     UserVo selectByUserId(@Param("userId") String userId);

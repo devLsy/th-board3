@@ -18,7 +18,7 @@ public class ValidatorUtils {
      */
     public static void invokeErrors(String className, BindingResult br) throws ValidationException {
 
-        log.error("Validation Error @Class=[{}]", className);
+        log.error("Validation Error Class => [{}]", className);
 
         List<ObjectError> errorList = br.getAllErrors();
 

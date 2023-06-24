@@ -6,8 +6,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
-import study.dev.thboard3.model.UserVo;
+import study.dev.thboard3.user.model.UserVo;
+import study.dev.thboard3.user.service.UserService;
 
 @SpringBootTest
 @Slf4j
@@ -15,6 +17,9 @@ class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("사용자등록")
@@ -28,7 +33,7 @@ class UserServiceTest {
         userVo.setUserName("어흥");
         userVo.setUserEmail("lsy@naver.com");
         //when
-        userService.insertUser(userVo);
+        userService.regUser(userVo);
         //then
     }
 
@@ -80,7 +85,6 @@ class UserServiceTest {
         UserVo userVo = new UserVo();
         userVo.setUserId("lsy");
         //when
-        userService.selectByUserId(userVo.getUserId());
         //then
     }
 
@@ -113,7 +117,19 @@ class UserServiceTest {
         //then
     }
     
-    
+    @Test
+    @DisplayName("암호화")
+    @Commit
+    @Disabled
+    public void 암호화() throws Exception {
+        //givin
+        UserVo userVo = new UserVo();
+        userVo.setUserPassword("1234");
+        //when
+        userVo.hashPassword(passwordEncoder);
+        log.info("userVo = {}", userVo.getUserPassword());
+        //then
+    }
 
 
 

@@ -17,6 +17,12 @@
                         <li><button type="submit" class="dropdown-item" id="logout">Logout</button></li>
                     </ul>
                     </th:block>
+                    <th:block th:unless="${session.id != null}">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><button type="submit" class="dropdown-item" id="logout">Logout</button></li>
+                    </ul>
+                    </th:block>
                 </li>
             </ul>
             </form>
