@@ -27,7 +27,7 @@ class BoardServiceTest {
         boardVo.setContent("오염수 방출하면... 해산물 먹어야 되나 먹지 말아야 되나?");
         boardVo.setUserId("lsy");
         //when
-        boardService.insertBoard(boardVo);
+        boardService.insertBoardProc(boardVo);
         //then
     }
 
@@ -58,10 +58,11 @@ class BoardServiceTest {
     @Test
     @DisplayName("게시글수정")
     @Commit
-    @Disabled
+//    @Disabled
     public void 게시글수정() throws Exception {
         BoardVo boardVo = new BoardVo();
-        boardVo.setTitle("제목만 수정");
+        boardVo.setTitle("제목만 수정한다.");
+        boardVo.setContent("내용도 수정한다.");
         boardVo.setBoardSno(2L);
         boardService.updateBoard(boardVo);
     }

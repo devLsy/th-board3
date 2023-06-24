@@ -9,34 +9,65 @@
         <div class="container-fluid px-4">
             <h1 class="mt-4">게시글 목록</h1>
                 <div class="card mb-4">
-                    <form id="frm">
-                    <div class="card-body">
-                        <table id="boardList" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>순번</th>
-                                    <th>제목</th>
-                                    <th>내용</th>
-                                    <th>작성자</th>
-                                    <th>등록일</th>
-                                    <th>수정일</th>
-                                </tr>
-                                <tr th:each=" list : ${list} ">
-                                    <td th:text="${list.no}"></td>
-                                    <td th:text="${list.title}"></td>
-                                    <td th:text="${list.content}"></td>
-                                    <td th:text="${list.userName}"></td>
-                                    <td th:text="${list.regDate}"></td>
-                                    <td th:text="${list.modDate}"></td>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                    <form id="listFrm">
+                        <div class="card-body">
+                            <table id="boardList" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>순번</th>
+                                        <th>제목</th>
+                                        <th>내용</th>
+                                        <th>작성자</th>
+                                        <th>등록일</th>
+                                        <th>수정일</th>
+                                    </tr>
+                                    <tr th:each=" list : ${list} ">
+                                        <td th:text="${list.no}"></td>
+                                        <td th:text="${list.title}"></td>
+                                        <td th:text="${list.content}"></td>
+                                        <td th:text="${list.userName}"></td>
+                                        <td th:text="${list.regDate}"></td>
+                                        <td th:text="${list.modDate}"></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </form>
                 </div>
                 <div class="input-group">
-                    <a th:href="@{/reg}" class="btn btn-success">등록</a>
+                    <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#regContentModal" href="">등록</a>
                 </div>
+
+            <!--modal start-->
+            <form id="regFrm" class="needs-validation" th:action="@{|/board/api/reg|}" th:object="${userVo}" method="post">
+                <input type="hidden" id="userId" name="userId" value="sang">
+            <div class="modal fade" id="regContentModal" tabindex="-1" aria-labelledby="regContent" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="regContent">게시글 등록</h1>
+                    </div>
+                    <div class="modal-body">
+                       <div class="input-group mb-3">
+                          <label for="title" class="form-label">제목</label>
+                          <input type="text" id="title" name="title" class="form-control is-valid" required>
+                        </div>
+                        <div class="input-group mb-3">
+                          <label for="content" class="form-label">내용</label>
+                          <textarea class="form-control is-valid" id="content" name="content" rows="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">닫기</button>
+                      <button type="button" class="btn btn-primary" id="btnSave" >저장</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <!--modal end-->
+            </form>
+
+
         </div>
     </main>
 
@@ -45,13 +76,69 @@
 
         $(document).ready(function () {
 
+            //게시글 저장 버튼 이벤트
+            $("#btnSave").on("click", function () {
+                //입력폼 유효성 검증
+                const result = validation();
+
+                if(result) {
+
+                    const params = {title: $("#title").val(), content: $("#content").val(), userId: $("#userId").val()}
+
+                    $.ajax({
+                        type : "post",
+                        url : "/board/api/reg",
+                        dataType: "json",
+                        // contentType: 'application/json; charset=utf-8',
+                        data : JSON.stringify(params),
+                        success: function (data){
+                            console.log(data);
+                            if(data.code === "1") {
+                                alert(data.no + "번 게시글이 등록 되었습니다.");
+                                location.reload(true);
+                            } else {
+                                alert("게시글 등록에 실패했습니다.");
+                                $("#regFrm")[0].reset();
+                                return false;
+                            }
+                        },
+                        error:function(e){
+                            console.log(e);
+                            alert("게시글 등록에 실패했습니다.");
+                        }
+                    });
+                }
+            });
+
+            //모달창 닫기 클릭 시 form 입력값 초기화
+            $("#btnClose").on("click", function () {
+                $("#regFrm")[0].reset();
+            });
+
 
         });
 
+        //유효성 검증
+        function validation() {
+            let resultCode = false;
 
+            if ($("#title").val() === "" || $("#title").val() === undefined || $("#title").val() === " ") {
+                alert("제목은 필수값입니다.");
+                $("#title").focus();
+                return false;
+            }
+            if ($("#content").val() === "" || $("#content").val() === undefined || $("#content").val() === " ") {
+                alert("내용은 필수값입니다.");
+                $("#content").focus();
+                return false;
+            }
+            resultCode = true;
+            return resultCode;
+        }
 
     </script>
 
 </div>
+<!-- div layout:fragment="content" end -->
 
 </html>

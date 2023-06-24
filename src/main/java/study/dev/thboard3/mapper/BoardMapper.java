@@ -13,7 +13,7 @@ public interface BoardMapper {
     List<BoardVo> selectBoardList();
 
     /* 게시글 등록 */
-    void insertBoard(BoardVo boardVo);
+    int insertBoard(BoardVo boardVo);
 
     /* 게시글 전체 카운트 */
     int selectBoardCnt();
@@ -22,9 +22,9 @@ public interface BoardMapper {
     BoardVo selectBoardDetail(@Param("boardSno") Long boardSno);
 
     /* 게시글 수정 */
-    void updateBoard(BoardVo boardVo);
+    int updateBoard(BoardVo boardVo);
     
     /* 게시글 삭제 */
-    void deleteBoard(@Param("boardSno") Long boardSno);
+    int deleteBoard(@Param("boardSno") Long boardSno);
 
 }

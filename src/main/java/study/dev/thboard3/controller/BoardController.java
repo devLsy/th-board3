@@ -2,9 +2,11 @@ package study.dev.thboard3.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import study.dev.thboard3.model.BoardVo;
 import study.dev.thboard3.service.BoardService;
 
 @Controller
@@ -19,8 +21,10 @@ public class BoardController {
      * @return
      */
     @GetMapping("/list")
-    public ModelAndView list() throws Exception {
+    public ModelAndView list(BoardVo boardVo) throws Exception {
         ModelAndView mv = new ModelAndView("pages/list");
-        return mv.addObject("list", boardService.selectBoardList());
+        mv.addObject("boardVo", boardVo);
+        mv.addObject("list", boardService.selectBoardList());
+        return mv;
     }
 }

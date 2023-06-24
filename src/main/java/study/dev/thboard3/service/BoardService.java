@@ -6,10 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import study.dev.thboard3.mapper.BoardMapper;
 import study.dev.thboard3.model.BoardVo;
+import study.dev.thboard3.model.enu.ResultCode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -30,11 +34,24 @@ public class BoardService {
     /**
      * 게시글 등록
      * @param boardVo
+     * @param br
      */
     @Transactional
-    public ResponseEntity insertBoardProc(BoardVo boardVo) throws Exception{
-        boardMapper.insertBoard(boardVo);
-        return new ResponseEntity(boardVo.getBoardSno(), HttpStatus.OK);
+    public ResponseEntity insertBoardProc(BoardVo boardVo, BindingResult br) throws Exception{
+
+        //결과 코드값
+        Map<Object, Object> resultMap = new HashMap<>();
+        //쿼리 성공 여부
+        int count = boardMapper.insertBoard(boardVo);
+        //쿼리 성공 시
+        if (count > 0) {
+            resultMap.put("no", boardVo.getBoardSno());
+            resultMap.put("code", ResultCode.SUCCESS.getCode());
+        //쿼리 실패 시
+        } else {
+            resultMap.put("code", ResultCode.FAIL.getCode());
+        }
+        return new ResponseEntity(resultMap, HttpStatus.OK);
     }
 
     /**
@@ -59,8 +76,8 @@ public class BoardService {
      * @param boardVo
      */
     @Transactional
-    public void updateBoard(BoardVo boardVo) throws Exception{
-        boardMapper.updateBoard(boardVo);
+    public int updateBoard(BoardVo boardVo) throws Exception{
+        return boardMapper.updateBoard(boardVo);
     }
 
     /**
@@ -68,8 +85,8 @@ public class BoardService {
      * @param boardSno
      */
     @Transactional
-    public void deleteBoard(Long boardSno) throws Exception{
-        boardMapper.deleteBoard(boardSno);
+    public int deleteBoard(Long boardSno) throws Exception{
+        return boardMapper.deleteBoard(boardSno);
     }
 
 

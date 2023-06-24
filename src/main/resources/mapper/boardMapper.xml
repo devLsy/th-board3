@@ -18,9 +18,10 @@
               , A.REPLY_CNT AS replyCnt                        /* 댓글 개수 */
            FROM BOARD_INFO A
               , USER_INFO B
-          WHERE 1=1
-            AND A.USER_ID = B.USER_ID
-            AND A.USE_YN = 'Y'
+          <where>
+                    A.USER_ID = B.USER_ID
+                AND A.USE_YN = 'Y'
+          </where>
     </select>
 
     <!--게시글 전체 카운트-->
@@ -65,25 +66,22 @@
              , REG_DATE AS regDate
              , MOD_DATE AS modDate
           FROM BOARD_INFO
-        <where>
-            <if test="boardSno !=null and boardSno !=''">
-                BOARD_SNO = #{boardSno}
-            </if>
-        </where>
+         WHERE BOARD_SNO = #{boardSno}
     </select>
 
     <!--게시글 수정-->
     <update id="updateBoard" parameterType="BoardVo">
         /* 게시글 수정 */
         UPDATE BOARD_INFO
-           SET
+           <set>
                <if test="title != null and title != ''">
                TITLE = #{title}
                </if>
-                <if test="content != null and content != ''">
+               <if test="content != null and content != ''">
              , CONTENT = #{content}
-                </if>
+               </if>
              , MOD_DATE = SYSDATE
+           </set>
          WHERE BOARD_SNO = #{boardSno}
     </update>
 
