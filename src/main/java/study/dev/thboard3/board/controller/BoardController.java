@@ -22,7 +22,7 @@ public class BoardController {
      */
     @GetMapping("/list")
     public ModelAndView list(BoardVo boardVo) throws Exception {
-        ModelAndView mv = new ModelAndView("pages/list");
+        ModelAndView mv = new ModelAndView("pages/board/list");
         mv.addObject("boardVo", boardVo);
         mv.addObject("list", boardService.selectBoardList());
         return mv;

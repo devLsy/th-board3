@@ -38,11 +38,12 @@
                     <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#regContentModal" href="">등록</a>
                 </div>
 
-            <th:block th:if="${session.userVo.getUserSno() == null}">
             <!--modal start(등록)-->
             <form id="regFrm" class="needs-validation" th:action="@{|/board/api/reg|}" th:object="${boardVo}" method="post">
+
                 <input type="hidden" id="userId" name="userId" th:value="${session.userVo.getUserId()}">
-            <div class="modal fade" id="regContentModal" tabindex="-1" aria-labelledby="regContent" aria-hidden="true">
+
+                <div class="modal fade" id="regContentModal" tabindex="-1" aria-labelledby="regContent" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -67,7 +68,6 @@
               </div>
             <!--modal end-->
             </form>
-            </th:block>
 
 <!--            <th:block th:unless="${session.userVo.getUserSno() == null}">-->
             <!--modal start(수정)-->

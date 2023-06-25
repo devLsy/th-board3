@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.user.model.UserVo;
 import study.dev.thboard3.user.service.UserService;
 
@@ -25,14 +26,12 @@ public class UserController {
     /**
      * 로그인 폼
      * @param userVo
-     * @param session
      * @return
      */
     @GetMapping("/login")
-    public String  loginForm(UserVo userVo, HttpSession session) {
-//        UserVo findUser = (UserVo) session.getAttribute("userVo");
-//        return (findUser != null) ? "redirect:/" : "redirect:/user/login";
-        return "pages/login";
+    public ModelAndView loginForm(UserVo userVo) {
+        ModelAndView mv = new ModelAndView("pages/login");
+        return mv;
     }
 
     /**
@@ -68,6 +67,6 @@ public class UserController {
      */
     @GetMapping("/reg")
     public String regForm(UserVo userVo) {
-        return "pages/register";
+        return "pages/user/register";
     }
 }
