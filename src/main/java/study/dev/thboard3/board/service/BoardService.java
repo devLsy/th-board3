@@ -72,14 +72,14 @@ public class BoardService {
      * @param boardSno
      * @return
      */
-    public ResponseEntity getBoardDetail(Long boardSno) throws Exception{
+    public BoardVo getBoardDetail(Long boardSno) throws Exception{
 
         BoardVo findBoard = null;
 
         if (boardSno != null) {
             findBoard = boardMapper.selectBoardDetail(boardSno);
         }
-        return new ResponseEntity<>(findBoard, HttpStatus.OK);
+        return findBoard;
     }
 
     /**

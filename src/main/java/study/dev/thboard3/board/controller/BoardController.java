@@ -27,4 +27,17 @@ public class BoardController {
         mv.addObject("list", boardService.selectBoardList());
         return mv;
     }
+
+    /**
+     * 게시글 상세
+     * @param boardSno
+     * @return
+     */
+    @GetMapping("/detail/{boardSno}")
+    public ModelAndView detail(@PathVariable Long boardSno) throws Exception {
+        ModelAndView mv = new ModelAndView("pages/board/detail").addObject("info", boardService.getBoardDetail(boardSno));
+        return mv;
+    }
+
+
 }
