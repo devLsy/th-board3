@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 //인증 없이 호출되는 url
-                .antMatchers("/", "/css/**", "/assets/**", "/js/**", "/user/login", "/user/reg").permitAll()
+                .antMatchers("/", "/css/**", "/assets/**", "/js/**", "/user/**").permitAll()
                 .anyRequest().authenticated();
     }
 }

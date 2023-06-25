@@ -61,12 +61,13 @@ public class UserService {
      * @param br
      * @return
      */
-    public String loginProc(UserVo userVo, BindingResult br) {
+    public UserVo loginProc(UserVo userVo, BindingResult br) {
+        //parameter 검증 실패
         if (br.hasErrors()) {
             invokeErrors(this.getClass().getName(), br);
         }
         UserVo findUser = userMapper.selectByUserId(userVo.getUserId());
-        return (findUser.checkPassword(userVo.getUserPassword(), passwordEncoder) == true ? findUser.getUserId() : "none");
+        return (findUser.checkPassword(userVo.getUserPassword(), passwordEncoder) == true ? findUser : null);
     }
 
     /**
