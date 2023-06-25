@@ -23,7 +23,7 @@
                                     </tr>
                                     <tr th:each=" list : ${list} ">
                                         <td th:text="${list.no}"></td>
-                                        <td><a href="#" id="" th:text="${list.title}"></a></td>
+                                        <td><a th:href="|/board/api/detail/${list.boardSno}|" th:text="${list.title}"></a></td>
                                         <td th:text="${list.content}"></td>
                                         <td th:text="${list.userName}"></td>
                                         <td th:text="${list.regDate}"></td>
