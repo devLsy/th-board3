@@ -58,15 +58,18 @@
     <!--게시글 상세-->
     <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">
         /* 게시글 상세 조회 */
-        SELECT BOARD_SNO AS boardSno
-             , TITLE AS title
-             , CONTENT AS content
-             , USER_ID AS userId
-             , USE_YN AS useYn
-             , REG_DATE AS regDate
-             , MOD_DATE AS modDate
-          FROM BOARD_INFO
+        SELECT A.BOARD_SNO AS boardSno
+             , A.TITLE AS title
+             , A.CONTENT AS content
+             , A.USER_ID AS userId
+             , B.USER_NAME AS userName
+             , A.USE_YN AS useYn
+             , A.REG_DATE AS regDate
+             , A.MOD_DATE AS modDate
+          FROM BOARD_INFO A
+             , USER_INFO B
          WHERE BOARD_SNO = #{boardSno}
+           AND A.USER_ID = B.USER_ID
     </select>
 
     <!--게시글 수정-->
@@ -84,6 +87,9 @@
            </set>
          WHERE BOARD_SNO = #{boardSno}
     </update>
+
+    <!--게시글 등록/수정-->
+    
 
     <!--게시글 삭제-->
     <update id="deleteBoard" parameterType="map">

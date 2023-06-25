@@ -23,7 +23,7 @@
                                     </tr>
                                     <tr th:each=" list : ${list} ">
                                         <td th:text="${list.no}"></td>
-                                        <td><a th:href="|/board/detail/${list.boardSno}|" th:text="${list.title}"></a></td>
+                                        <td><a href="#" th:onclick="detail([[${list.boardSno}]])" th:text="${list.title}"></a></td>
                                         <td th:text="${list.content}"></td>
                                         <td th:text="${list.userName}"></td>
                                         <td th:text="${list.regDate}"></td>
@@ -117,6 +117,25 @@
 
 
         });
+
+        //게시글 상세
+        function detail(sno) {
+            $.ajax({
+                type : "get",
+                url : "/board/api/" + sno,
+                success: function (data){
+                    console.log(data);
+                    $("#regContent").text("게시글 수정");
+                    $("#title").val(data.title);
+                    $("#content").val(data.content);
+                    $("#regContentModal").modal("show");
+                },
+                error:function(e){
+                    console.log(e);
+                    alert("게시글 상세정보를 불러오질 못했습니다.");
+                }
+            });
+        }
 
         //유효성 검증
         function validation() {
