@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ResultCode {
 
     SUCCESS("1", "성공"),
-    FAIL("2", "실패");
+    FAIL("2", "실패"),
+    DUPLICATE("3", "중복");
 
     private final String code;
     private final String msg;

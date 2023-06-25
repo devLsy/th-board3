@@ -15,13 +15,13 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("pages/main");
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(loginInterceptor())
-//                .order(1)
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/user/login", "/user/logout", "/css/**", "/js/**", "/assets/**");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor())
+                .order(1)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/user/login", "/user/logout", "/css/**", "/favicon.ico" ,"/js/**", "/assets/**", "/user/reg", "/user/api/reg", "/user/api/checkDuplicateId/**");
+    }
 
     @Bean
     public LoginInterceptor loginInterceptor() {

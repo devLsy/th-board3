@@ -31,7 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
         log.info("인증되었습니다.");
-        log.info("storedSessionId = [{}]", userVo.getUserId());
+        log.info("storedSessionId = [{}]", userVo);
         return true;
     }
 }

@@ -30,8 +30,9 @@ public class UserController {
      */
     @GetMapping("/login")
     public String  loginForm(UserVo userVo, HttpSession session) {
-        UserVo findUser = (UserVo) session.getAttribute("userVo");
-        return (findUser != null) ? "redirect:/" : "redirect:/user/login";
+//        UserVo findUser = (UserVo) session.getAttribute("userVo");
+//        return (findUser != null) ? "redirect:/" : "redirect:/user/login";
+        return "pages/login";
     }
 
     /**
@@ -45,7 +46,7 @@ public class UserController {
     public String login(@ModelAttribute @Valid UserVo userVo, BindingResult br, HttpSession session) {
         String redirectUrl = "";
         UserVo findUser = (UserVo) userService.loginProc(userVo, br);
-        session.setAttribute("userVo", userVo);
+        session.setAttribute("userVo", findUser);
         return redirectUrl = (findUser != null) ? "redirect:/" : "redirect:/user/login";
     }
 
@@ -58,5 +59,15 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/user/login";
+    }
+
+    /**
+     * 회원가입 폼
+     * @param userVo
+     * @return
+     */
+    @GetMapping("/reg")
+    public String regForm(UserVo userVo) {
+        return "pages/register";
     }
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import study.dev.thboard3.model.CmmVo;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -14,9 +15,15 @@ public class UserVo extends CmmVo {
     
     @NotBlank(message = "아이디는 필수값이고 빈값이거나 공백이 올 수 없습니다.")
     private String userId;          //사용자 아이디
+    
+    @NotBlank(message = "비밀번호는 필수값이고 빈값이거나 공백이 올 수 없습니다.")
     private String userPassword;    //사용자 비밀번호
-    private String userName;        //사용자명
+
+    private String userName;        //사용자 이름
+
+    @Email(message = "이메일 형식에 맞지 않습니다.")
     private String userEmail;       //사용자 이메일
+
     private char useYn;             //사용여부
 
     /**
