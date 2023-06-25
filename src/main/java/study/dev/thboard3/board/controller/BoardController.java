@@ -3,7 +3,6 @@ package study.dev.thboard3.board.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.board.model.BoardVo;
@@ -33,11 +32,11 @@ public class BoardController {
      * @param boardSno
      * @return
      */
-    @GetMapping("/detail/{boardSno}")
-    public ModelAndView detail(@PathVariable Long boardSno) throws Exception {
-        ModelAndView mv = new ModelAndView("pages/board/detail").addObject("info", boardService.getBoardDetail(boardSno));
-        return mv;
-    }
+//    @GetMapping("/detail/{boardSno}")
+//    public ModelAndView detail(@PathVariable Long boardSno) throws Exception {
+//        ModelAndView mv = new ModelAndView("pages/board/detail").addObject("info", boardService.getBoardDetail(boardSno));
+//        return mv;
+//    }
 
 
 }
