@@ -39,8 +39,8 @@
                 </div>
 
             <!--modal start-->
-            <form id="regFrm" class="needs-validation" th:action="@{|/board/api/reg|}" th:object="${userVo}" method="post">
-                <input type="hidden" id="userId" name="userId" value="sang">
+            <form id="regFrm" class="needs-validation" th:action="@{|/board/api/reg|}" th:object="${boardVo}" method="post">
+                <input type="hidden" id="userId" name="userId" th:value="${session.userVo.getUserId()}">
             <div class="modal fade" id="regContentModal" tabindex="-1" aria-labelledby="regContent" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">

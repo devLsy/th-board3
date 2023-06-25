@@ -43,7 +43,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public String login(@ModelAttribute @Valid UserVo userVo, BindingResult br, HttpSession session) {
+    public String login(@ModelAttribute @Valid UserVo userVo, BindingResult br, HttpSession session) throws Exception {
         String redirectUrl = "";
         UserVo findUser = (UserVo) userService.loginProc(userVo, br);
         session.setAttribute("userVo", findUser);

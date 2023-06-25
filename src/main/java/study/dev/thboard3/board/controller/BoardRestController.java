@@ -24,7 +24,9 @@ public class BoardRestController {
     /**
      * 게시글 등록
      * @param boardVo
+     * @param br
      * @return
+     * @throws Exception
      */
     @PostMapping("/reg")
     public ResponseEntity reg(@RequestBody @Valid BoardVo boardVo, BindingResult br) throws Exception {
