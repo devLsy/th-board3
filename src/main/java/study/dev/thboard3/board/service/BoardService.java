@@ -72,7 +72,7 @@ public class BoardService {
      * @param boardSno
      * @return
      */
-    public BoardVo selectBoardDetail(Long boardSno) throws Exception{
+    public BoardVo getBoardDetail(Long boardSno) throws Exception{
         return boardMapper.selectBoardDetail(boardSno);
     }
 
