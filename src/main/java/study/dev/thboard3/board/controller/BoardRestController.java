@@ -13,13 +13,13 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/board/api")
+@RequestMapping("/api/board")
 public class BoardRestController {
 
     private final BoardService boardService;
 
     /**
-     * 게시글 등록
+     * 게시글 등록/수정
      * @param boardVo
      * @param br
      * @return

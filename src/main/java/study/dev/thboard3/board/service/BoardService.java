@@ -35,32 +35,6 @@ public class BoardService {
     }
 
     /**
-     * 게시글 등록
-     * @param boardVo
-     * @param br
-     */
-    @Transactional
-    public ResponseEntity insertBoardProc(BoardVo boardVo, BindingResult br) throws Exception{
-        //parameter 검증 실패
-        if (br.hasErrors()) {
-            invokeErrors(this.getClass().getName(), br);
-        }
-        //결과 코드값
-        Map<Object, Object> resultMap = new HashMap<>();
-        //쿼리 성공 여부
-        int count = boardMapper.insertBoard(boardVo);
-        //쿼리 성공 시
-        if (count > 0) {
-            resultMap.put("no", boardVo.getBoardSno());
-            resultMap.put("code", ResultCode.SUCCESS.getCode());
-        //쿼리 실패 시
-        } else {
-            resultMap.put("code", ResultCode.FAIL.getCode());
-        }
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
-    }
-
-    /**
      * 게시글 등록/수정
      * @param boardVo
      * @param br
@@ -108,15 +82,6 @@ public class BoardService {
             findBoard = boardMapper.selectBoardDetail(boardSno);
         }
         return new ResponseEntity<>(findBoard, HttpStatus.OK);
-    }
-
-    /**
-     * 게시글 수정 
-     * @param boardVo
-     */
-    @Transactional
-    public int updateBoard(BoardVo boardVo) throws Exception{
-        return boardMapper.updateBoard(boardVo);
     }
 
     /**

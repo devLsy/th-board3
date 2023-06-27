@@ -37,7 +37,7 @@ class BoardServiceTest {
     @Commit
     @Disabled
     public void 게시글상세() throws Exception {
-        boardService.selectBoardDetail(2L);
+//        boardService.selectBoardDetail(2L);
     }
     
     @Test
@@ -53,7 +53,7 @@ class BoardServiceTest {
     @Commit
     @Disabled
     public void 게시글목록() throws Exception {
-        boardService.selectBoardList();
+//        boardService.selectBoardList();
     }
     
     @Test
