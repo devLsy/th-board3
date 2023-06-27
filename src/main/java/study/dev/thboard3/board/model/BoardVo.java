@@ -19,6 +19,7 @@ public class BoardVo extends CmmVo {
 
     @NotBlank(message = "아이디는 필수값이고 빈값이거나 공백이 올 수 없습니다.")
     private String userId;      //작성자 아이디
+
     private String userName;      //작성자
     private char useYn;         //사용여부
     private Integer replyCnt;   //댓글개수

@@ -60,6 +60,31 @@ public class BoardService {
     }
 
     /**
+     * 게시글 등록/수정
+     * @param boardVo
+     * @param br
+     */
+    public ResponseEntity mergeBoard(BoardVo boardVo, BindingResult br) {
+        //parameter 검증 실패
+        if (br.hasErrors()) {
+            invokeErrors(this.getClass().getName(), br);
+        }
+        //결과 코드값
+        Map<Object, Object> resultMap = new HashMap<>();
+        //쿼리 성공 시
+        int count = boardMapper.mergeBoard(boardVo);
+        //쿼리 성공 시
+        if (count > 0) {
+            resultMap.put("no", boardVo.getBoardSno());
+            resultMap.put("code", ResultCode.SUCCESS.getCode());
+        //쿼리 실패 시
+        } else {
+            resultMap.put("code", ResultCode.FAIL.getCode());
+        }
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+    }
+
+    /**
      * 게시글 전체 카운트
      * @return
      */

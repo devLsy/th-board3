@@ -41,6 +41,7 @@
             <!--modal start(등록)-->
             <form id="regFrm" class="needs-validation" th:action="@{|/board/api/reg|}" th:object="${boardVo}" method="post">
 
+                <input type="hidden" id="boardSno" name="boardSno">
                 <input type="hidden" id="userId" name="userId" th:value="${session.userVo.getUserId()}">
 
                 <div class="modal fade" id="regContentModal" tabindex="-1" aria-labelledby="regContent" aria-hidden="true">
@@ -83,7 +84,7 @@
 
                 if(result) {
 
-                    const params = {title: $("#title").val(), content: $("#content").val(), userId: $("#userId").val()}
+                    const params = {title: $("#title").val(), content: $("#content").val(), userId: $("#userId").val(), boardSno: $("#boardSno").val() }
 
                     $.ajax({
                         type : "post",
@@ -128,6 +129,7 @@
                     $("#regContent").text("게시글 수정");
                     $("#title").val(data.title);
                     $("#content").val(data.content);
+                    $("#boardSno").val(data.boardSno);
                     $("#regContentModal").modal("show");
                 },
                 error:function(e){

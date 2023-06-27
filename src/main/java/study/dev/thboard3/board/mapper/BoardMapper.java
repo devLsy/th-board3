@@ -15,6 +15,9 @@ public interface BoardMapper {
     /* 게시글 등록 */
     int insertBoard(BoardVo boardVo);
 
+    /* 게시글 등록/수정 */
+    int mergeBoard(BoardVo boardVo);
+
     /* 게시글 전체 카운트 */
     int selectBoardCnt();
 

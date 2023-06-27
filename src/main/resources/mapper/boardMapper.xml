@@ -88,8 +88,43 @@
          WHERE BOARD_SNO = #{boardSno}
     </update>
 
-    <!--게시글 등록/수정-->
-    
+    <!--게시글 등록/수정(merge) -->
+    <update id="mergeBoard" parameterType="BoardVo">
+        /* 게시글 등록/수정 */
+        MERGE INTO BOARD_INFO A
+          USING DUAL ON(A.BOARD_SNO = #{boardSno})
+        WHEN MATCHED THEN
+        /* update */
+        UPDATE
+            <set>
+                <if test="title != null and title != ''">
+                TITLE = #{title}
+                </if>
+                <if test="content != null and content != ''">
+                , CONTENT = #{content}
+                </if>
+                , MOD_DATE = SYSDATE
+            </set>
+         WHERE BOARD_SNO = #{boardSno}
+        /* insert */
+        WHEN NOT MATCHED THEN
+        INSERT
+            (
+                BOARD_SNO
+              , TITLE
+              , CONTENT
+              , USER_ID
+              , REG_DATE
+            )
+        VALUES
+            (
+                BOARD_SNO_SEQ.NEXTVAL
+              , #{title}
+              , #{content}
+              , #{userId}
+              , SYSDATE
+            )
+    </update>
 
     <!--게시글 삭제-->
     <update id="deleteBoard" parameterType="map">
