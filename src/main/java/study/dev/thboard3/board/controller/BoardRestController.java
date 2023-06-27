@@ -27,7 +27,6 @@ public class BoardRestController {
      */
     @PostMapping("/reg")
     public ResponseEntity reg(@RequestBody @Valid BoardVo boardVo, BindingResult br) throws Exception {
-//        return boardService.insertBoardProc(boardVo, br);
         return boardService.mergeBoard(boardVo, br);
     }
 

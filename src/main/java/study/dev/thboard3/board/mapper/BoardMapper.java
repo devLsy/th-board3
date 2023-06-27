@@ -24,6 +24,9 @@ public interface BoardMapper {
     /* 게시글 상세 */
     BoardVo selectBoardDetail(@Param("boardSno") Long boardSno);
 
+    /* 게시글 순번 시퀀스 조회 */
+    Long selectMaxBoardSno();
+
     /* 게시글 수정 */
     int updateBoard(BoardVo boardVo);
     

@@ -71,6 +71,8 @@ public class BoardService {
         }
         //결과 코드값
         Map<Object, Object> resultMap = new HashMap<>();
+        //화면에서 넘어온 게시글 순번이 없는 경우(게시글 등록)엔 시퀀스 값으로 세팅
+        if(boardVo.getBoardSno() == null) boardVo.setBoardSno(boardMapper.selectMaxBoardSno());
         //쿼리 성공 시
         int count = boardMapper.mergeBoard(boardVo);
         //쿼리 성공 시

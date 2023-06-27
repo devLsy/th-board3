@@ -72,6 +72,12 @@
            AND A.USER_ID = B.USER_ID
     </select>
 
+    <!--게시글 순번 시퀀스 조회-->
+    <select id="selectMaxBoardSno" resultType="Long">
+        SELECT BOARD_SNO_SEQ.NEXTVAL AS boardSno
+          FROM DUAL
+    </select>
+
     <!--게시글 수정-->
     <update id="updateBoard" parameterType="BoardVo">
         /* 게시글 수정 */
@@ -89,7 +95,7 @@
     </update>
 
     <!--게시글 등록/수정(merge) -->
-    <update id="mergeBoard" parameterType="BoardVo">
+    <insert id="mergeBoard" parameterType="BoardVo">
         /* 게시글 등록/수정 */
         MERGE INTO BOARD_INFO A
           USING DUAL ON(A.BOARD_SNO = #{boardSno})
@@ -118,13 +124,14 @@
             )
         VALUES
             (
-                BOARD_SNO_SEQ.NEXTVAL
+                #{boardSno}
               , #{title}
               , #{content}
               , #{userId}
               , SYSDATE
             )
-    </update>
+    </insert>
+
 
     <!--게시글 삭제-->
     <update id="deleteBoard" parameterType="map">
