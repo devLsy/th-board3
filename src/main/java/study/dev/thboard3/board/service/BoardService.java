@@ -7,12 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.board.mapper.BoardMapper;
 import study.dev.thboard3.board.model.BoardVo;
 import study.dev.thboard3.model.enu.ResultCode;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static study.dev.thboard3.cmm.utils.ValidatorUtils.invokeErrors;
@@ -29,8 +29,9 @@ public class BoardService {
      * 게시글 목록 조회
      * @return
      */
-    public List<BoardVo> selectBoardList() throws Exception{
-        return boardMapper.selectBoardList();
+    public ModelAndView selectBoardList(BoardVo boardVo, ModelAndView mv) throws Exception{
+        mv.addObject("list", boardMapper.selectBoardList()).addObject("boardVo", boardVo).setViewName("pages/board/list");
+        return mv;
     }
 
     /**

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="study.dev.thboard3.board.mapper.BoardMapper">
-
+    
     <!--게시글 목록 조회-->
     <select id="selectBoardList" resultType="BoardVo">
         /* 게시글 목록 조회 */
@@ -31,30 +31,6 @@
         WHERE USE_YN = 'Y'
     </select>
 
-    <!--게시글 작성-->
-    <insert id="insertBoard" parameterType="BoardVo">
-        <selectKey keyProperty="boardSno" resultType="Long" order="BEFORE">
-            SELECT BOARD_SNO_SEQ.NEXTVAL FROM DUAL
-        </selectKey>
-        /* 게시글 작성 */
-        INSERT INTO BOARD_INFO
-            (
-                BOARD_SNO
-              , TITLE
-              , CONTENT
-              , USER_ID
-              , REG_DATE
-            )
-        VALUES
-            (
-                #{boardSno}
-              , #{title}
-              , #{content}
-              , #{userId}
-              , SYSDATE
-            )
-    </insert>
-
     <!--게시글 상세-->
     <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">
         /* 게시글 상세 조회 */
@@ -77,22 +53,6 @@
         SELECT BOARD_SNO_SEQ.NEXTVAL AS boardSno
           FROM DUAL
     </select>
-
-    <!--게시글 수정-->
-    <update id="updateBoard" parameterType="BoardVo">
-        /* 게시글 수정 */
-        UPDATE BOARD_INFO
-           <set>
-               <if test="title != null and title != ''">
-               TITLE = #{title}
-               </if>
-               <if test="content != null and content != ''">
-             , CONTENT = #{content}
-               </if>
-             , MOD_DATE = SYSDATE
-           </set>
-         WHERE BOARD_SNO = #{boardSno}
-    </update>
 
     <!--게시글 등록/수정(merge) -->
     <insert id="mergeBoard" parameterType="BoardVo">
@@ -131,7 +91,6 @@
               , SYSDATE
             )
     </insert>
-
 
     <!--게시글 삭제-->
     <update id="deleteBoard" parameterType="map">
