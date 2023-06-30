@@ -1,18 +1,20 @@
 //공통 객체
-const obj = {
+const cmmObj = {};
     
     //유효성 검증
-    validation: function validation(frm) {
+    cmmObj.validation =
+        function validation(frm) {
 
-
-
-    }
-    
-    
-    
-    
-    
-    
-    
-    
 };
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
