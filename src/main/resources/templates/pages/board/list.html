@@ -35,7 +35,7 @@
                     </form>
                 </div>
                 <div class="input-group">
-                    <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#regContentModal" href="">등록</a>
+                    <a class="btn btn-success" data-bs-toggle="modal" id="regContentBtn" data-bs-target="#regContentModal" href="">등록</a>
                 </div>
 
             <!--modal start(등록)-->
@@ -48,7 +48,7 @@
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="regContent">게시글 등록</h1>
+                      <h1 class="modal-title fs-5" id="regContent"></h1>
                     </div>
                     <div class="modal-body">
                        <div class="input-group mb-3">
@@ -116,8 +116,15 @@
                 $("#regFrm")[0].reset();
             });
 
+            //게시글 등록 모달 호출
+            $("#regContentBtn").on("click", function () {
+                $("#regContent").text("새 글 작성")
+                $("#regContentModal").modal();
+            });
 
         });
+
+
 
         //게시글 상세
         function detail(sno) {
