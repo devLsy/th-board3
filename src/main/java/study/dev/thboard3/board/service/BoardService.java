@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.board.mapper.BoardMapper;
 import study.dev.thboard3.board.model.BoardVo;
-import study.dev.thboard3.model.enu.ResultCode;
+import study.dev.thboard3.cmm.model.ResultCode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,9 @@ public class BoardService {
      */
     public ModelAndView selectBoardList(BoardVo boardVo, ModelAndView mv) throws Exception{
         mv.addObject("list", boardMapper.selectBoardList()).addObject("boardVo", boardVo).setViewName("pages/board/list");
+
+
+
         return mv;
     }
 

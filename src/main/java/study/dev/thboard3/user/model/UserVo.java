@@ -2,13 +2,13 @@ package study.dev.thboard3.user.model;
 
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import study.dev.thboard3.model.CmmVo;
+import study.dev.thboard3.cmm.model.CmmnVo;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class UserVo extends CmmVo {
+public class UserVo extends CmmnVo {
 
     private Long no;                //rownum
     private Long userSno;           //사용자 순번

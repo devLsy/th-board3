@@ -8,11 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import study.dev.thboard3.model.enu.ResultCode;
+import study.dev.thboard3.cmm.model.ResultCode;
 import study.dev.thboard3.user.mapper.UserMapper;
 import study.dev.thboard3.user.model.UserVo;
 
-import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +87,7 @@ public class UserService {
         }
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
-    
+
     /**
      * 사용 유저 전체 카운트 조회
      * @return

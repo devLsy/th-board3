@@ -1,7 +1,10 @@
-package study.dev.thboard3.model.enu;
+package study.dev.thboard3.cmm.model;
+
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Getter
 public enum ResultCode {
 
@@ -11,11 +14,6 @@ public enum ResultCode {
 
     private final String code;
     private final String msg;
-
-    ResultCode(String code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
 
     /**
      * parameter로 넘어온 코드와 enum class의 코드값 일치 여부 체크
@@ -33,6 +31,5 @@ public enum ResultCode {
         }
         return false;
     }
-
 
 }

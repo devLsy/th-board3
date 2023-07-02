@@ -1,12 +1,12 @@
 package study.dev.thboard3.board.model;
 
 import lombok.Data;
-import study.dev.thboard3.model.CmmVo;
+import study.dev.thboard3.cmm.model.CmmnVo;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class BoardVo extends CmmVo {
+public class BoardVo extends CmmnVo {
 
     private Long no;            //rownum
     private Long boardSno;      //게시글 순번
