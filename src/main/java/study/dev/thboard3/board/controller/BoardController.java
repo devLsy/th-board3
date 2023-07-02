@@ -19,7 +19,7 @@ public class BoardController {
      * 게시글 목록
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("")
     public ModelAndView list(BoardVo boardVo, ModelAndView mv) throws Exception {
         return boardService.selectBoardList(boardVo, mv);
     }

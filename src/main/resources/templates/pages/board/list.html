@@ -88,7 +88,7 @@
 
                     $.ajax({
                         type : "post",
-                        url : "/api/board/reg",
+                        url : "/api/board",
                         dataType: "json",
                         data : JSON.stringify(params),
                         contentType: 'application/json; charset=utf-8',
@@ -96,6 +96,7 @@
                             console.log(data);
                             if(data.code === "1") {
                                 alert(data.no + "번 게시글이 저장되었습니다.");
+                                $("#regContentModal").modal("hide");
                                 location.reload(true);
                             } else {
                                 alert("게시글 등록에 실패했습니다.");
@@ -119,7 +120,7 @@
             //게시글 등록 모달 호출
             $("#regContentBtn").on("click", function () {
                 $("#regContent").text("새 글 작성")
-                $("#regContentModal").modal();
+                $("#regContentModal").modal("show");
             });
 
         });
