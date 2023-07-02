@@ -8,6 +8,18 @@
     <main>
         <div class="container-fluid px-4">
             <h1 class="mt-4">게시글 목록</h1>
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" method="get">
+                           <div class="input-group">
+                               <select name="type" id="type">
+                                   <option value="">선택하세요.</option>
+                                   <option value="W">작성자</option>
+                                   <option value="T">제목</option>
+                                   <option value="C">내용</option>
+                               </select>
+                               <input class="form-control" type="text" id="keyword" name="keyword" placeholder="검색어를 입력하세요." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                               <button class="btn btn-primary" id="btnSearch" type="button"><i class="fas fa-search"></i></button>
+                           </div>
+                       </form>
                 <div class="card mb-4">
                     <form id="listFrm">
                         <div class="card-body">
@@ -34,6 +46,8 @@
                                 </thead>
                             </table>
                         </div>
+                        <!-- 동적 페이지네이션 -->
+                        <nav id="pagiNav" aria-label="Page navigation"></nav>
                     </form>
                 </div>
                 <div class="input-group">
@@ -76,6 +90,8 @@
 
     <!-- Script -->
     <script layout:fragment="script" th:inline="javascript" type="text/javascript">
+        //구분
+        let menu = "board";
 
         $(document).ready(function () {
 
@@ -124,10 +140,9 @@
                 $("#regContent").text("새 글 작성")
                 $("#regContentModal").modal("show");
             });
-
+            //페이지 최초 로드 시 1페이지 로드
+            getList("", 1, menu);
         });
-
-
 
         //게시글 상세
         function detail(sno) {
