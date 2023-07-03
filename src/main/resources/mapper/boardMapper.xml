@@ -46,7 +46,7 @@
               ) TB2
           WHERE TB2.no <![CDATA[ >= ]]> #{firstRecordIndex}
     </select>
-    
+
     <!--게시글 전체 카운트-->
     <select id="selectBoardCnt" parameterType="CmmnVo" resultType="int">
         /* 게시글 전체 카운트 */
