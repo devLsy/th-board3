@@ -22,7 +22,7 @@ const cmmObj = {};
             data: searchParam,
             success: function (data){
                 //draw tbody
-                drawTbody(data.list, type);
+                drawTbody(data, type);
                 //draw pagination
                 // drawPagination(data.paging);
             },
@@ -33,10 +33,10 @@ const cmmObj = {};
 
     /**
      * tbody를 그린다.
-     * @param list
+     * @param data
      * @param gubun
      */
-    function drawTbody(list, gubun) {
+    function drawTbody(data, gubun) {
         //drawHtml, //draw 대상 tbody
         let htmlData, targetTbody = "";
 
@@ -45,29 +45,23 @@ const cmmObj = {};
             case "board":
                 targetTbody = "boardBody";
                 //foreach start
-                for (let i = 0; i < list.length; i++) {
-                    // htmlData += "<tr>";
-                    // htmlData += "<td>";
-                    // htmlData += list[i].no;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>";
-                    // htmlData += list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "<td>" + list[i].;
-                    // htmlData += "</td>";
-                    // htmlData += "</tr>";
+                for (let i = 0; i < data.list.length; i++) {
+                    htmlData += "<tr>";
+                    htmlData += "<td>";
+                    htmlData += data.list[i].no;
+                    htmlData += "</td>";
+                    htmlData += "<td>";
+                    htmlData += data.list[i].title;
+                    htmlData += "</td>";
+                    htmlData += "<td>" + data.list[i].content;
+                    htmlData += "</td>";
+                    htmlData += "<td>" + data.list[i].userName;
+                    htmlData += "</td>";
+                    htmlData += "<td>" + data.list[i].regDate;
+                    htmlData += "</td>";
+                    htmlData += "<td>" + data.list[i].modDate;
+                    htmlData += "</td>";
+                    htmlData += "</tr>";
                 }
                 // foreach end
             break;
@@ -75,7 +69,7 @@ const cmmObj = {};
             case "user":
                 targetTbody = "userBody";
                 //foreach start
-                for (let i = 0; i < list.length; i++) {
+                for (let i = 0; i < data.list.length; i++) {
                     // htmlData += "<tr>";
                     // htmlData += "<td>";
                     // htmlData += list[i].no;
@@ -102,6 +96,9 @@ const cmmObj = {};
                 // foreach end
             break;
         }
+		
+		//tbody에 반영
+		$("#" + targetTbody + "").html(htmlData);
     }
 
 /****************************** pagination draw start *********************************************/
