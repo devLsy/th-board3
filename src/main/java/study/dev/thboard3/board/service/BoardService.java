@@ -46,7 +46,7 @@ public class BoardService {
      * @param session
      * @return
      */
-    public ResponseEntity selectBoardList(CmmnVo cmmnVo, HttpSession session) throws Exception{
+    public ResponseEntity selectBoardList(CmmnVo cmmnVo, HttpSession session) throws Exception {
         //resultMap
         Map<String, Object> resultMap = new HashMap<String, Object>();
         //사용자 세션 정보

@@ -6,6 +6,17 @@ const cmmObj = {};
         function validation(frm) {
         }
 
+
+	/**
+	 * 페이지 이동
+	 * @param currentPage
+	 */
+	function movePage(currentPage){
+		//검색조건이 있을 경우에만 검색조건 추가(검색조건 유지한 채 페이지 이동)
+		// (searchData != null) ? getList(searchData, currentPage, menu) : getList("", currentPage, menu);
+		getList("", currentPage, menu);
+	}
+
     /**
      * 리스트 조회(ajax)
      * @param searchParam
@@ -13,6 +24,7 @@ const cmmObj = {};
      * @param type
      */
     function getList(searchParam, currentPage, type) {
+		console.log(currentPage);
 		// console.log("getList");
         $.ajax({
             url: "/api/" + type +"?currentPage=" + currentPage,
@@ -120,7 +132,8 @@ function drawPagination(paging) {
 	} else {
 		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ first +")'>";
 	}
-	pageHtml += "<span class='hidden'>first page</span>";
+	// pageHtml += "<span class='hidden'>first page</span>";
+	pageHtml += "<span class='hidden'> << </span>";
 	pageHtml += "</button>";
 	pageHtml += "</li>"
 
@@ -133,7 +146,8 @@ function drawPagination(paging) {
 	} else {
 		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ prev +")'>";
 	}
-	pageHtml += "<span class='hidden'>prev page</span>";
+	// pageHtml += "<span class='hidden'>prev page</span>";
+	pageHtml += "<span class='hidden'> < </span>";
 	pageHtml += "</button>";
 	pageHtml += "</li>"
 
@@ -165,7 +179,8 @@ function drawPagination(paging) {
 	} else {
 		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ next +")'>";
 	}
-	pageHtml += "<span class='hidden'>last page</span>";
+	// pageHtml += "<span class='hidden'>next page</span>";
+	pageHtml += "<span class='hidden'> > </span>";
 	pageHtml += "</button>";
 	pageHtml += "</li>"
 
@@ -178,7 +193,9 @@ function drawPagination(paging) {
 	} else {
 		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ last +")'>";
 	}
-	pageHtml += "<span class='hidden'>last page</span>";
+	// pageHtml += "<span class='hidden'>last page</span>";
+	// pageHtml += "<span class='hidden'>last page</span>";
+	pageHtml += "<span class='hidden'> >> </span>";
 	pageHtml += "</button>";
 	pageHtml += "</li>"
 
