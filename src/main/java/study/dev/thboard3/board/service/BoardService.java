@@ -12,7 +12,9 @@ import study.dev.thboard3.board.mapper.BoardMapper;
 import study.dev.thboard3.board.model.BoardVo;
 import study.dev.thboard3.cmm.model.ResultCode;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static study.dev.thboard3.cmm.utils.ValidatorUtils.invokeErrors;
@@ -30,11 +32,22 @@ public class BoardService {
      * @return
      */
     public ModelAndView selectBoardList(BoardVo boardVo, ModelAndView mv) throws Exception{
-        mv.addObject("list", boardMapper.selectBoardList()).addObject("boardVo", boardVo).setViewName("pages/board/list");
-
-
-
+        mv.addObject("list", boardMapper.selectBoardList(boardVo)).addObject("boardVo", boardVo).setViewName("pages/board/list");
         return mv;
+    }
+
+    /**
+     * 게시글 목록 조회(ajax)
+     * @param boardVo
+     * @param session
+     * @return
+     */
+    public ResponseEntity selectBoardList(BoardVo boardVo, HttpSession session) throws Exception{
+        //resultMap
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<BoardVo> boardList = boardMapper.selectBoardList(boardVo);
+        resultMap.put("list", boardList);
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
     /**
@@ -42,7 +55,7 @@ public class BoardService {
      * @param boardVo
      * @param br
      */
-    public ResponseEntity mergeBoard(BoardVo boardVo, BindingResult br) {
+    public ResponseEntity mergeBoard(BoardVo boardVo, BindingResult br) throws Exception{
         //parameter 검증 실패
         if (br.hasErrors()) {
             invokeErrors(this.getClass().getName(), br);

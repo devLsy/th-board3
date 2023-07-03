@@ -33,16 +33,7 @@
                                         <th>등록일</th>
                                         <th>수정일</th>
                                     </tr>
-                                    <tbody id="boardBody">
-                                    <tr th:each=" list : ${list} ">
-                                        <td th:text="${list.no}"></td>
-                                        <td><a href="#" th:onclick="detail([[${list.boardSno}]])" th:text="${list.title}"></a></td>
-                                        <td th:text="${list.content}"></td>
-                                        <td th:text="${list.userName}"></td>
-                                        <td th:text="${list.regDate}"></td>
-                                        <td th:text="${list.modDate}"></td>
-                                    </tr>
-                                    </tbody>
+                                    <tbody id="boardBody"></tbody>
                                 </thead>
                             </table>
                         </div>
@@ -141,7 +132,7 @@
                 $("#regContentModal").modal("show");
             });
             //페이지 최초 로드 시 1페이지 로드
-            // getList("", 1, menu);
+            getList("", 1, menu);
         });
 
         //게시글 상세

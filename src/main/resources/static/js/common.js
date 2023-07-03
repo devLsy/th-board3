@@ -12,7 +12,8 @@ const cmmObj = {};
      * @param currentPage
      * @param type
      */
-    function getlist(searchParam, currentPage, type) {
+    function getList(searchParam, currentPage, type) {
+		// console.log("getList");
         $.ajax({
             url: "/api/" + type +"?currentPage=" + currentPage,
             type:"get",
@@ -23,7 +24,7 @@ const cmmObj = {};
                 //draw tbody
                 drawTbody(data.list, type);
                 //draw pagination
-                drawPagination(data.paging);
+                // drawPagination(data.paging);
             },
             error:function(e){
             }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import study.dev.thboard3.board.model.BoardVo;
 import study.dev.thboard3.board.service.BoardService;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
@@ -17,6 +18,17 @@ import javax.validation.Valid;
 public class BoardRestController {
 
     private final BoardService boardService;
+
+    /**
+     * 게시글 목록(ajax)
+     * @param boardVo
+     * @param session
+     * @return
+     */
+    @GetMapping("")
+    public ResponseEntity list(@ModelAttribute BoardVo boardVo, HttpSession session) throws Exception {
+        return boardService.selectBoardList(boardVo, session);
+    }
 
     /**
      * 게시글 등록/수정
