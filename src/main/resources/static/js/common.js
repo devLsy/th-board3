@@ -24,7 +24,7 @@ const cmmObj = {};
                 //draw tbody
                 drawTbody(data, type);
                 //draw pagination
-                // drawPagination(data.paging);
+                drawPagination(data.paging);
             },
             error:function(e){
             }

@@ -21,7 +21,18 @@
           <where>
                     A.USER_ID = B.USER_ID
                 AND A.USE_YN = 'Y'
-                <if test=""></if>
+                <!-- 제목 -->
+                <if test="type == 'T'.toString()">
+                  AND A.TITLE LIKE '%' || #{keyword} || '%'
+                </if>
+                <!-- 내용 -->
+                <if test="type == 'C'.toString()">
+                  AND A.CONTENT LIKE '%' || #{keyword} || '%'
+                </if>
+                <!-- 작성자 -->
+                <if test="type == 'W'.toString()">
+                AND B.USER_NAME LIKE '%' || #{keyword} || '%'
+                </if>
           </where>
     </select>
 
@@ -41,14 +52,26 @@
                     , TO_CHAR(A.MOD_DATE, 'YYYY-MM-DD HH24:MI') AS modDate /* 수정날짜 */
                     , A.REPLY_CNT AS replyCnt /* 댓글 개수 */
                     FROM BOARD_INFO A
-                    , USER_INFO B
-                    <where>A.USER_ID = B.USER_ID
-                        AND A.
-                        USE_YN = 'Y'
+                       , USER_INFO B
+                    <where>
+                            A.USER_ID = B.USER_ID
+                        AND A.USE_YN = 'Y'
+                        <!-- 제목 -->
+                        <if test="type == 'T'.toString()">
+                          AND A.TITLE LIKE '%' || #{keyword} || '%'
+                        </if>
+                        <!-- 내용 -->
+                        <if test="type == 'C'.toString()">
+                          AND A.CONTENT LIKE '%' || #{keyword} || '%'
+                        </if>
+                        <!-- 작성자 -->
+                        <if test="type == 'W'.toString()">
+                        AND B.USER_NAME LIKE '%' || #{keyword} || '%'
+                        </if>
                     </where>
                 )
     </select>
-
+    
     <!--게시글 상세-->
     <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">
         /* 게시글 상세 조회 */

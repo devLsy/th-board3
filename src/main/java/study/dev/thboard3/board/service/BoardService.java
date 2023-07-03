@@ -29,7 +29,6 @@ import static study.dev.thboard3.cmm.utils.ValidatorUtils.invokeErrors;
 public class BoardService {
 
     private final CommonService commonService;
-
     private final BoardMapper boardMapper;
 
     /**
@@ -92,14 +91,6 @@ public class BoardService {
             resultMap.put("code", ResultCode.FAIL.getCode());
         }
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
-    }
-
-    /**
-     * 게시글 전체 카운트
-     * @return
-     */
-    public int selectBoardCnt() throws Exception{
-        return boardMapper.selectBoardCnt();
     }
 
     /**
