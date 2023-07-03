@@ -10,6 +10,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.board.mapper.BoardMapper;
 import study.dev.thboard3.board.model.BoardVo;
+import study.dev.thboard3.cmm.model.CmmnVo;
+import study.dev.thboard3.cmm.model.PaginationInfo;
 import study.dev.thboard3.cmm.model.ResultCode;
 import study.dev.thboard3.user.model.UserVo;
 
@@ -34,24 +36,34 @@ public class BoardService {
      * 게시글 목록 조회
      * @return
      */
-    public ModelAndView selectBoardList(BoardVo boardVo, ModelAndView mv) throws Exception{
+    public ModelAndView selectBoardList(ModelAndView mv) throws Exception{
         mv.setViewName("pages/board/list");
         return mv;
     }
 
     /**
      * 게시글 목록 조회(ajax)
-     * @param boardVo
+     * @param cmmnVo
      * @param session
      * @return
      */
-    public ResponseEntity selectBoardList(BoardVo boardVo, HttpSession session) throws Exception{
+    public ResponseEntity selectBoardList(CmmnVo cmmnVo, HttpSession session) throws Exception{
         //resultMap
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        List<BoardVo> boardList = boardMapper.selectBoardList(boardVo);
+        //사용자 세션 정보
         UserVo sessionUserInfo = commonService.getSessionUserInfo(session);
+        //게시글 전체 카운트
+        int boardCount = boardMapper.selectBoardCnt(cmmnVo);
+        //페이지네이션 세팅
+        PaginationInfo pageVo = commonService.getPagination(cmmnVo.getCurrentPage(), boardCount);
+        cmmnVo.setFirstRecordIndex(pageVo.getFirstRecordIndex());
+        cmmnVo.setLastRecordIndex(pageVo.getLastRecordIndex());
+        //게시글 리스트
+        List<BoardVo> boardList = boardMapper.selectBoardList(cmmnVo);
 //        log.info("sessionUserInfo = {}", sessionUserInfo);
         resultMap.put("list", boardList);
+        resultMap.put("paging", pageVo);
+        resultMap.put("totalCount", boardCount);
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 

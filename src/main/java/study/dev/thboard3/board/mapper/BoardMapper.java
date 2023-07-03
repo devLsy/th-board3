@@ -3,6 +3,7 @@ package study.dev.thboard3.board.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import study.dev.thboard3.board.model.BoardVo;
+import study.dev.thboard3.cmm.model.CmmnVo;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public interface BoardMapper {
 
     /* 게시글 목록 조회 */
-    List<BoardVo> selectBoardList(BoardVo boardVo);
+    List<BoardVo> selectBoardList(CmmnVo cmmnVo);
 
     /* 게시글 등록 */
     int insertBoard(BoardVo boardVo);
@@ -19,7 +20,7 @@ public interface BoardMapper {
     int mergeBoard(BoardVo boardVo);
 
     /* 게시글 전체 카운트 */
-    int selectBoardCnt();
+    int selectBoardCnt(CmmnVo cmmnVo);
 
     /* 게시글 상세 */
     BoardVo selectBoardDetail(@Param("boardSno") Long boardSno);
