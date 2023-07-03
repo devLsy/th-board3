@@ -96,7 +96,7 @@ const cmmObj = {};
                 // foreach end
             break;
         }
-		
+
 		//tbody에 반영
 		$("#" + targetTbody + "").html(htmlData);
     }
