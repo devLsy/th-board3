@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.board.mapper.BoardMapper;
 import study.dev.thboard3.board.model.BoardVo;
 import study.dev.thboard3.cmm.model.ResultCode;
+import study.dev.thboard3.user.model.UserVo;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ import static study.dev.thboard3.cmm.utils.ValidatorUtils.invokeErrors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BoardService {
+
+    private final CommonService commonService;
 
     private final BoardMapper boardMapper;
 
@@ -46,6 +49,8 @@ public class BoardService {
         //resultMap
         Map<String, Object> resultMap = new HashMap<String, Object>();
         List<BoardVo> boardList = boardMapper.selectBoardList(boardVo);
+        UserVo sessionUserInfo = commonService.getSessionUserInfo(session);
+//        log.info("sessionUserInfo = {}", sessionUserInfo);
         resultMap.put("list", boardList);
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
