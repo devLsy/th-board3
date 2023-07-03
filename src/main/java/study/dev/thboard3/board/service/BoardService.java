@@ -35,7 +35,7 @@ public class BoardService {
      * @return
      */
     public ModelAndView selectBoardList(BoardVo boardVo, ModelAndView mv) throws Exception{
-        mv.addObject("list", boardMapper.selectBoardList(boardVo)).addObject("boardVo", boardVo).setViewName("pages/board/list");
+        mv.setViewName("pages/board/list");
         return mv;
     }
 
