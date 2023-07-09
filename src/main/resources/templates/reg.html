@@ -30,7 +30,7 @@
                       <div class="ms-3">
                           <div class="fw-bold" th:text="${list.userId}"></div>
                               <input type="hidden" name="replyNo" th:value="${list.replySno}">
-                              <input type="text" class="replyContentArea" th:value="${list.replyContent}" readonly />
+                              <input type="text" id="replyContent" class="replyContentArea" th:value="${list.replyContent}" readonly />
                               <a href="#" th:onclick="'javascript:updateReplyModalForm('+${list.replySno}+')'" class="btn btn-info updateReply">수정</a>
                               <a href="#" th:onclick="'javascript:delReply('+${list.replySno}+')'" class="btn btn-danger delReply">삭제</a>
 
@@ -121,6 +121,30 @@
            });
        });
     });
+
+    /**
+     * 댓글 수정
+     * @param sno
+     */
+    function updateReplyModalForm(sno) {
+
+        const params = {replySno: sno, boardSno: $("#boardSno").val()};
+
+        $.ajax({
+           url: "/api/reply",
+           type:"post",
+           //IE 브라우저 사용 안한다는 가정하에 주석처리
+           // cache: false,
+           data: params,
+           success: function (data) {
+               if(data.code === "1") alert("저장 되었습니다.");
+               location.href = "/board/mod/" + $("#boardSno").val();
+           },
+           error:function(e){
+               console.log(e);
+           }
+       });
+    }
 
     /**
      * 댓글 삭제
