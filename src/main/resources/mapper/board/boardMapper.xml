@@ -20,6 +20,15 @@
                                    FROM BOARD_INFO A
                                  <where>
                                      A.USE_YN = 'Y'
+                                     <if test="type == 'T'.toString()">
+                                         AND A.TITLE LIKE '%' || #{keyword} || '%'
+                                    </if>
+                                     <if test="type == 'C'.toString()">
+                                          AND A.CONTENT LIKE '%' || #{keyword} || '%'
+                                     </if>
+                                     <if test="type == 'W'.toString()">
+                                           AND A.USER_ID LIKE '%' || #{keyword} || '%'
+                                      </if>
                                  </where>
                             ) List1
                       WHERE LIST1.no <![CDATA[ <= ]]> #{lastRecordIndex}
