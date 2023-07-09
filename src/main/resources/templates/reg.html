@@ -8,12 +8,11 @@
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-  <form id="modFrm">
   <!-- 상세 -->
   <th:block th:if="${info?.boardSno != null}">
   <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
-  <input type="text" name="title" th:value="${info.title}">
-  <input type="text" name="content" th:value="${info.content}">
+  <input type="text" name="title" id="title" th:value="${info.title}">
+  <input type="text" name="content" id="content" th:value="${info.content}">
     <button id="modBtn" type="button">수정</button>
 
       <!-- 댓글 시작 -->
@@ -21,7 +20,6 @@
           <div class="card bg-light">
               <div class="card-body">
                   <!-- Comment form-->
-                  <form id="replyFrm" class="mb-4" method="post">
                       <input type="hidden" name="boardSno" id="boardSno" th:value="${boardSno}">
                       <textarea class="form-control" id="replyContent" name="replyContent" rows="3" placeholder="댓글을 작성 해주세요."></textarea>
                       <button type="button" id="replySave" class="btn btn-dark">저장</button>
@@ -62,7 +60,6 @@
                   </div>
               </div>
           </div>
-         </form>
       </section>
       <!-- 댓글 종료 -->
 
@@ -84,13 +81,14 @@
         $("#modBtn").on("click", function () {
 
             const boardSno = $("#boardSno").val();
+            const params = {title: $("#title").val(), content: $("#content").val()};
 
             $.ajax({
                 url: "/api/board/",
                 type:"post",
                 //IE 브라우저 사용 안한다는 가정하에 주석처리
                 // cache: false,
-                data: $("#modFrm").serialize(),
+                data: params,
                 success: function (data) {
                     if(data.code === "1") alert("저장 되었습니다.");
                     location.href = "/board/list"

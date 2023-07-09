@@ -167,9 +167,9 @@
     	pageHtml += "<li class='paginate_button page-item first'>";
 
     	if (paging.currentPage === paging.firstPage) {
-    		pageHtml += "<button class='page-link' disabled>";
+    		pageHtml += "<button type='button' class='page-link' disabled>";
     	} else {
-    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ first +")'>";
+    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ first +")'>";
     	}
     	pageHtml += "<span class='hidden'>first page</span>";
     	pageHtml += "</button>";
@@ -180,9 +180,9 @@
     	pageHtml += "<li class='paginate_button page-item prev'>";
 
     	if (paging.firstPage === paging.currentPage) {
-    		pageHtml += "<button class='page-link' disabled>";
+    		pageHtml += "<button type='button'  class='page-link' disabled>";
     	} else {
-    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ prev +")'>";
+    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ prev +")'>";
     	}
     	pageHtml += "<span class='hidden'>prev page</span>";
     	pageHtml += "</button>";
@@ -194,13 +194,13 @@
     		//현재 페이지가 인덱스와 같으면 active class 추가
     		if (paging.currentPage === i) {
     			pageHtml += " active'>";
-    			pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
+    			pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
     			pageHtml += i;
     			pageHtml += "</button>";
     			pageHtml += "</li>"
     		} else {
     			pageHtml += "'>";
-    			pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
+    			pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
     			pageHtml += i;
     			pageHtml += "</button>";
     			pageHtml += "</li>"
@@ -212,9 +212,9 @@
     	pageHtml += "<li class='paginate_button page-item next'>";
 
     	if (paging.currentPage === paging.lastPage) {
-    		pageHtml += "<button class='page-link' disabled>";
+    		pageHtml += "<button type='button'  class='page-link' disabled>";
     	} else {
-    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ next +")'>";
+    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ next +")'>";
     	}
     	pageHtml += "<span class='hidden'>next page</span>";
     	pageHtml += "</button>";
@@ -225,9 +225,9 @@
     	pageHtml += "<li class='paginate_button page-item last'>";
 
     	if (paging.currentPage === paging.lastPage) {
-    		pageHtml += "<button class='page-link' disabled>";
+    		pageHtml += "<button type='button'  class='page-link' disabled>";
     	} else {
-    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ last +")'>";
+    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ last +")'>";
     	}
     	pageHtml += "<span class='hidden'>last page</span>";
     	pageHtml += "</button>";
