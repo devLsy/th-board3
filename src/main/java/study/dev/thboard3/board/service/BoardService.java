@@ -75,6 +75,8 @@ public class BoardService {
         //resultMap
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
+        boardVo.setUserId("lsy");
+
         if(boardVo.getBoardSno() == null) boardVo.setBoardSno(boardMapper.selectMaxBoardSno());
         boardMapper.mergeBoard(boardVo);
 

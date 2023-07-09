@@ -35,6 +35,7 @@ public class BoardRestController {
      */
     @PostMapping("")
     public ResponseEntity mergeBoard(BoardVo boardVo) throws Exception {
+        log.info("boardVo = [{}]", boardVo);
         return boardService.mergeBoard(boardVo);
     }
 

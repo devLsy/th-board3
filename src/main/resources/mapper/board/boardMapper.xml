@@ -50,6 +50,7 @@
     <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">
         /* 게시글 상세 조회 */
         SELECT  ROW_NUMBER() over (order by REG_DATE DESC) as no
+              , BOARD_SNO AS boardSno
               , TITLE AS title
               , CONTENT as content
               , USER_ID as userId

@@ -54,6 +54,7 @@
      * @param type 메뉴타입
      */
     function getList(searchParam, currentPage, type){
+        console.log("getList!!!!");
     	$.ajax({
     		url: "/api/" + type +"?currentPage=" + currentPage,
     		type:"get",
@@ -89,7 +90,9 @@
             htmlData += data.list[i].no;
             htmlData += "</td>";
             htmlData += "<td>";
+            htmlData += "<a href='#' onclick='detail(\"" + data.list[i].boardSno + "\")'>";
             htmlData += data.list[i].title;
+            htmlData += "</a>";
             htmlData += "</td>";
             htmlData += "<td>";
             htmlData += data.list[i].content;
@@ -107,6 +110,11 @@
         $("#" + targetTbody + "").html(htmlData);
     }
     // end function getList()
+
+    //상세보기
+    function detail(sno) {
+        location.href = "/board/mode/" + sno;
+    }
 
     /**
      * 페이지네이션을 그린다.

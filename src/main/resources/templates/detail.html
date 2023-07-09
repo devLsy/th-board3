@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>상세</title>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
   <form id="modFrm">
-  <input type="hidden" id="boardSno" th:value="${info.boardSno}">
-  <input type="text" th:value="${info.title}">
-  <input type="text" th:value="${info.content}">
+  <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
+  <input type="text" name="title" th:value="${info.title}">
+  <input type="text" name="content" th:value="${info.content}">
     <button id="ModBtn" type="button">저장</button>
+      <a href="/board">목록</a>
   </form>
 <script th:inline="javascript" type="text/javascript">
 
@@ -19,13 +21,14 @@
             const boardSno = $("#boardSno").val();
 
             $.ajax({
-                url: "/api/board/mod/" + boardSno,
-                type:"put",
+                url: "/api/board/",
+                type:"post",
                 //IE 브라우저 사용 안한다는 가정하에 주석처리
                 // cache: false,
                 data: $("#modFrm").serialize(),
                 success: function (data) {
                     if(data.code === "1") alert("수정 되었습니다.");
+                    location.href = "/board"
                 },
                 error:function(e){
                     console.log(e);
@@ -33,7 +36,6 @@
             });
         });
     });
-
 </script>
 
 </body>
