@@ -67,8 +67,8 @@
 
   <!--글쓰기-->
   <th:block th:unless="${info?.boardSno != null}">
-  <input type="text" name="title">
-  <input type="text" name="content">
+  <input type="text" id="title" name="title">
+  <input type="text" id="content" name="content">
   <button id="modBtn" type="button">저장</button>
   </th:block>
 
