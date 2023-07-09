@@ -67,6 +67,7 @@
 
   <!--글쓰기-->
   <th:block th:unless="${info?.boardSno != null}">
+  <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
   <input type="text" id="title" name="title">
   <input type="text" id="content" name="content">
   <button id="modBtn" type="button">저장</button>
@@ -120,6 +121,30 @@
            });
        });
     });
+
+    /**
+     * 댓글 삭제
+     * @param sno
+     */
+    function delReply(sno) {
+
+        const params = {replySno: sno, boardSno: $("#boardSno").val()}
+
+        $.ajax({
+           url: "/api/reply",
+           type:"delete",
+           //IE 브라우저 사용 안한다는 가정하에 주석처리
+           // cache: false,
+           data: params,
+           success: function (data) {
+               if(data.code === "1") alert("삭제 되었습니다.");
+               location.href = "/board/mod/" + $("#boardSno").val();
+           },
+           error:function(e){
+               console.log(e);
+           }
+       });
+    }
 
 </script>
 

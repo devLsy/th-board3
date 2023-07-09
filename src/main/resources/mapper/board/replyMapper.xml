@@ -84,7 +84,7 @@
     <update id="deleteReply" parameterType="map">
         /* 댓글 삭제 */
         UPDATE REPLY_INFO
-           SET DEL_YN = 'N'
+           SET DEL_YN = 'Y'
          WHERE BOARD_SNO = #{boardSno}
            AND REPLY_SNO = #{replySno}
     </update>

@@ -26,4 +26,15 @@ public class ReplyRestController {
     public ResponseEntity mergeReply(ReplyVo replyVo) throws Exception {
         return replyService.mergeReply(replyVo);
     }
+
+    /**
+     * 댓글 삭제
+     * @param replyVo
+     * @return
+     * @throws Exception
+     */
+    @DeleteMapping("")
+    public ResponseEntity deleteReply(ReplyVo replyVo) throws Exception {
+        return replyService.deleteReply(replyVo.getBoardSno(), replyVo.getReplySno());
+    }
 }
