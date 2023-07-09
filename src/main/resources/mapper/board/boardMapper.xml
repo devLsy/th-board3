@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="study.dev.thboard3.board.mapper.BoardMapper">
+
+    <!--게시글 조회-->
+    <select id="selectBoard" parameterType="CmmnVo" resultType="BoardVo">
+        /* 게시글 조회 */
+        SELECT LIST2.*
+          FROM
+               (
+                    SELECT LIST1.*
+                      FROM
+                            (
+                                SELECT  ROW_NUMBER() over (order by REG_DATE DESC) as no
+                                      , TITLE AS title
+                                      , CONTENT as content
+                                      , USER_ID as userId
+                                      , REG_DATE as regDate
+                                   FROM BOARD_INFO A
+                                 <where>
+                                     A.USE_YN = 'Y'
+                                 </where>
+                            ) List1
+                      WHERE LIST1.no <![CDATA[ <= ]]> #{lastRecordIndex}
+               ) LIST2
+           WHERE LIST2.no <![CDATA[ >= ]]> #{firstRecordIndex}
+    </select>
+
+    <!--게시글 카운트-->
+    <select id="selectBoardCount" parameterType="CmmnVo" resultType="int">
+        /* 게시글 카운트 */
+        SELECT COUNT(*)
+          FROM
+               (
+                 SELECT ROW_NUMBER() over (order by REG_DATE DESC) as no
+                      , TITLE AS title
+                      , CONTENT as content
+                      , USER_ID as userId
+                      , REG_DATE as regDate
+                   FROM BOARD_INFO A
+                 <where>
+                    A.USE_YN = 'Y'
+                 </where>
+               )
+    </select>
+
+    <!--게시글 상세 조회-->
+    <select id="selectBoardDetail" parameterType="map" resultType="BoardVo">
+        /* 게시글 상세 조회 */
+        SELECT  ROW_NUMBER() over (order by REG_DATE DESC) as no
+              , TITLE AS title
+              , CONTENT as content
+              , USER_ID as userId
+              , REG_DATE as regDate
+           FROM BOARD_INFO A
+         <where>
+                 A.USE_YN = 'Y'
+             AND A.BOARD_SNO = #{boardSno}
+         </where>
+    </select>
+
+    <!--게시글 순번 시퀀스 조회-->
+    <select id="selectMaxBoardSno" resultType="Integer">
+        SELECT BOARD_SNO_SEQ.NEXTVAL AS boardSno
+          FROM DUAL
+    </select>
+
+    <!--게시글 등록/수정(merge) -->
+    <insert id="mergeBoard" parameterType="BoardVo">
+        /* 게시글 등록/수정 */
+        MERGE INTO BOARD_INFO A
+            /* 비교 조건(boardSno가 같은지 비교) */
+            USING DUAL ON(A.BOARD_SNO = #{boardSno})
+        WHEN MATCHED THEN
+        /* update(boardSno가 일치하면 update) */
+        UPDATE
+            <set>
+                <if test="title != null and title != ''">
+                TITLE = #{title}
+                </if>
+                <if test="content != null and content != ''">
+                , CONTENT = #{content}
+                </if>
+                , MOD_DATE = SYSDATE
+            </set>
+         WHERE BOARD_SNO = #{boardSno}
+        /* insert(boardSno가 불일치 할 경우 insert) */
+        WHEN NOT MATCHED THEN
+        INSERT
+                (
+                    BOARD_SNO
+                  , TITLE
+                  , CONTENT
+                  , USER_ID
+                )
+            VALUES
+                (
+                    #{boardSno}
+                  , #{title}
+                  , #{content}
+                  , #{userId}
+                )
+    </insert>
+
+    <!--게시글 삭제-->
+    <update id="deleteBoard" parameterType="map">
+        /* 게시글 삭제 */
+        UPDATE BOARD_INFO
+           SET USE_YN = 'N'
+         WHERE BOARD_SNO = #{boardSno}
+    </update>
+
+
+
+
+</mapper>
