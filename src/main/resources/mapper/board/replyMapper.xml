@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="study.dev.thboard3.reply.mapper.ReplyMapper">
+
+    <!--댓글 조회-->
+    <select id="selectReply" parameterType="map" resultType="ReplyVo">
+        /* 댓글 조회 */
+        SELECT REPLY_SNO AS replySno
+             , BOARD_SNO AS boardSno
+             , REPLY_CONTENT AS replyContent
+             , USER_ID AS userId
+          FROM REPLY_INFO
+         WHERE BOARD_SNO = #{boardSno}
+           AND DEL_YN = 'N'
+    </select>
+
+    <!--게시글 카운트-->
+    <select id="selectReplyCount" parameterType="map" resultType="int">
+        /* 댓글 카운트 */
+        SELECT COUNT(*)
+          FROM REPLY_INFO
+         WHERE BOARD_SNO = #{boardSno}
+    </select>
+
+    <!--댓글 상세 조회-->
+    <select id="selectReplyDetail" parameterType="map" resultType="ReplyVo">
+        /* 댓글 상세 조회 */
+        SELECT  ROW_NUMBER() over (order by A.REG_DATE DESC) as no
+              , REPLY_SNO AS replySno
+              , BOARD_SNO AS boardSno
+              , REPLY_CONTENT AS replyContent
+              , USER_ID as userId
+              , REG_DATE as regDate
+           FROM REPLY_INFO A
+         <where>
+                 A.USE_YN = 'Y'
+             AND A.BOARD_SNO = #{boardSno}
+             AND A.REPLY_SNO = #{replySno}
+         </where>
+    </select>
+
+    <!--댓글 순번 시퀀스 조회-->
+    <select id="selectMaxReplySno" resultType="Integer">
+        /* 댓글 순번 시퀀스 조회 */
+        SELECT REPLY_SNO_SEQ.NEXTVAL AS replySno
+          FROM DUAL
+    </select>
+
+    <!--댓글 등록/수정(merge) -->
+    <insert id="mergeReply" parameterType="ReplyVo">
+        /* 댓글 등록/수정 */
+        MERGE INTO REPLY_INFO A
+            /* 비교 조건(replySno 같은지 비교) */
+            USING DUAL ON(A.REPLY_SNO = #{replySno})
+        WHEN MATCHED THEN
+        /* update(boardSno가 일치하면 update) */
+        UPDATE
+            <set>
+                <if test="replyContent != null and replyContent != ''">
+                  REPLY_CONTENT = #{replyContent}
+                </if>
+                , MOD_DATE = SYSDATE
+            </set>
+         WHERE BOARD_SNO = #{boardSno}
+        /* insert(boardSno가 불일치 할 경우 insert) */
+        WHEN NOT MATCHED THEN
+        INSERT
+                (
+                    REPLY_SNO
+                  , BOARD_SNO
+                  , REPLY_CONTENT
+                  , USER_ID
+                )
+            VALUES
+                (
+                    #{replySno}
+                  , #{boardSno}
+                  , #{replyContent}
+                  , #{userId}
+                )
+    </insert>
+
+    <!--댓글 삭제-->
+    <update id="deleteReply" parameterType="map">
+        /* 댓글 삭제 */
+        UPDATE REPLY_INFO
+           SET DEL_YN = 'N'
+         WHERE BOARD_SNO = #{boardSno}
+           AND REPLY_SNO = #{replySno}
+    </update>
+
+
+
+
+</mapper>

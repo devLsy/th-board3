@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.board.mapper.BoardMapper;
+import study.dev.thboard3.reply.mapper.ReplyMapper;
 
 @Controller
 @Slf4j
@@ -16,13 +17,14 @@ import study.dev.thboard3.board.mapper.BoardMapper;
 public class BoardController {
 
     private final BoardMapper boardMapper;
+    private final ReplyMapper replyMapper;
 
     /**
      * 게시글 조회 화면
      * @param mv
      * @return
      */
-    @GetMapping("")
+    @GetMapping("/list")
     public ModelAndView list(ModelAndView mv) {
         mv.setViewName("main");
         return mv;
@@ -48,7 +50,9 @@ public class BoardController {
      */
     @GetMapping("/mod/{boardSno}")
     public ModelAndView detail(@PathVariable Integer boardSno, ModelAndView mv) {
-        mv.addObject("info", boardMapper.selectBoardDetail(boardSno)).setViewName("reg");
+        mv.addObject("info", boardMapper.selectBoardDetail(boardSno))
+                        .addObject("replyList", replyMapper.selectReply(boardSno))
+                        .setViewName("reg");
         return mv;
     }
 

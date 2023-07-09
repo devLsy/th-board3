@@ -12,6 +12,9 @@ import study.dev.thboard3.cmm.model.CmmnVo;
 import study.dev.thboard3.cmm.model.PaginationInfo;
 import study.dev.thboard3.cmm.service.CmmnService;
 import study.dev.thboard3.model.enu.ResultCode;
+import study.dev.thboard3.reply.mapper.ReplyMapper;
+import study.dev.thboard3.reply.model.ReplyVo;
+import study.dev.thboard3.reply.service.ReplyService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import java.util.Map;
 public class BoardService {
 
     private final BoardMapper boardMapper;
+    private final ReplyMapper replyMapper;
     private final CmmnService cmmnService;
 
     /**
@@ -61,7 +65,15 @@ public class BoardService {
      * @throws Exception
      */
     public ResponseEntity selectBoardDetail(Integer boardSno) throws Exception{
-        return new ResponseEntity<>(boardMapper.selectBoardDetail(boardSno), HttpStatus.OK);
+        //resultMap
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        BoardVo boardDetail = boardMapper.selectBoardDetail(boardSno);
+        List<ReplyVo> replyList = replyMapper.selectReply(boardSno);
+
+        resultMap.put("info", boardDetail);
+        resultMap.put("replyList", replyList);
+
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
     /**

@@ -3,28 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>상세</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
   <form id="modFrm">
+  <!-- 상세 -->
   <th:block th:if="${info?.boardSno != null}">
   <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
   <input type="text" name="title" th:value="${info.title}">
   <input type="text" name="content" th:value="${info.content}">
-    <button id="ModBtn" type="button">수정</button>
+    <button id="modBtn" type="button">수정</button>
+
+      <!-- 댓글 시작 -->
+      <section class="mb-5">
+          <div class="card bg-light">
+              <div class="card-body">
+                  <!-- Comment form-->
+                  <form id="replyFrm" class="mb-4" method="post">
+                      <input type="hidden" name="boardSno" id="boardSno" th:value="${boardSno}">
+                      <textarea class="form-control" id="replyContent" name="replyContent" rows="3" placeholder="댓글을 작성 해주세요."></textarea>
+                      <button type="button" id="replySave" class="btn btn-dark">저장</button>
+                  <!-- Comment with nested comments-->
+                  <div class="d-flex mb-4" th:each="list : ${replyList}">
+                      <!-- Parent comment-->
+                      <div class="flex-shrink-0"></div>
+                      <div class="ms-3">
+                          <div class="fw-bold" th:text="${list.userId}"></div>
+                              <input type="hidden" name="replyNo" th:value="${list.replySno}">
+                              <input type="text" class="replyContentArea" th:value="${list.replyContent}" readonly />
+                              <a href="#" th:onclick="'javascript:updateReplyModalForm('+${list.replySno}+')'" class="btn btn-info updateReply">수정</a>
+                              <a href="#" th:onclick="'javascript:delReply('+${list.replySno}+')'" class="btn btn-danger delReply">삭제</a>
+
+                          <!--modal-->
+                          <div class="modal fade" id="updateReplyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">댓글 수정</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                     <div class="col-md-4">
+                                         <input type="hidden" id="modalReplyNo" value="">
+                                        <textarea class="form-control" id="modalReplyContent" rows="3" placeholder="댓글을 작성 해주세요."></textarea>
+                                      </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="modalReplyUpdate" >저장</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          <!--modal 종료-->
+                      </div>
+                  </div>
+              </div>
+          </div>
+         </form>
+      </section>
+      <!-- 댓글 종료 -->
+
   </th:block>
 
+  <!--글쓰기-->
   <th:block th:unless="${info?.boardSno != null}">
   <input type="text" name="title">
   <input type="text" name="content">
-  <button id="ModBtn" type="button">저장</button>
+  <button id="modBtn" type="button">저장</button>
   </th:block>
-      <a href="/board">목록</a>
+
+
+      <a href="/board/list">목록</a>
   </form>
 <script th:inline="javascript" type="text/javascript">
 
     $(function () {
-        $("#ModBtn").on("click", function () {
+        $("#modBtn").on("click", function () {
 
             const boardSno = $("#boardSno").val();
 
@@ -36,13 +93,34 @@
                 data: $("#modFrm").serialize(),
                 success: function (data) {
                     if(data.code === "1") alert("저장 되었습니다.");
-                    location.href = "/board"
+                    location.href = "/board/list"
                 },
                 error:function(e){
                     console.log(e);
                 }
             });
         });
+
+        //댓글 등록
+       $("#replySave").on("click", function () {
+
+           const params = {boardSno : $("#boardSno").val(), replyContent: $("#replyContent").val()};
+
+           $.ajax({
+               url: "/api/reply",
+               type:"post",
+               //IE 브라우저 사용 안한다는 가정하에 주석처리
+               // cache: false,
+               data: params,
+               success: function (data) {
+                   if(data.code === "1") alert("저장 되었습니다.");
+                   location.href = "/board/mod/" + $("#boardSno").val();
+               },
+               error:function(e){
+                   console.log(e);
+               }
+           });
+       });
     });
 </script>
 
