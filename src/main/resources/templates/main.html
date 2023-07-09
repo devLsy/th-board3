@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,8 @@
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
+<form id="searchForm">
+    <button id="searchBtn">검색</button>
 <table>
     <thead>
         <th>번호</th>
@@ -14,19 +16,26 @@
         <th>작성자</th>
         <th>등록일</th>
     </thead>
-    <tbody id="boardBody">
-
-
-
-    </tbody>
+    <tbody id="boardBody"></tbody>
 </table>
+    <div class="tbl-paging"></div>
+</form>
 
-<script>
-
+<script th:inline="javascript" type="text/javascript">
+    //구분
     const menu = "board";
+    //검색조건
+    let searchData = "";
 
     $(function () {
+
         getList("", 1, menu);
+    });
+
+    //검색
+    $("#searchBtn").on("click", function () {
+        searchData = $('#searchForm').serialize();
+        getList(searchData, 1, menu);
     });
 
     /**
@@ -55,7 +64,7 @@
     			//draw tbody
     			drawTbody(data, type);
     			//draw pagination
-    			// drawPagination(data.paging);
+    			drawPagination(data.paging);
     		},
     		error:function(e){
     		}
@@ -74,7 +83,8 @@
 
         // foreach start
         for (let i = 0; i < data.list.length; i++) {
-            htmlData += "<tr>";
+            htmlData += "<tr ";
+            htmlData += "data-sno=" + data.list[i].boardSno + ">";
             htmlData += "<td>";
             htmlData += data.list[i].no;
             htmlData += "</td>";
@@ -97,6 +107,91 @@
         $("#" + targetTbody + "").html(htmlData);
     }
     // end function getList()
+
+    /**
+     * 페이지네이션을 그린다.
+     * @param paging
+     */
+    function drawPagination(paging) {
+
+    	let pageHtml = "";
+    	pageHtml += "<ul class='pagination'>";
+
+    	//first
+    	const first = parseInt(paging.firstPage);
+    	pageHtml += "<li class='paginate_button page-item first'>";
+
+    	if (paging.currentPage === paging.firstPage) {
+    		pageHtml += "<button class='page-link' disabled>";
+    	} else {
+    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ first +")'>";
+    	}
+    	pageHtml += "<span class='hidden'>first page</span>";
+    	pageHtml += "</button>";
+    	pageHtml += "</li>"
+
+    	//prev
+    	const prev = parseInt(paging.currentPage) -1;
+    	pageHtml += "<li class='paginate_button page-item prev'>";
+
+    	if (paging.firstPage === paging.currentPage) {
+    		pageHtml += "<button class='page-link' disabled>";
+    	} else {
+    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ prev +")'>";
+    	}
+    	pageHtml += "<span class='hidden'>prev page</span>";
+    	pageHtml += "</button>";
+    	pageHtml += "</li>";
+
+    	//① ~ ⑩
+    	for (let i = paging.firstPageNo; i <= paging.lastPageNo; i++) {
+    		pageHtml += "<li class='paginate_button page-item";
+    		//현재 페이지가 인덱스와 같으면 active class 추가
+    		if (paging.currentPage === i) {
+    			pageHtml += " active'>";
+    			pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
+    			pageHtml += i;
+    			pageHtml += "</button>";
+    			pageHtml += "</li>"
+    		} else {
+    			pageHtml += "'>";
+    			pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
+    			pageHtml += i;
+    			pageHtml += "</button>";
+    			pageHtml += "</li>"
+    		}
+    	}
+
+    	//next
+    	const next = parseInt(paging.currentPage) + 1;
+    	pageHtml += "<li class='paginate_button page-item next'>";
+
+    	if (paging.currentPage === paging.lastPage) {
+    		pageHtml += "<button class='page-link' disabled>";
+    	} else {
+    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ next +")'>";
+    	}
+    	pageHtml += "<span class='hidden'>next page</span>";
+    	pageHtml += "</button>";
+    	pageHtml += "</li>"
+
+    	//last
+    	const last = parseInt(paging.lastPage);
+    	pageHtml += "<li class='paginate_button page-item last'>";
+
+    	if (paging.currentPage === paging.lastPage) {
+    		pageHtml += "<button class='page-link' disabled>";
+    	} else {
+    		pageHtml += "<button class='page-link' style='cursor: pointer;' onclick='movePage("+ last +")'>";
+    	}
+    	pageHtml += "<span class='hidden'>last page</span>";
+    	pageHtml += "</button>";
+    	pageHtml += "</li>"
+
+    	pageHtml += "</ul>";
+    	//페이지네이션 영역에 반영
+    	$(".tbl-paging").html(pageHtml);
+    }
 
 
 </script>

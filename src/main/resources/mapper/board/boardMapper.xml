@@ -12,6 +12,7 @@
                       FROM
                             (
                                 SELECT  ROW_NUMBER() over (order by REG_DATE DESC) as no
+                                      , BOARD_SNO boardSno
                                       , TITLE AS title
                                       , CONTENT as content
                                       , USER_ID as userId
@@ -33,6 +34,7 @@
           FROM
                (
                  SELECT ROW_NUMBER() over (order by REG_DATE DESC) as no
+                      , BOARD_SNO boardSno
                       , TITLE AS title
                       , CONTENT as content
                       , USER_ID as userId

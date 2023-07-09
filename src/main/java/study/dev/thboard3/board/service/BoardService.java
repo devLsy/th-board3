@@ -49,6 +49,7 @@ public class BoardService {
         if(boardCount > 0) {
             resultMap.put("list", boardList);
             resultMap.put("count", boardCount);
+            resultMap.put("paging", pageVo);
         }
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
