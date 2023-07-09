@@ -15,6 +15,7 @@
 <form id="searchForm">
     <button id="searchBtn">검색</button>
     <a th:href="@{/board/reg}">글쓰기</a>
+    <div id="count"></div>
 <table>
     <thead>
         <th>번호</th>
@@ -123,6 +124,9 @@
         // foreach end
         //tbody에 반영
         $("#" + targetTbody + "").html(htmlData);
+        countHtml = "";
+        countHtml += data.count + "건";
+        $("#count").text(countHtml);
     }
     // end function getList()
 
