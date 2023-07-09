@@ -91,7 +91,7 @@
                 data: params,
                 success: function (data) {
                     if(data.code === "1") alert("저장 되었습니다.");
-                    location.href = "/board/list"
+                    location.href = "/board/list";
                 },
                 error:function(e){
                     console.log(e);
@@ -120,6 +120,7 @@
            });
        });
     });
+
 </script>
 
 </body>
