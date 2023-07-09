@@ -20,7 +20,7 @@
         <option value="W">작성자</option>
     </select>
     <input type="text" name="keyword" id="keyword">
-    <button id="searchBtn">검색</button>
+    <button type="button" id="searchBtn">검색</button>
     <a th:href="@{/board/reg}">글쓰기</a>
     <div id="count"></div>
 <table>
@@ -48,7 +48,8 @@
     });
 
     //검색
-    $("#searchBtn").on("click", function () {
+    $("#searchBtn").on("click", function (e) {
+        e.preventDefault();
         searchData = $('#searchForm').serialize();
         getList(searchData, 1, menu);
     });
