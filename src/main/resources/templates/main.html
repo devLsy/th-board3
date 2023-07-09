@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<style>
+    li {
+        list-style: none;
+        float: left;
+    }
+</style>
 </head>
 <body>
 <form id="searchForm">
     <button id="searchBtn">검색</button>
+    <a th:href="@{/board/reg}">글쓰기</a>
 <table>
     <thead>
         <th>번호</th>
@@ -36,6 +43,11 @@
     $("#searchBtn").on("click", function () {
         searchData = $('#searchForm').serialize();
         getList(searchData, 1, menu);
+    });
+
+    //게시글 등록
+    $("#mergeBtn").on("click", function () {
+        location.href = "/board/regForm";
     });
 
     /**
@@ -103,6 +115,9 @@
             htmlData += "<td>";
             htmlData += data.list[i].regDate;
             htmlData += "</td>";
+            htmlData += "<td>";
+            htmlData += "<a href='#' onclick='delBoard(\"" + data.list[i].boardSno + "\")'>삭제</a>";
+            htmlData += "</td>";
             htmlData += "</tr>";
         }
         // foreach end
@@ -113,7 +128,23 @@
 
     //상세보기
     function detail(sno) {
-        location.href = "/board/mode/" + sno;
+        location.href = "/board/mod/" + sno;
+    }
+
+    function delBoard(sno) {
+        $.ajax({
+            url: "/api/board/" + sno,
+            type:"delete",
+            //IE 브라우저 사용 안한다는 가정하에 주석처리
+            // cache: false,
+            success: function (data) {
+                if(data.code === "1") alert("삭제 되었습니다.");
+                location.href = "/board"
+            },
+            error:function(e){
+                console.log(e);
+            }
+        });
     }
 
     /**

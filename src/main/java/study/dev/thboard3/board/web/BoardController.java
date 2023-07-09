@@ -29,14 +29,26 @@ public class BoardController {
     }
 
     /**
+     * 등록폼
+     * @param mv
+     * @return
+     */
+    @GetMapping("/reg")
+    public ModelAndView regForm(ModelAndView mv) {
+        log.info("reg~~");
+        mv.setViewName("reg");
+        return mv;
+    }
+
+    /**
      * 상세
      * @param boardSno
      * @param mv
      * @return
      */
-    @GetMapping("/mode/{boardSno}")
+    @GetMapping("/mod/{boardSno}")
     public ModelAndView detail(@PathVariable Integer boardSno, ModelAndView mv) {
-        mv.addObject("info", boardMapper.selectBoardDetail(boardSno)).setViewName("detail");
+        mv.addObject("info", boardMapper.selectBoardDetail(boardSno)).setViewName("reg");
         return mv;
     }
 
