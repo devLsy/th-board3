@@ -62,7 +62,7 @@
                 , MOD_DATE = SYSDATE
             </set>
          WHERE BOARD_SNO = #{boardSno}
-               REPLY_SNO = #{replySno}
+           AND REPLY_SNO = #{replySno}
         /* insert(boardSno가 불일치 할 경우 insert) */
         WHEN NOT MATCHED THEN
         INSERT
