@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>엑셀 다운로드 예제</title>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+
+<div class="contents">
+      <h2>엑셀 다운로드 예제</h2>
+
+      <div class="tbl scroll-x">
+            <table>
+              <caption>목록</caption>
+              <colgroup>
+                <col width="60px">
+                <col width="60px">
+                <col width="100px">
+                <col width="150px">
+              </colgroup>
+              <thead>
+              <tr>
+                <th scope="row">체크박스</th>
+                <th scope="row">순번</th>
+                <th scope="row">사원명</th>
+                <th scope="row">직업</th>
+              </tr>
+              </thead>
+              <tbody class="center">
+                <tr>
+                  <td><input type="checkbox" class="checkbox"></td>
+                  <td>kkh</td>
+                  <td>김경호</td>
+                  <td>가수</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="checkbox"></td>
+                  <td>ljb</td>
+                  <td>박완규</td>
+                  <td>가수</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="checkbox"></td>
+                  <td>jkh</td>
+                  <td>정경화</td>
+                  <td>가수</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <button id="btn">엑셀 다운로드</button>
+          </div>
+  </div>
+
+    <script>
+        function downloadExcel() {
+			//데이터 담을 배열
+            var selectedData = [];
+			//class명이 checkbox인 친구들 루프 돌며 td 엘리먼트에서 텍스트를 가져온다.
+            $('.checkbox:checked').each(function() {
+                var rowData = $(this).closest('tr');
+                var fields = rowData.find('td');
+				//td에 표시된 데이터들을 JSON형식으로 세팅
+                var dataObject = {
+                    id: fields.eq(1).text(),
+                    name: fields.eq(2).text(),
+                    job: fields.eq(3).text(),
+                };
+				//배열에 JSON 데이터 저장
+                selectedData.push(dataObject);
+            });
+			//엑셀다운로드 url + 데이터 인코딩한 값을 쿼리스트링으로 붙인 값으로 주소 변경
+            var downloadUrl = 'exceldownload?selectedData=' + encodeURIComponent(JSON.stringify(selectedData));
+            window.location.href = downloadUrl;
+        }
+
+        $("#btn").on("click", function () {
+            downloadExcel();
+        });
+    </script>
+
+
+</body>
+</html>
