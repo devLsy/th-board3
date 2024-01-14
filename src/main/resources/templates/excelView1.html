@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>엑셀 다운로드 예제</title>
+    <title>엑셀 다운로드 예제1</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
 
 <div class="contents">
-      <h2>엑셀 다운로드 예제</h2>
+      <h2>엑셀 다운로드 예제1</h2>
 
       <div class="tbl scroll-x">
             <table>
@@ -54,7 +54,7 @@
   </div>
 
     <script>
-        function downloadExcel() {
+        function downloadExcel(pageGubun) {
 			//데이터 담을 배열
             var selectedData = [];
 			//class명이 checkbox인 친구들 루프 돌며 td 엘리먼트에서 텍스트를 가져온다.
@@ -71,12 +71,12 @@
                 selectedData.push(dataObject);
             });
 			//엑셀다운로드 url + 데이터 인코딩한 값을 쿼리스트링으로 붙인 값으로 주소 변경
-            var downloadUrl = 'exceldownload?selectedData=' + encodeURIComponent(JSON.stringify(selectedData));
+            var downloadUrl = 'exceldownload?selectedData=' + encodeURIComponent(JSON.stringify(selectedData)) + "&pageGubun=" + encodeURIComponent(pageGubun);
             window.location.href = downloadUrl;
         }
 
         $("#btn").on("click", function () {
-            downloadExcel();
+            downloadExcel("singer");
         });
     </script>
 

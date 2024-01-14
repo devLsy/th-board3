@@ -1,0 +1,21 @@
+{
+  "comments": {
+    "description": "이 파일은 엑셀 다운로드에 사용되는 엑셀 정보를 포함합니다.",
+    "fileType": "json"
+  },
+  "singer": {
+    "sheetName": "가수시트",
+    "fileName": "가수",
+    "headers": ["아이디", "이름", "직업"]
+  },
+  "currency": {
+    "sheetName": "통화시트",
+    "fileName": "통화",
+    "headers": ["나라", "통화"]
+  },
+  "actor": {
+    "sheetName": "배우시트",
+    "fileName": "배우",
+    "headers": ["성명", "연기력"]
+  }
+}

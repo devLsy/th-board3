@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>엑셀 다운로드 예제2</title>
+    <title>엑셀 다운로드 예제3</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
 
 <div class="contents">
-      <h2>엑셀 다운로드 예제2</h2>
+      <h2>엑셀 다운로드 예제3</h2>
 
       <div class="tbl scroll-x">
             <table>
@@ -22,25 +22,25 @@
               <thead>
               <tr>
                 <th scope="row">체크박스</th>
-                <th scope="row">나라</th>
-                <th scope="row">통화</th>
+                <th scope="row">성명</th>
+                <th scope="row">연기력</th>
               </tr>
               </thead>
               <tbody class="center">
                 <tr>
                   <td><input type="checkbox" class="checkbox"></td>
-                  <td>미국</td>
-                  <td>달러</td>
+                  <td>최민식</td>
+                  <td>상</td>
                 </tr>
                 <tr>
                   <td><input type="checkbox" class="checkbox"></td>
-                  <td>중국</td>
-                  <td>위안</td>
+                  <td>이성민</td>
+                  <td>상</td>
                 </tr>
                 <tr>
                   <td><input type="checkbox" class="checkbox"></td>
-                  <td>영국</td>
-                  <td>파운드</td>
+                  <td>백윤식</td>
+                  <td>상</td>
                 </tr>
               </tbody>
             </table>
@@ -59,8 +59,8 @@
                 var fields = rowData.find('td');
 				//td에 표시된 데이터들을 JSON형식으로 세팅
                 var dataObject = {
-                    country: fields.eq(1).text(),
-                    currency: fields.eq(2).text(),
+                    name: fields.eq(1).text(),
+                    power: fields.eq(2).text(),
                 };
 				//배열에 JSON 데이터 저장
                 selectedData.push(dataObject);
@@ -71,7 +71,7 @@
         }
 
         $("#btn").on("click", function () {
-            downloadExcel("currency");
+            downloadExcel("actor");
         });
     </script>
 
