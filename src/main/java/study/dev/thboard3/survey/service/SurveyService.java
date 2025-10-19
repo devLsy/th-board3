@@ -44,4 +44,41 @@ public class SurveyService {
         }
         return surveyMapper.selectSurveyDetail(userId, sessionKey);
     }
+
+    // 💡 여러 건의 INSERT가 하나의 트랜잭션으로 묶여야 합니다.
+    @Transactional
+    public void saveSurveyAnswers(List<Map<String, Object>> answers) {
+        if (answers == null || answers.isEmpty()) return;
+
+        String sessionKey = (String) answers.get(0).get("sessionKey");
+
+        // 1. 🚨 [핵심 수정] INSERT 전에 기존 응답을 삭제합니다.
+        surveyMapper.deletePreviousAnswers(sessionKey);
+
+        // 2. 새로운 응답을 일괄 삽입합니다. (이전 데이터가 삭제되었으므로 충돌 없음)
+        surveyMapper.insertSurveyAnswers(answers);
+    }
+
+    @Transactional(readOnly = true)
+    public String getNextSessionKey(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be empty.");
+        }
+
+        Integer maxNumber = surveyMapper.selectMaxSessionKeyNumber(userId);
+
+        String upperUserId = userId.toUpperCase();
+
+        int nextNumber = maxNumber + 1;
+
+        if (nextNumber > 99999) {
+            // 🚨 순번 초과 시 예외 처리 또는 로깅 필요
+            throw new RuntimeException("Session key number limit exceeded for user: " + upperUserId);
+        }
+
+        String formattedNumber = String.format("%05d", nextNumber);
+
+        // 5. 최종 SESSION_KEY 조합
+        return upperUserId + "_" + formattedNumber;
+    }
 }

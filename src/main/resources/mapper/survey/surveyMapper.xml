@@ -131,27 +131,51 @@
     </select>
 
     <!-- 설문 응답 -->
-    <insert id="insertSurvey" parameterType="map">
-    /* 설문 응답 */
+    <insert id="insertSurveyAnswers" parameterType="list">
+    /* * 최적화된 설문 응답 저장 (Multi-Row INSERT)
+     * - UNION ALL을 사용하여 하나의 SQL 문으로 여러 행 삽입
+     * - ORA-00933, ORA-00001 (무결성) 오류 방지
+     */
+
     INSERT INTO SURVEY_ANSWER (
-        USER_ID,
-        SESSION_KEY,
-        QUESTION_ID,
-        OPTION_ID,
-        SELECTED_SCORE
-        -- ANSWER_AT은 DEFAULT SYSDATE로 자동 삽입됨
+        USER_ID, SESSION_KEY, QUESTION_ID, OPTION_ID, SELECTED_SCORE
     )
-    VALUES (
-        #{userId},
-        #{sessionKey},
-        #{questionId},
-        #{optionId},
-        #{selectedScore, jdbcType=NUMERIC} /* 🔑 NULL 허용을 위해 jdbcType 명시 */
-    )
+    SELECT
+        T.USER_ID, T.SESSION_KEY, T.QUESTION_ID, T.OPTION_ID, T.SELECTED_SCORE
+    FROM
+    (
+        <foreach collection="list" item="item" separator=" UNION ALL ">
+            SELECT
+                #{item.userId} AS USER_ID,
+                #{item.sessionKey} AS SESSION_KEY,
+                #{item.questionId} AS QUESTION_ID,
+                #{item.optionId} AS OPTION_ID,
+                NVL(#{item.selectedScore, jdbcType=NUMERIC}, 0) AS SELECTED_SCORE
+            FROM DUAL
+        </foreach>
+    ) T
     </insert>
 
+    <select id="selectMaxSessionKeyNumber" resultType="int">
+    /* 특정 사용자의 SESSION_KEY 최대 순번 조회 */
+    SELECT
+        NVL(
+            MAX(
+                TO_NUMBER(SUBSTR(SA.SESSION_KEY, INSTR(SA.SESSION_KEY, '_') + 1))
+            ),
+            0
+        )
+    FROM
+        SURVEY_ANSWER SA
+    WHERE
+        SA.USER_ID = #{userId}
+    </select>
 
-
+    <delete id="deletePreviousAnswers" parameterType="string">
+    /* 특정 세션 키의 모든 응답 기록 삭제 (덮어쓰기 허용) */
+    DELETE FROM SURVEY_ANSWER
+    WHERE SESSION_KEY = #{sessionKey}
+    </delete>
 
 
 </mapper>

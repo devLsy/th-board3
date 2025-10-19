@@ -3,9 +3,7 @@ package study.dev.thboard3.survey.web;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.survey.service.SurveyService;
 
@@ -39,6 +37,33 @@ public class SurveyController {
     }
 
     /**
+     * (외부) 설문 등록 화면으로 이동 및 새 응시 TOKEN 준비
+     * @param mv
+     * @param userId URL 파라미터로 받은 사용자 ID
+     * @return surveyReg.html
+     */
+    @GetMapping("/ext/reg")
+    public ModelAndView register(ModelAndView mv, @RequestParam("userId") String userId) {
+
+        String userIdParam = "lsy";
+
+        // 1. Service를 호출하여 다음 응시 순번(SESSION_KEY)을 계산
+        // 💡 이 로직은 Service나 Mapper에 별도로 구현되어 있어야 함.
+//        String nextSessionKey = surveyService.getNextSessionKey(userId);
+        String nextSessionKey = surveyService.getNextSessionKey(userIdParam);
+
+        // 2. 모델에 데이터 추가
+        // 이 데이터는 surveyReg.html의 Hidden Field에 바인딩됩니다.
+        mv.addObject("userId", userId);
+        mv.addObject("sessionKey", nextSessionKey);
+
+        // 3. 뷰 이름 설정
+        mv.setViewName("surveyReg");
+
+        return mv;
+    }
+
+    /**
      * (외부) 특정 응시 회차의 상세 내용 조회
      * @param mv
      * @param sessionKey URL 파라미터로 받은 응시 회차 KEY
@@ -61,5 +86,29 @@ public class SurveyController {
         mv.setViewName("surveyDetail");
 
         return mv;
+    }
+
+    @PostMapping("/ext/save")
+    @ResponseBody // JSON 데이터를 받고 JSON 또는 HTTP 상태 코드를 반환
+    public String saveSurvey(@RequestBody Map<String, Object> requestData) {
+
+        @SuppressWarnings("unchecked") // answers가 List<Map>임을 가정
+        List<Map<String, Object>> answers = (List<Map<String, Object>>) requestData.get("answers");
+
+        if (answers == null || answers.isEmpty()) {
+            log.warn("저장할 응답 데이터가 없습니다.");
+            return "NO_DATA";
+        }
+
+        try {
+            // Service를 호출하여 모든 응답을 DB에 저장
+            surveyService.saveSurveyAnswers(answers);
+            log.info("설문 응답 {}건 저장 완료. SessionKey: {}", answers.size(), requestData.get("sessionKey"));
+            return "SUCCESS";
+        } catch (Exception e) {
+            log.error("설문 저장 중 오류 발생. SessionKey: {}", requestData.get("sessionKey"), e);
+            // 🚨 실제 개발 환경에서는 HTTP 500 에러 코드를 반환해야 합니다.
+            return "FAIL";
+        }
     }
 }
