@@ -81,4 +81,12 @@ public class SurveyService {
         // 5. 최종 SESSION_KEY 조합
         return upperUserId + "_" + formattedNumber;
     }
+
+    /**
+     * (내부)관리자가 전체 사용자가 설문 응시한 목록 조회
+     * @return
+     */
+    public List<Map<String, Object>> getInternalSurveyList() {
+        return surveyMapper.selectIntSurveyList();
+    }
 }

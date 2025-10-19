@@ -22,4 +22,7 @@ public interface SurveyMapper {
 
     // 5. 특정 세션키의 데이터 삭제
     int deletePreviousAnswers(@Param("sessionKey") String sessionKey);
+    
+    // 6. 사용자 전체의 설문 응시 목록 
+    List<Map<String, Object>> selectIntSurveyList();
 }

@@ -111,4 +111,21 @@ public class SurveyController {
             return "FAIL";
         }
     }
+
+    @GetMapping("/int/list")
+    public ModelAndView intSurveylist(ModelAndView mv) {
+
+        // 1. Service 호출하여 모든 사용자/모든 응시 목록 조회
+        List<Map<String, Object>> surveyList = surveyService.getInternalSurveyList();
+
+        // 2. 모델에 데이터 추가
+        mv.addObject("surveyList", surveyList);
+
+        // 3. 뷰 이름 설정 (예시: adminSurveyMain)
+        mv.setViewName("adminSurveyMain");
+
+        log.info("관리자 조회: 총 {}건의 응시 기록 획득.", surveyList.size());
+
+        return mv;
+    }
 }

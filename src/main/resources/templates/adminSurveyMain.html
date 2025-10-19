@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자: 전체 설문 응시 내역</title>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; max-width: 98%; margin: 20px auto; padding: 0 10px; }
+        h1 { text-align: center; color: #1e8449; }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .styled-table th, .styled-table td {
+            border: 1px solid #ddd;
+            padding: 8px 5px;
+            text-align: center;
+        }
+        .styled-table th {
+            background-color: #4a6fa5;
+            color: white;
+            font-weight: bold;
+        }
+        .styled-table .data-col {
+            background-color: #f7f7f7;
+        }
+        .styled-table .score-col {
+            width: 40px;
+            font-weight: bold;
+        }
+        .styled-table tbody tr:hover { background-color: #e6f7ff; }
+    </style>
+</head>
+<body>
+
+<h1>관리자: 전체 설문 응시 내역 (문항별 점수 피벗)</h1>
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th rowspan="2">번호</th>
+            <th rowspan="2">회차</th>
+            <th rowspan="2">업체명</th>
+            <th rowspan="2">평가자ID</th>
+            <th rowspan="2">총합점수</th>
+            <th colspan="3">기본 정보 (응답 텍스트)</th>
+            <th colspan="6">위험 및 대응 (점수)</th>
+        </tr>
+        <tr>
+            <th>업종 (Q1)</th>
+            <th>규모 (Q2)</th>
+            <th>직책 (Q3)</th>
+            <th>Q4</th>
+            <th>Q5</th>
+            <th>Q6</th>
+            <th>Q7</th>
+            <th>Q8</th>
+            <th>Q9</th>
+        </tr>
+    </thead>
+    <tbody id="boardBody">
+        <tr th:each="survey, stat : ${surveyList}">
+            <td th:text="${stat.count}"></td>
+
+            <td th:text="${survey.ATTEMPTRANK}"></td>
+            <td th:text="${survey.COMPANYNM}"></td>
+            <td th:text="${survey.USERID}"></td>
+            <td th:text="${survey.USERNM}"></td>
+            <td th:text="${survey.TOTALSCORE}" class="data-col"></td>
+
+            <td th:text="${survey.Q1_UPJONG}"></td>
+            <td th:text="${survey.Q2_GYUMO}"></td>
+            <td th:text="${survey.Q3_JIKCHEK}"></td>
+
+            <td th:text="${survey.Q4_SCORE}" class="score-col"></td>
+            <td th:text="${survey.Q5_SCORE}" class="score-col"></td>
+            <td th:text="${survey.Q6_SCORE}" class="score-col"></td>
+            <td th:text="${survey.Q7_SCORE}" class="score-col"></td>
+            <td th:text="${survey.Q8_SCORE}" class="score-col"></td>
+            <td th:text="${survey.Q9_SCORE}" class="score-col"></td> </tr>
+         <tr th:unless="${not #lists.isEmpty(surveyList)}">
+             <td colspan="12" style="text-align: center; color: gray; padding: 20px;">
+                 조회할 응시 데이터가 없습니다.
+             </td>
+         </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

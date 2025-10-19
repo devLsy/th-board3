@@ -81,52 +81,56 @@
     /* (내부)모든 사용자가 응시한 설문조사 데이터 조회(모든 문항, 응답 점수, 총합) */
     WITH G AS (
         SELECT
-            UA.COMPANY_NM,
-            UA.USER_ID,
-            UA.USER_NM,
-            SA.SESSION_KEY,
-            MAX(SA.ANSWER_AT)          AS "점검일시",
-            SUM(SA.SELECTED_SCORE)     AS "총합점수",
+            -- 🔑 G CTE 내부: 모든 컬럼에 별칭을 명시하여 외부 참조를 용이하게 함
+            UA.COMPANY_NM AS COMPANYNM,
+            UA.USER_ID AS USERID,
+            UA.USER_NM AS USERNM,
+            SA.SESSION_KEY AS SESSIONKEY,
+            MAX(SA.ANSWER_AT) AS ANSWERAT,
+            SUM(SA.SELECTED_SCORE) AS TOTALSCORE,
 
-            -- 문항별 점수 피벗 (Q1~Q9)
-            MAX(CASE WHEN SA.QUESTION_ID = 42 THEN QO.OPTION_TEXT END) AS "문항1",
-            MAX(CASE WHEN SA.QUESTION_ID = 43 THEN QO.OPTION_TEXT END) AS "문항2",
-            MAX(CASE WHEN SA.QUESTION_ID = 44 THEN QO.OPTION_TEXT END) AS "문항3",
-            MAX(CASE WHEN SA.QUESTION_ID = 45 THEN SA.SELECTED_SCORE END) AS "문항4",
-            MAX(CASE WHEN SA.QUESTION_ID = 46 THEN SA.SELECTED_SCORE END) AS "문항5",
-            MAX(CASE WHEN SA.QUESTION_ID = 47 THEN SA.SELECTED_SCORE END) AS "문항6",
-            MAX(CASE WHEN SA.QUESTION_ID = 48 THEN SA.SELECTED_SCORE END) AS "문항7",
-            MAX(CASE WHEN SA.QUESTION_ID = 49 THEN SA.SELECTED_SCORE END) AS "문항8",
-            MAX(CASE WHEN SA.QUESTION_ID = 50 THEN SA.SELECTED_SCORE END) AS "문항9"
+            -- 기본 정보 (텍스트)
+            MAX(CASE WHEN SA.QUESTION_ID = 42 THEN QO.OPTION_TEXT END) AS Q1_UPJONG,
+            MAX(CASE WHEN SA.QUESTION_ID = 43 THEN QO.OPTION_TEXT END) AS Q2_GYUMO,
+            MAX(CASE WHEN SA.QUESTION_ID = 44 THEN QO.OPTION_TEXT END) AS Q3_JIKCHEK,
+
+            -- 위험 및 대응 점수 (SCORE)
+            MAX(CASE WHEN SA.QUESTION_ID = 45 THEN SA.SELECTED_SCORE END) AS Q4_SCORE,
+            MAX(CASE WHEN SA.QUESTION_ID = 46 THEN SA.SELECTED_SCORE END) AS Q5_SCORE,
+            MAX(CASE WHEN SA.QUESTION_ID = 47 THEN SA.SELECTED_SCORE END) AS Q6_SCORE,
+            MAX(CASE WHEN SA.QUESTION_ID = 48 THEN SA.SELECTED_SCORE END) AS Q7_SCORE,
+            MAX(CASE WHEN SA.QUESTION_ID = 49 THEN SA.SELECTED_SCORE END) AS Q8_SCORE,
+            MAX(CASE WHEN SA.QUESTION_ID = 50 THEN SA.SELECTED_SCORE END) AS Q9_SCORE
         FROM SURVEY_ANSWER SA
         JOIN USER_ACCOUNT UA
           ON UA.USER_ID = SA.USER_ID
         JOIN QUESTION_OPTION QO
           ON SA.OPTION_ID = QO.OPTION_ID
         GROUP BY
-            UA.COMPANY_NM,
-            UA.USER_ID,
-            UA.USER_NM,
-            SA.SESSION_KEY
+            UA.COMPANY_NM, UA.USER_ID, UA.USER_NM, SA.SESSION_KEY
     ),
     S AS (
+        -- 🔑 S CTE 내부: G의 모든 컬럼을 *명시적으로* 참조
         SELECT
-          COMPANY_NM, USER_ID, USER_NM, "점검일시", "총합점수",
-          "문항1","문항2","문항3","문항4","문항5","문항6","문항7","문항8","문항9",
-          ROW_NUMBER() OVER (PARTITION BY USER_ID ORDER BY "점검일시" ASC) AS "회차"
+          COMPANYNM, USERID, USERNM, ANSWERAT, TOTALSCORE, SESSIONKEY,
+          Q1_UPJONG, Q2_GYUMO, Q3_JIKCHEK,
+          Q4_SCORE, Q5_SCORE, Q6_SCORE, Q7_SCORE, Q8_SCORE, Q9_SCORE,
+          -- 🔑 Window 함수: ORDER BY에 대문자 ANSWERAT 사용
+          ROW_NUMBER() OVER (PARTITION BY USERID ORDER BY ANSWERAT ASC) AS attemptRank
         FROM G
-        ORDER BY USER_ID, "점검일시" DESC
+        -- 🔑 ORDER BY: G에서 정의된 대문자 별칭을 사용해야 합니다.
+        ORDER BY USERID, ANSWERAT DESC
     )
     SELECT
-        ROWNUM                               AS "번호",
-        S."회차",
-        S.COMPANY_NM                         AS "업체명",
-        S.USER_ID                            AS "평가자ID",
-        S.USER_NM                            AS "평가자명",
-        S."점검일시",
-        S."총합점수",
-        S."문항1", S."문항2", S."문항3", S."문항4", S."문항5",
-        S."문항6", S."문항7", S."문항8", S."문항9"
+            ROWNUM AS no,
+            S.attemptRank AS attemptRank,
+            S.COMPANYNM AS companyNm,
+            S.USERID AS userId,
+            S.USERNM AS userNm,
+            S.ANSWERAT AS answerAt,
+            S.TOTALSCORE AS totalScore,
+            S.Q1_UPJONG, S.Q2_GYUMO, S.Q3_JIKCHEK,
+            S.Q4_SCORE, S.Q5_SCORE, S.Q6_SCORE, S.Q7_SCORE, S.Q8_SCORE, S.Q9_SCORE
     FROM S
     </select>
 
