@@ -26,7 +26,7 @@ public class SurveyController {
     @GetMapping("/ext/list")
     public ModelAndView extSurveylist(ModelAndView mv) {
         // 1. 🔑 사용자 ID 하드코딩 (테스트용)
-        String currentUserId = "lsy";
+        String currentUserId = "nyj";
         // 2. Service 호출 및 데이터 획득 (예외처리 없음)
         List<Map<String, Object>> externalSurveyList = surveyService.getExternalSurveyList(currentUserId);
         // 3. 모델에 데이터 추가 및 뷰 설정
@@ -45,12 +45,12 @@ public class SurveyController {
     @GetMapping("/ext/reg")
     public ModelAndView register(ModelAndView mv, @RequestParam("userId") String userId) {
 
-        String userIdParam = "lsy";
+//        String userIdParam = "lsy";
 
         // 1. Service를 호출하여 다음 응시 순번(SESSION_KEY)을 계산
         // 💡 이 로직은 Service나 Mapper에 별도로 구현되어 있어야 함.
-//        String nextSessionKey = surveyService.getNextSessionKey(userId);
-        String nextSessionKey = surveyService.getNextSessionKey(userIdParam);
+        String nextSessionKey = surveyService.getNextSessionKey(userId);
+//        String nextSessionKey = surveyService.getNextSessionKey(userIdParam);
 
         // 2. 모델에 데이터 추가
         // 이 데이터는 surveyReg.html의 Hidden Field에 바인딩됩니다.

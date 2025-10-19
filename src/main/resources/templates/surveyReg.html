@@ -9,14 +9,19 @@
         .question-group { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; }
         .question-text { font-weight: bold; margin-bottom: 10px; color: #1e8449; }
         .option-item { margin-left: 15px; margin-bottom: 5px; }
-        .option-item label { cursor: pointer; } /* 🔑 라벨 클릭 활성화 */
+        .option-item label { cursor: pointer; }
         .part-header { font-size: 1.3em; color: navy; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid navy; padding-bottom: 5px; }
+
+        /* 버튼 스타일 */
+        .button-container { text-align: center; margin-top: 40px; }
+        .submit-btn { padding: 10px 20px; font-size: 1.1em; background-color: #1e8449; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
+        .list-btn { padding: 10px 20px; font-size: 1.1em; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
     </style>
 </head>
 <body>
 
     <h2>안전점검 자율진단표 - 신규 등록</h2>
-    <form id="surveyForm" action="/submit-survey" method="POST">
+    <form id="surveyForm">
 
         <input type="hidden" id="USER_ID" name="USER_ID" th:value="${userId}">
         <input type="hidden" id="SESSION_KEY" name="SESSION_KEY" th:value="${sessionKey}">
@@ -27,7 +32,6 @@
         <div class="question-group" data-qid="42">
             <p class="question-text">1. 귀사는 어떤 업종인가요?</p>
             <input type="hidden" name="Q_42_ID" value="42">
-
             <div class="option-item"><input type="radio" id="q42_opt73" name="Q_42_OPT" value="73"><label for="q42_opt73">제조업</label><input type="hidden" name="Q_42_SCORE_73" value=""></div>
             <div class="option-item"><input type="radio" id="q42_opt74" name="Q_42_OPT" value="74"><label for="q42_opt74">건설 공사업</label><input type="hidden" name="Q_42_SCORE_74" value=""></div>
             <div class="option-item"><input type="radio" id="q42_opt75" name="Q_42_OPT" value="75"><label for="q42_opt75">기타 서비스업</label><input type="hidden" name="Q_42_SCORE_75" value=""></div>
@@ -37,7 +41,6 @@
         <div class="question-group" data-qid="43">
             <p class="question-text">2. 귀하가 소속된 사업장에는 몇 명이 일하고 있나요?(상시 근로자 기준)</p>
             <input type="hidden" name="Q_43_ID" value="43">
-
             <div class="option-item"><input type="radio" id="q43_opt77" name="Q_43_OPT" value="77"><label for="q43_opt77">5인 미만</label><input type="hidden" name="Q_43_SCORE_77" value=""></div>
             <div class="option-item"><input type="radio" id="q43_opt78" name="Q_43_OPT" value="78"><label for="q43_opt78">20인 미만</label><input type="hidden" name="Q_43_SCORE_78" value=""></div>
             <div class="option-item"><input type="radio" id="q43_opt79" name="Q_43_OPT" value="79"><label for="q43_opt79">50인 미만</label><input type="hidden" name="Q_43_SCORE_79" value=""></div>
@@ -47,7 +50,6 @@
         <div class="question-group" data-qid="44">
             <p class="question-text">3. 귀하의 직책은 무엇인가요?</p>
             <input type="hidden" name="Q_44_ID" value="44">
-
             <div class="option-item"><input type="radio" id="q44_opt81" name="Q_44_OPT" value="81"><label for="q44_opt81">현장관리자</label><input type="hidden" name="Q_44_SCORE_81" value=""></div>
             <div class="option-item"><input type="radio" id="q44_opt82" name="Q_44_OPT" value="82"><label for="q44_opt82">팀장</label><input type="hidden" name="Q_44_SCORE_82" value=""></div>
             <div class="option-item"><input type="radio" id="q44_opt83" name="Q_44_OPT" value="83"><label for="q44_opt83">파트장</label><input type="hidden" name="Q_44_SCORE_83" value=""></div>
@@ -59,7 +61,6 @@
         <div class="question-group" data-qid="45">
             <p class="question-text">4. 안전보건경영방침이 수립되어 있고, 그 방침에 따른 목표가 정량적으로 설정되어 있는가?</p>
             <input type="hidden" name="Q_45_ID" value="45">
-
             <div class="option-item"><input type="radio" id="q45_opt85" name="Q_45_OPT" value="85"><label for="q45_opt85">설정되어 있지 않음 (0점)</label><input type="hidden" name="Q_45_SCORE_85" value="0"></div>
             <div class="option-item"><input type="radio" id="q45_opt86" name="Q_45_OPT" value="86"><label for="q45_opt86">방침이나 목표가 설정되어 있음 (1점)</label><input type="hidden" name="Q_45_SCORE_86" value="1"></div>
             <div class="option-item"><input type="radio" id="q45_opt87" name="Q_45_OPT" value="87"><label for="q45_opt87">방침과 목표가 구체적/정량적으로 설정되어 있음 (2점)</label><input type="hidden" name="Q_45_SCORE_87" value="2"></div>
@@ -69,7 +70,6 @@
         <div class="question-group" data-qid="46">
             <p class="question-text">5. 사업장 내 유해·위험요인에 대한 위험성 평가를 최초 및 정기적으로 실시하고 있는가?</p>
             <input type="hidden" name="Q_46_ID" value="46">
-
             <div class="option-item"><input type="radio" id="q46_opt89" name="Q_46_OPT" value="89"><label for="q46_opt89">설정되어 있지 않음 (0점)</label><input type="hidden" name="Q_46_SCORE_89" value="0"></div>
             <div class="option-item"><input type="radio" id="q46_opt90" name="Q_46_OPT" value="90"><label for="q46_opt90">방침이나 목표가 설정되어 있음 (1점)</label><input type="hidden" name="Q_46_SCORE_90" value="1"></div>
             <div class="option-item"><input type="radio" id="q46_opt91" name="Q_46_OPT" value="91"><label for="q46_opt91">방침과 목표가 구체적/정량적으로 설정되어 있음 (2점)</label><input type="hidden" name="Q_46_SCORE_91" value="2"></div>
@@ -79,7 +79,6 @@
         <div class="question-group" data-qid="47">
             <p class="question-text">6. 위험성 평가 결과를 근로자에게 효과적으로 공유 및 교육하고 있는가?</p>
             <input type="hidden" name="Q_47_ID" value="47">
-
             <div class="option-item"><input type="radio" id="q47_opt93" name="Q_47_OPT" value="93"><label for="q47_opt93">설정되어 있지 않음 (0점)</label><input type="hidden" name="Q_47_SCORE_93" value="0"></div>
             <div class="option-item"><input type="radio" id="q47_opt94" name="Q_47_OPT" value="94"><label for="q47_opt94">방침이나 목표가 설정되어 있음 (1점)</label><input type="hidden" name="Q_47_SCORE_94" value="1"></div>
             <div class="option-item"><input type="radio" id="q47_opt95" name="Q_47_OPT" value="95"><label for="q47_opt95">방침과 목표가 구체적/정량적으로 설정되어 있음 (2점)</label><input type="hidden" name="Q_47_SCORE_95" value="2"></div>
@@ -89,7 +88,6 @@
         <div class="question-group" data-qid="48">
             <p class="question-text">7. 중대재해 등 비상상황에 대비한 비상조치 계획을 수립하고 모의훈련을 실시하는가?</p>
             <input type="hidden" name="Q_48_ID" value="48">
-
             <div class="option-item"><input type="radio" id="q48_opt97" name="Q_48_OPT" value="97"><label for="q48_opt97">설정되어 있지 않음 (0점)</label><input type="hidden" name="Q_48_SCORE_97" value="0"></div>
             <div class="option-item"><input type="radio" id="q48_opt98" name="Q_48_OPT" value="98"><label for="q48_opt98">방침이나 목표가 설정되어 있음 (1점)</label><input type="hidden" name="Q_48_SCORE_98" value="1"></div>
             <div class="option-item"><input type="radio" id="q48_opt99" name="Q_48_OPT" value="99"><label for="q48_opt99">방침과 목표가 구체적/정량적으로 설정되어 있음 (2점)</label><input type="hidden" name="Q_48_SCORE_99" value="2"></div>
@@ -99,7 +97,6 @@
         <div class="question-group" data-qid="49">
             <p class="question-text">8. 법정 안전보건 교육(정기, 채용 시, 작업 변경 시 등)을 정해진 주기로 실시하고 있는가?</p>
             <input type="hidden" name="Q_49_ID" value="49">
-
             <div class="option-item"><input type="radio" id="q49_opt101" name="Q_49_OPT" value="101"><label for="q49_opt101">설정되어 있지 않음 (0점)</label><input type="hidden" name="Q_49_SCORE_101" value="0"></div>
             <div class="option-item"><input type="radio" id="q49_opt102" name="Q_49_OPT" value="102"><label for="q49_opt102">방침이나 목표가 설정되어 있음 (1점)</label><input type="hidden" name="Q_49_SCORE_102" value="1"></div>
             <div class="option-item"><input type="radio" id="q49_opt103" name="Q_49_OPT" value="103"><label for="q49_opt103">방침과 목표가 구체적/정량적으로 설정되어 있음 (2점)</label><input type="hidden" name="Q_49_SCORE_103" value="2"></div>
@@ -109,7 +106,6 @@
         <div class="question-group" data-qid="50">
             <p class="question-text">9. 안전 및 보건 관련 사항에 대해 근로자의 의견을 수렴하고 반영하는가?</p>
             <input type="hidden" name="Q_50_ID" value="50">
-
             <div class="option-item"><input type="radio" id="q50_opt105" name="Q_50_OPT" value="105"><label for="q50_opt105">설정되어 있지 않음 (0점)</label><input type="hidden" name="Q_50_SCORE_105" value="0"></div>
             <div class="option-item"><input type="radio" id="q50_opt106" name="Q_50_OPT" value="106"><label for="q50_opt106">방침이나 목표가 설정되어 있음 (1점)</label><input type="hidden" name="Q_50_SCORE_106" value="1"></div>
             <div class="option-item"><input type="radio" id="q50_opt107" name="Q_50_OPT" value="107"><label for="q50_opt107">방침과 목표가 구체적/정량적으로 설정되어 있음 (2점)</label><input type="hidden" name="Q_50_SCORE_107" value="2"></div>
@@ -117,8 +113,9 @@
         </div>
 
 
-        <div style="text-align: center; margin-top: 40px;">
-            <button type="button" id="submitBtn" style="padding: 10px 20px; font-size: 1.1em; background-color: #1e8449; color: white; border: none; border-radius: 4px; cursor: pointer;">설문 제출하기</button>
+        <div class="button-container">
+            <button type="button" id="listBtn" class="list-btn">목록으로 돌아가기</button>
+            <button type="button" id="submitBtn" class="submit-btn">설문 제출하기</button>
         </div>
     </form>
 
@@ -126,33 +123,28 @@
     /* <![CDATA[ */
     $(document).ready(function() {
 
-        // 🔑 폼 제출(submit) 이벤트 대신 버튼 클릭 이벤트로 변경
+        // 🔑 제출 버튼 클릭 이벤트
         $('#submitBtn').on('click', function() {
 
-            // 1. ⚠️ 제출 확인 컨펌 창 띄우기
             if (!confirm("설문을 최종 제출하시겠습니까? 제출 후에는 수정할 수 없습니다.")) {
-                return; // 사용자가 '취소'를 누르면 여기서 함수 종료
+                return;
             }
 
-            // 2. 데이터 수집 및 가공
             const formData = collectFormData();
 
-            // 3. (옵션) 클라이언트 측에서 모든 문항에 응답했는지 다시 한번 확인하는 로직을 여기에 넣을 수 있습니다.
+            // 🚨 경고: 미응답 문항이 있으면 경고 후 강제 제출 (개발 테스트용)
             if (formData.answers.length !== 9) {
-                alert("경고: 모든 9개 문항에 답변하지 않았습니다. 미응답 항목은 점수에 반영되지 않습니다. 강제 제출합니다.");
+                alert(`경고: ${9 - formData.answers.length}개 문항에 답변하지 않았습니다. 미응답 항목은 0점으로 처리 후 강제 제출됩니다.`);
+                return;
             }
 
-            console.log("최종 제출 데이터:", formData);
-
-            // 4. 서버로 전송 (AJAX 실행)
             $.ajax({
-                url: '/survey/ext/save', // 데이터를 처리할 서버 URL
+                url: '/survey/ext/save',
                 type: 'POST',
-                contentType: 'application/json', // JSON 형태로 전송
+                contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
                     alert('설문이 성공적으로 저장되었습니다.');
-                    // 성공 후 목록 페이지로 이동
                     window.location.href = '/survey/ext/list?userId=' + $('#USER_ID').val();
                 },
                 error: function(xhr) {
@@ -161,25 +153,32 @@
             });
         });
 
-        // 🔑 collectFormData 함수는 그대로 유지
+        // 🔑 목록 버튼 클릭 이벤트
+        $('#listBtn').on('click', function() {
+            const userId = $('#USER_ID').val();
+            window.location.href = '/survey/ext/list?userId=' + userId;
+        });
+
+
+        // 🔑 제출 데이터 수집 및 가공 함수
         function collectFormData() {
             const userId = $('#USER_ID').val();
             const sessionKey = $('#SESSION_KEY').val();
             const answers = [];
 
-            // 모든 문항 그룹 순회
             $('.question-group').each(function() {
                 const qid = $(this).data('qid');
                 const selectedRadio = $(`input[name="Q_${qid}_OPT"]:checked`);
 
                 if (selectedRadio.length > 0) {
                     const optionId = selectedRadio.val();
+                    // 점수 Hidden Field는 Q_ID와 OPTION_ID를 조합하여 정확히 찾음
                     const scoreField = $(`input[name="Q_${qid}_SCORE_${optionId}"]`);
 
                     let scoreValue = scoreField.val();
 
                     if (scoreValue === "" || scoreValue === "NULL" || scoreValue === null) {
-                         scoreValue = null;
+                         scoreValue = null; // DB의 NULL 처리 (Mapper에서 0으로 NVL 처리됨)
                     } else {
                         scoreValue = parseInt(scoreValue, 10);
                     }

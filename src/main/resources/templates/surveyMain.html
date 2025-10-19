@@ -40,14 +40,20 @@
         </thead>
         <tbody id="boardBody">
             <tr th:each="survey, stat : ${surveyList}"
-                th:data-session-key="${survey.SESSIONKEY}"
+                th:if="${not #lists.isEmpty(surveyList)}"  th:data-session-key="${survey.SESSIONKEY}"
                 th:data-user-id="${survey.USERID}">
-                <td th:text="${stat.count}">1</td>
-                <td th:text="${survey.COMPANYNM}">A업체</td>
-                <td th:text="${survey.USERID}">lsy</td>
-                <td th:text="${survey.USERNM}">이설용</td>
-                <td th:text="${#dates.format(survey.ANSWERAT, 'yyyy-MM-dd HH:mm')}">2025-10-19 10:00</td>
-                <td th:text="${survey.TOTALSCORE}">18</td>
+
+                <td th:text="${stat.count}"></td>
+                <td th:text="${survey.COMPANYNM}"></td>
+                <td th:text="${survey.USERID}"></td>
+                <td th:text="${survey.USERNM}"></td>
+                <td th:text="${#dates.format(survey.ANSWERAT, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${survey.TOTALSCORE}"></td>
+            </tr>
+
+            <tr th:unless="${not #lists.isEmpty(surveyList)}"> <td colspan="6" style="text-align: center; color: gray; padding: 20px;">
+                    <p>조회할 데이터가 없습니다.</p>
+                </td>
             </tr>
         </tbody>
     </table>
