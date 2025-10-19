@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>(외부)설문 응시 목록</title>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<style>
+    li {
+        list-style: none;
+        float: left;
+    }
+    /* 🔑 CSS 스타일 정의 */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse; /* 셀 사이의 간격 제거 */
+        font-family: Arial, sans-serif;
+    }
+
+    .styled-table th, .styled-table td {
+        border: 1px solid #ddd; /* 모든 셀에 얇은 회색 경계선 추가 */
+        padding: 8px;
+        text-align: left;
+    }
+
+    .styled-table th {
+        background-color: #f2f2f2; /* 헤더 배경색 */
+        color: #333;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f5f5f5; /* 마우스 오버 시 색상 변경 (선택사항) */
+    }
+</style>
+</head>
+<body>
+<form id="searchForm">
+<table class="styled-table">
+    <thead>
+        <th>번호</th>
+        <th>업체명</th>
+        <th>평가자ID</th>
+        <th>평가자명</th>
+        <th>점검일시</th>
+        <th>종합점수</th>
+    </thead>
+    <tbody id="boardBody">
+        <tr th:each="survey, stat : ${surveyList}">
+            <td th:text="${stat.count}"></td>
+            <td th:text="${survey.COMPANYNM}"></td>
+            <td th:text="${survey.USERID}"></td>
+            <td th:text="${survey.USERNM}"></td>
+            <td th:text="${#dates.format(survey.ANSWERAT, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${survey.TOTALSCORE}"></td>
+        </tr>
+    </tbody>
+</table>
+<!--    <div class="tbl-paging"></div>-->
+</form>
+
+<script th:inline="javascript" type="text/javascript">
+</script>
+
+</body>
+</html>

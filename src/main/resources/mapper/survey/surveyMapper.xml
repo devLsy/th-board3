@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="study.dev.thboard3.survey.mapper.SurveyMapper">
+
+    <!-- (외부)사용자가 응시한 설문 목록 조회 -->
+    <select id="selectExtSurveyList" parameterType="map" resultType="map">
+    /* (외부)사용자가 응시한 설문 목록 조회 */
+    WITH G AS (
+        SELECT
+            UA.COMPANY_NM,
+            UA.USER_ID,
+            UA.USER_NM,
+            SA.SESSION_KEY,
+            MAX(SA.ANSWER_AT) AS ANSWER_AT,
+            SUM(SA.SELECTED_SCORE) AS SELECTED_SCORE
+        FROM SURVEY_ANSWER SA
+        JOIN USER_ACCOUNT UA
+          ON UA.USER_ID = SA.USER_ID
+        WHERE SA.USER_ID = #{userId} /* 🔑 로그인한 사용자 ID 바인딩 */
+        GROUP BY
+            UA.COMPANY_NM,
+            UA.USER_ID,
+            UA.USER_NM,
+            SA.SESSION_KEY
+    )
+    SELECT
+      ROWNUM                 AS no,
+      T.COMPANY_NM           AS companyNm,
+      T.USER_ID              AS userId,
+      T.USER_NM              AS userNm,
+      T.ANSWER_AT             AS answerAt,
+      T.SELECTED_SCORE            AS totalScore
+    FROM (
+      SELECT *
+      FROM G
+      ORDER BY G.ANSWER_AT DESC
+    ) T
+    </select>
+
+    <!-- 사용자 별 설문 상세 조회-->
+    <select id="selectSurveyDetail" parameterType="map" resultType="map">
+    /* 설문 상세 조회 */
+    WITH base AS (
+        SELECT
+            SA.SESSION_KEY,
+            UA.COMPANY_NM,
+            UA.USER_ID,
+            UA.USER_NM,
+            SA.ANSWER_AT,
+            SA.QUESTION_ID,
+            SA.SELECTED_SCORE,
+            QO.OPTION_TEXT
+        FROM SURVEY_ANSWER SA
+        JOIN USER_ACCOUNT     UA ON UA.USER_ID = SA.USER_ID
+        JOIN QUESTION_OPTION  QO ON QO.OPTION_ID = SA.OPTION_ID
+        WHERE SA.USER_ID    = #{userId} /* 🔑 사용자 ID 바인딩 */
+          AND SA.SESSION_KEY = #{sessionKey} /* 🔑 세션 키 바인딩 */
+    )
+    SELECT
+        MAX(company_nm) AS "업체명",
+        MAX(user_id) AS "평가자ID",
+        MAX(user_nm) AS "사용자명",
+        MAX(ANSWER_AT) AS "점검일시",
+        SUM(NVL(SELECTED_SCORE,0)) AS "총합점수",
+        MAX(CASE WHEN QUESTION_ID = 1 THEN OPTION_TEXT END) AS "업종",
+        MAX(CASE WHEN QUESTION_ID = 2 THEN OPTION_TEXT END) AS "규모",
+        MAX(CASE WHEN QUESTION_ID = 3 THEN OPTION_TEXT END) AS "Q3_직책",
+        MAX(CASE WHEN QUESTION_ID = 4 THEN SELECTED_SCORE END) AS "Q4_점수",
+        MAX(CASE WHEN QUESTION_ID = 5 THEN SELECTED_SCORE END) AS "Q5_점수",
+        MAX(CASE WHEN QUESTION_ID = 6 THEN SELECTED_SCORE END) AS "Q6_점수",
+        MAX(CASE WHEN QUESTION_ID = 7 THEN SELECTED_SCORE END) AS "Q7_점수",
+        MAX(CASE WHEN QUESTION_ID = 8 THEN SELECTED_SCORE END) AS "Q8_점수",
+        MAX(CASE WHEN QUESTION_ID = 9 THEN SELECTED_SCORE END) AS "Q9_점수"
+    FROM base
+    GROUP BY SESSION_KEY, user_id
+    </select>
+
+    <!-- (내부)모든 사용자가 응시한 설문조사 데이터 조회(모든 문항, 응답 점수, 총합) -->
+    <select id="selectIntSurveyList" parameterType="map" resultType="map">
+    /* (내부)모든 사용자가 응시한 설문조사 데이터 조회(모든 문항, 응답 점수, 총합) */
+    WITH G AS (
+        SELECT
+            UA.COMPANY_NM,
+            UA.USER_ID,
+            UA.USER_NM,
+            SA.SESSION_KEY,
+            MAX(SA.ANSWER_AT)          AS "점검일시",
+            SUM(SA.SELECTED_SCORE)     AS "총합점수",
+
+            -- 문항별 점수 피벗 (Q1~Q9)
+            MAX(CASE WHEN SA.QUESTION_ID = 1 THEN QO.OPTION_TEXT END) AS "문항1",
+            MAX(CASE WHEN SA.QUESTION_ID = 2 THEN QO.OPTION_TEXT END) AS "문항2",
+            MAX(CASE WHEN SA.QUESTION_ID = 3 THEN QO.OPTION_TEXT END) AS "문항3",
+            MAX(CASE WHEN SA.QUESTION_ID = 4 THEN SA.SELECTED_SCORE END) AS "문항4",
+            MAX(CASE WHEN SA.QUESTION_ID = 5 THEN SA.SELECTED_SCORE END) AS "문항5",
+            MAX(CASE WHEN SA.QUESTION_ID = 6 THEN SA.SELECTED_SCORE END) AS "문항6",
+            MAX(CASE WHEN SA.QUESTION_ID = 7 THEN SA.SELECTED_SCORE END) AS "문항7",
+            MAX(CASE WHEN SA.QUESTION_ID = 8 THEN SA.SELECTED_SCORE END) AS "문항8",
+            MAX(CASE WHEN SA.QUESTION_ID = 9 THEN SA.SELECTED_SCORE END) AS "문항9"
+        FROM SURVEY_ANSWER SA
+        JOIN USER_ACCOUNT UA
+          ON UA.USER_ID = SA.USER_ID
+        JOIN QUESTION_OPTION QO
+          ON SA.OPTION_ID = QO.OPTION_ID
+        GROUP BY
+            UA.COMPANY_NM,
+            UA.USER_ID,
+            UA.USER_NM,
+            SA.SESSION_KEY
+    ),
+    S AS (
+        SELECT
+          COMPANY_NM, USER_ID, USER_NM, "점검일시", "총합점수",
+          "문항1","문항2","문항3","문항4","문항5","문항6","문항7","문항8","문항9",
+          ROW_NUMBER() OVER (PARTITION BY USER_ID ORDER BY "점검일시" ASC) AS "회차"
+        FROM G
+        ORDER BY USER_ID, "점검일시" DESC
+    )
+    SELECT
+        ROWNUM                               AS "번호",
+        S."회차",
+        S.COMPANY_NM                         AS "업체명",
+        S.USER_ID                            AS "평가자ID",
+        S.USER_NM                            AS "평가자명",
+        S."점검일시",
+        S."총합점수",
+        S."문항1", S."문항2", S."문항3", S."문항4", S."문항5",
+        S."문항6", S."문항7", S."문항8", S."문항9"
+    FROM S
+    </select>
+
+    <!-- 설문 응답 -->
+    <insert id="insertSurvey" parameterType="map">
+    /* 설문 응답 */
+    INSERT INTO SURVEY_ANSWER (
+        USER_ID,
+        SESSION_KEY,
+        QUESTION_ID,
+        OPTION_ID,
+        SELECTED_SCORE
+        -- ANSWER_AT은 DEFAULT SYSDATE로 자동 삽입됨
+    )
+    VALUES (
+        #{userId},
+        #{sessionKey},
+        #{questionId},
+        #{optionId},
+        #{selectedScore, jdbcType=NUMERIC} /* 🔑 NULL 허용을 위해 jdbcType 명시 */
+    )
+    </insert>
+
+
+
+
+
+</mapper>
