@@ -31,4 +31,17 @@ public class SurveyService {
         List<Map<String, Object>> surveyList = surveyMapper.selectExtSurveyList(userId);
         return surveyList;
     }
+
+    /**
+     * 특정 사용자의 특정 응시 회차 상세 정보를 조회합니다.
+     * @param userId 사용자 ID
+     * @param sessionKey 응시 회차 KEY
+     * @return 단일 응시 상세 정보 Map
+     */
+    public Map<String, Object> getSurveyDetail(String userId, String sessionKey) {
+        if (userId == null || sessionKey == null) {
+            throw new IllegalArgumentException("사용자 ID와 세션 키는 필수입니다.");
+        }
+        return surveyMapper.selectSurveyDetail(userId, sessionKey);
+    }
 }

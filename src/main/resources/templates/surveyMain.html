@@ -44,7 +44,10 @@
         <th>종합점수</th>
     </thead>
     <tbody id="boardBody">
-        <tr th:each="survey, stat : ${surveyList}">
+        <tr th:each="survey, stat : ${surveyList}"
+            th:data-session-key="${survey.SESSIONKEY}"
+            th:data-user-id="${survey.USERID}"
+            style="cursor: pointer;">
             <td th:text="${stat.count}"></td>
             <td th:text="${survey.COMPANYNM}"></td>
             <td th:text="${survey.USERID}"></td>
@@ -58,6 +61,23 @@
 </form>
 
 <script th:inline="javascript" type="text/javascript">
+    /* <![CDATA[ */
+    $(document).ready(function() {
+        // 1. tbody 내의 모든 행(tr)에 클릭 이벤트 바인딩
+        $('#boardBody tr').on('click', function() {
+            const sessionKey = $(this).data('session-key');
+            const userId = $(this).data('user-id');
+
+            if (sessionKey) {
+                // 3. 상세 조회 URL로 이동
+                location.href = "/survey/ext/detail?userId=" + userId + "&sessionKey=" + sessionKey;
+            } else {
+                alert("Session Key not found on selected row.");
+                return;
+            }
+        });
+    });
+    /* ]]> */
 </script>
 
 </body>

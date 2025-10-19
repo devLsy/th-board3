@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>설문 응시 상세 내역 - [[${sessionKey}]]</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; margin: 20px; background-color: #f8f8f8; }
+        .container { max-width: 1000px; margin: 0 auto; background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        /* 1. 상단 요약 정보 스타일 */
+        .summary-box { display: flex; justify-content: space-between; margin-bottom: 25px; padding: 15px; background-color: #e9f7ef; border-radius: 6px; }
+        .summary-item { flex-basis: 30%; }
+        .summary-title { font-weight: bold; color: #1e8449; margin-bottom: 5px; }
+        .summary-value { font-size: 1.1em; color: #333; }
+
+        /* 2. 상세 테이블 스타일 */
+        .detail-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .detail-table th, .detail-table td {
+            border: 1px solid #c7c7c7;
+            padding: 10px;
+            text-align: center;
+        }
+        .detail-table th { background-color: #4a6fa5; color: white; font-weight: normal; }
+        .detail-table .question-text-col { text-align: left; width: 35%; font-weight: 500; }
+
+        /* 3. 점수 강조 스타일 (핵심!) */
+        .highlight-score {
+            background-color: #ffeb3b; /* 노란색 */
+            font-weight: bold;
+            color: #000;
+        }
+        .selected-answer {
+             background-color: #c8e6c9; /* 선택된 답변의 행 배경색 */
+        }
+    </style>
+    <script th:inline="javascript">
+        /* 🔑 JavaScript로 점수를 매핑하여 칠하는 로직 (수정) */
+document.addEventListener('DOMContentLoaded', function() {
+    const detail = [[${detailData}]];
+
+    // CSS를 사용하여 V 표시를 위한 클래스
+    const V_MARK = 'V';
+
+    // 4번부터 9번 문항까지 순회하며 색칠
+    for (let i = 4; i <= 9; i++) {
+        const scoreKey = `Q${i}_SCORE`;
+        const actualScore = detail[scoreKey];
+
+        if (actualScore !== null) {
+            const selector = `.question-row[data-question-id="${i}"] td[data-score="${actualScore}"]`;
+            const selectedCell = document.querySelector(selector);
+
+            if (selectedCell) {
+                // 1. 노란색 CSS 클래스 추가
+                selectedCell.classList.add('highlight-score');
+
+                // 2. V 표시 텍스트 삽입 (V)
+                selectedCell.textContent = V_MARK;
+
+                // (선택사항) 행 전체를 강조
+                selectedCell.closest('tr').classList.add('selected-answer');
+            }
+        }
+    }
+});
+        /* 🔑 JavaScript로 점수를 매핑하여 칠하는 로직 */
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Controller에서 전달받은 상세 데이터 (Map)
+        //     const detail = [[${detailData}]];
+        //
+        //     // 4번부터 9번 문항까지 순회하며 색칠
+        //     for (let i = 4; i <= 9; i++) {
+        //         const scoreKey = `Q${i}_SCORE`;
+        //         const actualScore = detail[scoreKey]; // 예: 1, 3, 0 등
+        //
+        //         if (actualScore !== null) {
+        //             const selector = `.question-row[data-question-id="${i}"] td[data-score="${actualScore}"]`;
+        //             const selectedCell = document.querySelector(selector);
+        //
+        //             if (selectedCell) {
+        //                 // 해당 점수 셀에 노란색을 칠함
+        //                 selectedCell.classList.add('highlight-score');
+        //
+        //                 // (선택사항) 행 전체를 강조
+        //                 selectedCell.closest('tr').classList.add('selected-answer');
+        //             }
+        //         }
+        //     }
+        // });
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="text-align: center;">설문 응시 상세 내역 ([[${sessionKey}]] 회차)</h2>
+
+    <div class="summary-box">
+        <div class="summary-item">
+            <div class="summary-title">평가자 / 업체명</div>
+            <div class="summary-value" th:text="|${detailData.USERNM} (${detailData.COMPANYNM})|"></div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-title">점검 일시 / 총점</div>
+            <div class="summary-value" th:text="|${#dates.format(detailData.ANSWERAT, 'yyyy-MM-dd HH:mm')} / ${detailData.TOTALSCORE}점|"></div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-title">기본 정보 (업종/직책)</div>
+            <div class="summary-value" th:text="|${detailData.Q1_UPJONG} / ${detailData.Q3_JIKCHEK}|"></div>
+        </div>
+    </div>
+
+    <h3>Part 2. 위험 및 대응 상세 평가</h3>
+        <table class="detail-table">
+    <thead>
+        <tr>
+            <th class="question-text-col" rowspan="2">주요 항목</th> <th colspan="4">평가 옵션 (V 표시 영역)</th> <th rowspan="2">획득 점수</th> </tr>
+        <tr>
+            <th style="width: 12%;">매우 미흡 (0점)</th>
+            <th style="width: 12%;">미흡 (1점)</th>
+            <th style="width: 12%;">양호 (2점)</th>
+            <th style="width: 12%;">매우 양호 (3점)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="question-row" data-question-id="4">
+            <td class="question-text-col">4. 안전보건경영방침이 수립되어 있고, 그 방침에 따른 목표가 정량적으로 설정되어 있는가?</td>
+            <td data-score="0"></td>
+            <td data-score="1"></td>
+            <td data-score="2"></td>
+            <td data-score="3"></td>
+            <td th:text="${detailData.Q4_SCORE}">1</td>
+        </tr>
+        <tr class="question-row" data-question-id="5">
+            <td class="question-text-col">5. 사업장 내 유해·위험요인에 대한 위험성 평가를 최초 및 정기적으로 실시하고 있는가?</td>
+            <td data-score="0"></td>
+            <td data-score="1"></td>
+            <td data-score="2"></td>
+            <td data-score="3"></td>
+            <td th:text="${detailData.Q5_SCORE}">0</td>
+        </tr>
+         <tr class="question-row" data-question-id="6">
+            <td class="question-text-col">6. 위험성 평가 결과를 근로자에게 효과적으로 공유 및 교육하고 있는가?</td>
+            <td data-score="0"></td>
+            <td data-score="1"></td>
+            <td data-score="2"></td>
+            <td data-score="3"></td>
+            <td th:text="${detailData.Q6_SCORE}">2</td>
+        </tr>
+        <tr class="question-row" data-question-id="7">
+            <td class="question-text-col">7. 중대재해 등 비상상황에 대비한 비상조치 계획을 수립하고 모의훈련을 실시하는가?</td>
+            <td data-score="0"></td>
+            <td data-score="1"></td>
+            <td data-score="2"></td>
+            <td data-score="3"></td>
+            <td th:text="${detailData.Q7_SCORE}">0</td>
+        </tr>
+        <tr class="question-row" data-question-id="8">
+            <td class="question-text-col">8. 법정 안전보건 교육(정기, 채용 시, 작업 변경 시 등)을 정해진 주기로 실시하고 있는가?</td>
+            <td data-score="0"></td>
+            <td data-score="1"></td>
+            <td data-score="2"></td>
+            <td data-score="3"></td>
+            <td th:text="${detailData.Q8_SCORE}">3</td>
+        </tr>
+        <tr class="question-row" data-question-id="9">
+            <td class="question-text-col">9. 안전 및 보건 관련 사항에 대해 근로자의 의견을 수렴하고 반영하는가?</td>
+            <td data-score="0"></td>
+            <td data-score="1"></td>
+            <td data-score="2"></td>
+            <td data-score="3"></td>
+            <td th:text="${detailData.Q9_SCORE}">1</td>
+        </tr>
+    </tbody>
+</table>
+<!--    <table class="detail-table">-->
+<!--        <thead>-->
+<!--            <tr>-->
+<!--                <th class="question-text-col">주요 항목</th>-->
+<!--                <th colspan="4">평가 옵션 (획득 점수 표시)</th>-->
+<!--                <th>획득 점수</th>-->
+<!--            </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--            <tr class="question-row" data-question-id="4">-->
+<!--                <td class="question-text-col">4. 안전보건경영방침이 수립되어 있고, 그 방침에 따른 목표가 정량적으로 설정되어 있는가?</td>-->
+<!--                <td data-score="0">설정되어 있지 않음</td>-->
+<!--                <td data-score="1">방침이나 목표가 설정되어 있음</td>-->
+<!--                <td data-score="2">방침과 목표가 구체적/정량적으로 설정되어 있음</td>-->
+<!--                <td data-score="3">구체적으로 설정되어 있으며, 일상활동을 관리함</td>-->
+<!--                <td th:text="${detailData.Q4_SCORE}">1</td>-->
+<!--            </tr>-->
+<!--            <tr class="question-row" data-question-id="5">-->
+<!--                <td class="question-text-col">5. 사업장 내 유해·위험요인에 대한 위험성 평가를 최초 및 정기적으로 실시하고 있는가?</td>-->
+<!--                <td data-score="0">설정되어 있지 않음</td>-->
+<!--                <td data-score="1">방침이나 목표가 설정되어 있음</td>-->
+<!--                <td data-score="2">방침과 목표가 구체적/정량적으로 설정되어 있음</td>-->
+<!--                <td data-score="3">구체적으로 설정되어 있으며, 일상활동을 관리함</td>-->
+<!--                <td th:text="${detailData.Q5_SCORE}">0</td>-->
+<!--            </tr>-->
+<!--             <tr class="question-row" data-question-id="6">-->
+<!--                <td class="question-text-col">6. 위험성 평가 결과를 근로자에게 효과적으로 공유 및 교육하고 있는가?</td>-->
+<!--                <td data-score="0">설정되어 있지 않음</td>-->
+<!--                <td data-score="1">방침이나 목표가 설정되어 있음</td>-->
+<!--                <td data-score="2">방침과 목표가 구체적/정량적으로 설정되어 있음</td>-->
+<!--                <td data-score="3">구체적으로 설정되어 있으며, 일상활동을 관리함</td>-->
+<!--                <td th:text="${detailData.Q6_SCORE}">2</td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--    </table>-->
+</div>
+</body>
+</html>

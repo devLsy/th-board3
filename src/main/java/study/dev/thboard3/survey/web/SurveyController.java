@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import study.dev.thboard3.survey.service.SurveyService;
 
@@ -37,31 +38,28 @@ public class SurveyController {
         return mv;
     }
 
-//    /**
-//     * 등록폼
-//     * @param mv
-//     * @return
-//     */
-//    @GetMapping("/reg")
-//    public ModelAndView regForm(ModelAndView mv) {
-//        log.info("reg~~");
-//        mv.setViewName("reg");
-//        return mv;
-//    }
-//
-//    /**
-//     * 상세
-//     * @param boardSno
-//     * @param mv
-//     * @return
-//     */
-//    @GetMapping("/mod/{boardSno}")
-//    public ModelAndView detail(@PathVariable Integer boardSno, ModelAndView mv) {
-//        mv.addObject("info", boardMapper.selectBoardDetail(boardSno))
-//                        .addObject("replyList", replyMapper.selectReply(boardSno))
-//                        .setViewName("reg");
-//        return mv;
-//    }
+    /**
+     * (외부) 특정 응시 회차의 상세 내용 조회
+     * @param mv
+     * @param sessionKey URL 파라미터로 받은 응시 회차 KEY
+     * @return
+     */
+    @GetMapping("/ext/detail")
+    public ModelAndView detail(ModelAndView mv, @RequestParam("userId") String userId, @RequestParam("sessionKey") String sessionKey) {
 
+        String currentUserId = userId;
 
+        // 2. Service 호출하여 특정 응시의 상세 데이터 조회 (예외처리 없음)
+        Map<String, Object> surveyDetail = surveyService.getSurveyDetail(currentUserId, sessionKey);
+
+        // 3. 모델에 데이터 추가
+        mv.addObject("detailData", surveyDetail);
+        mv.addObject("userId", currentUserId);
+        mv.addObject("sessionKey", sessionKey); // 화면에서 재사용 가능하도록 추가
+
+        // 4. 뷰 이름 설정
+        mv.setViewName("surveyDetail");
+
+        return mv;
+    }
 }
