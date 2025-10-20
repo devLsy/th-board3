@@ -106,19 +106,24 @@
           ON UA.USER_ID = SA.USER_ID
         JOIN QUESTION_OPTION QO
           ON SA.OPTION_ID = QO.OPTION_ID
+        JOIN QUESTION Q
+          ON SA.QUESTION_ID = Q.QUESTION_ID
         GROUP BY
             UA.COMPANY_NM, UA.USER_ID, UA.USER_NM, SA.SESSION_KEY
     ),
     S AS (
         -- 🔑 S CTE 내부: G의 모든 컬럼을 *명시적으로* 참조
         SELECT
-          COMPANYNM, USERID, USERNM, ANSWERAT, TOTALSCORE, SESSIONKEY,
+          COMPANYNM,
+          USERID,
+          USERNM,
+          ANSWERAT,
+          TOTALSCORE,
+          SESSIONKEY,
           Q1_UPJONG, Q2_GYUMO, Q3_JIKCHEK,
           Q4_SCORE, Q5_SCORE, Q6_SCORE, Q7_SCORE, Q8_SCORE, Q9_SCORE,
-          -- 🔑 Window 함수: ORDER BY에 대문자 ANSWERAT 사용
           ROW_NUMBER() OVER (PARTITION BY USERID ORDER BY ANSWERAT ASC) AS attemptRank
         FROM G
-        -- 🔑 ORDER BY: G에서 정의된 대문자 별칭을 사용해야 합니다.
         ORDER BY USERID, ANSWERAT DESC
     )
     SELECT
@@ -174,12 +179,5 @@
     WHERE
         SA.USER_ID = #{userId}
     </select>
-
-    <delete id="deletePreviousAnswers" parameterType="string">
-    /* 특정 세션 키의 모든 응답 기록 삭제 (덮어쓰기 허용) */
-    DELETE FROM SURVEY_ANSWER
-    WHERE SESSION_KEY = #{sessionKey}
-    </delete>
-
 
 </mapper>

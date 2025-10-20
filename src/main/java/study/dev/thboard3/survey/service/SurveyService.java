@@ -52,10 +52,6 @@ public class SurveyService {
 
         String sessionKey = (String) answers.get(0).get("sessionKey");
 
-        // 1. 🚨 [핵심 수정] INSERT 전에 기존 응답을 삭제합니다.
-        surveyMapper.deletePreviousAnswers(sessionKey);
-
-        // 2. 새로운 응답을 일괄 삽입합니다. (이전 데이터가 삭제되었으므로 충돌 없음)
         surveyMapper.insertSurveyAnswers(answers);
     }
 

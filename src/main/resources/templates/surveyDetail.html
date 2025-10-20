@@ -57,7 +57,7 @@
     </style>
     <script th:inline="javascript">
     /* <![CDATA[ */
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const detail = [[${detailData}]];
         const V_MARK = 'V';
 
@@ -80,7 +80,6 @@
             }
         }
 
-        // 🔑 목록 버튼 이벤트 연결 (jQuery($) 대신 jQuery 직접 사용)
         $('#listBtn').on('click', function() {
             const userId = [[${userId}]];
             window.location.href = '/survey/ext/list?userId=' + userId;
