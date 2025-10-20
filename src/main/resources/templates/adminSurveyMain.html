@@ -67,11 +67,10 @@
             <td th:text="${survey.ATTEMPTRANK}"></td>
             <td th:text="${survey.COMPANYNM}"></td>
             <td th:text="${survey.USERID}"></td>
-            <td th:text="${survey.USERNM}"></td>
             <td th:text="${survey.TOTALSCORE}" class="data-col"></td>
 
-            <td th:text="${survey.Q2_GYUMO}"></td>
             <td th:text="${survey.Q1_UPJONG}"></td>
+            <td th:text="${survey.Q2_GYUMO}"></td>
             <td th:text="${survey.Q3_JIKCHEK}"></td>
 
             <td th:text="${survey.Q4_SCORE}" class="score-col"></td>
@@ -79,6 +78,7 @@
             <td th:text="${survey.Q6_SCORE}" class="score-col"></td>
             <td th:text="${survey.Q7_SCORE}" class="score-col"></td>
             <td th:text="${survey.Q8_SCORE}" class="score-col"></td>
+            <td th:text="${survey.Q9_SCORE}" class="score-col"></td>
         </tr>
          <tr th:unless="${not #lists.isEmpty(surveyList)}">
              <td colspan="14" style="text-align: center; color: gray; padding: 20px;">
