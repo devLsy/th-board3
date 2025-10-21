@@ -128,4 +128,11 @@ public class SurveyController {
 
         return mv;
     }
+
+    @GetMapping("/api/questions")
+    @ResponseBody // 🔑 JSON 데이터를 반환하도록 설정
+    public List<Map<String, Object>> getQuestionsApi() {
+        // Service에서 가공된 계층적 데이터를 호출
+        return surveyService.getSurveyDataForRegister();
+    }
 }

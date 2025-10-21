@@ -5,33 +5,88 @@
     <title>관리자: 전체 설문 응시 내역</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; max-width: 98%; margin: 20px auto; padding: 0 10px; }
-        h1 { text-align: center; color: #1e8449; }
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            max-width: 98%;
+            margin: 20px auto;
+            padding: 0 10px;
+            background-color: #f0f2f5; /* 연한 배경 */
+        }
+        h1 {
+            text-align: center;
+            color: #1a73e8; /* 구글 스타일의 푸른색 */
+            margin-bottom: 25px;
+        }
 
         .styled-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            font-size: 0.9em;
+            font-size: 0.85em; /* 글자 크기 약간 더 축소 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 테이블에 그림자 추가 */
         }
+
+        /* 테이블 셀 공통 스타일 */
         .styled-table th, .styled-table td {
-            border: 1px solid #ddd;
+            border: 1px solid #c8c8c8; /* 구분선 더 명확하게 */
             padding: 8px 5px;
             text-align: center;
+            vertical-align: middle;
         }
-        .styled-table th {
-            background-color: #4a6fa5;
+
+        /* 헤더 스타일 강화 */
+        .styled-table thead th {
+            background-color: #3f51b5; /* 진한 파랑 */
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            text-transform: uppercase;
         }
-        .styled-table .data-col {
-            background-color: #f7f7f7;
+        /* 서브 헤더 (Q1, Q2, Q3 라인) */
+        .styled-table thead tr:last-child th {
+            background-color: #5c6bc0; /* 연한 파랑 */
+            font-weight: normal;
+        }
+
+        /* <tbody> 행 스타일 */
+        .styled-table tbody tr {
+            background-color: #ffffff;
+            transition: background-color 0.2s;
+        }
+        .styled-table tbody tr:hover {
+            background-color: #e3f2fd; /* 강조색 변경 */
+            cursor: pointer;
+        }
+
+        /* 데이터 컬럼 강조 */
+        .styled-table .total-score-col {
+            background-color: #ffe0b2; /* 종합점수 주황색 강조 */
+            font-weight: bold;
+            color: #d84315;
         }
         .styled-table .score-col {
-            width: 40px;
-            font-weight: bold;
+            width: 35px; /* 점수 컬럼 너비 최적화 */
+            font-weight: 700;
+            background-color: #f9f9f9;
         }
-        .styled-table tbody tr:hover { background-color: #e6f7ff; }
+        /* 1. 총합점수 컬럼 스타일 */
+        .total-score-col {
+            background-color: #ffcc80 !important; /* 밝은 주황색 */
+            font-weight: 700 !important;
+            color: #a0522d;
+            width: 80px;
+        }
+
+        /* 2. 점수 영역 배경색 */
+        .score-col {
+            background-color: #f0f8ff; /* 연한 하늘색 배경 */
+            font-weight: bold;
+            width: 40px;
+        }
+
+        /* 3. 텍스트 열 정렬 수정 */
+        .text-align-left {
+            text-align: left !important;
+        }
     </style>
 </head>
 <body>

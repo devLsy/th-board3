@@ -180,4 +180,23 @@
         SA.USER_ID = #{userId}
     </select>
 
+    <select id="selectSurveyQuestionsForRegister" resultType="map">
+    /* 동적 화면 생성을 위해 모든 문항 및 옵션 조회 */
+    SELECT
+        Q.QUESTION_ID AS questionId,
+        Q.QUESTION_NUM AS questionNum,
+        Q.QUESTION_TEXT AS questionText,
+        Q.TYPE_CODE_NM AS typeCodeNm,
+        QO.OPTION_ID AS optionId,
+        QO.OPTION_ORDER AS optionOrder,
+        QO.OPTION_TEXT AS optionText,
+        QO.OPTION_SCORE AS optionScore
+    FROM
+        QUESTION Q
+    JOIN
+        QUESTION_OPTION QO ON Q.QUESTION_ID = QO.QUESTION_ID
+    ORDER BY
+        Q.QUESTION_ID, QO.OPTION_ORDER
+    </select>
+
 </mapper>

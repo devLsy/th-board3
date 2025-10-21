@@ -25,4 +25,7 @@ public interface SurveyMapper {
     
     // 6. 사용자 전체의 설문 응시 목록 
     List<Map<String, Object>> selectIntSurveyList();
+
+    // 7. 설문지 동적 생성을 위한 데이터 문항 + 선택지 조회
+    List<Map<String, Object>> selectSurveyQuestionsForRegister();
 }

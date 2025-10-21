@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.dev.thboard3.survey.mapper.SurveyMapper;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +57,6 @@ public class SurveyService {
         surveyMapper.insertSurveyAnswers(answers);
     }
 
-    @Transactional(readOnly = true)
     public String getNextSessionKey(String userId) {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be empty.");
@@ -85,4 +86,45 @@ public class SurveyService {
     public List<Map<String, Object>> getInternalSurveyList() {
         return surveyMapper.selectIntSurveyList();
     }
+
+    // SurveyService.java (추가 메서드)
+
+    public List<Map<String, Object>> getSurveyDataForRegister() {
+        List<Map<String, Object>> rawData = surveyMapper.selectSurveyQuestionsForRegister();
+
+        // 순서 유지를 위해 LinkedHashMap 사용
+        Map<Integer, Map<String, Object>> questionMap = new LinkedHashMap<>();
+
+        for (Map<String, Object> row : rawData) {
+            // DB에서 NUMBER로 넘어온 QID를 Integer로 변환
+            Integer qId = ((Number) row.get("QUESTIONID")).intValue();
+
+            // 1. 문항 (Question) Map 생성 및 저장
+            if (!questionMap.containsKey(qId)) {
+                Map<String, Object> question = new LinkedHashMap<>();
+                question.put("questionId", qId);
+                question.put("questionNum", row.get("QUESTIONNUM"));
+                question.put("questionText", row.get("QUESTIONTEXT"));
+                question.put("typeCodeNm", row.get("TYPECODENM"));
+                question.put("options", new ArrayList<Map<String, Object>>()); // 옵션 리스트 초기화
+                questionMap.put(qId, question);
+            }
+
+            // 2. 옵션 (Option) Map 생성 및 문항에 추가
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> options = (List<Map<String, Object>>) questionMap.get(qId).get("options");
+
+            Map<String, Object> option = new LinkedHashMap<>();
+            option.put("optionId", row.get("OPTIONID"));
+            option.put("optionOrder", row.get("OPTIONORDER"));
+            option.put("optionText", row.get("OPTIONTEXT"));
+            option.put("optionScore", row.get("OPTIONSCORE"));
+
+            options.add(option);
+        }
+
+        // 최종적으로 Map의 Values를 List로 변환하여 반환
+        return new ArrayList<>(questionMap.values());
+    }
+
 }
