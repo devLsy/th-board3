@@ -16,6 +16,13 @@
         .button-container { text-align: center; margin-top: 40px; }
         .submit-btn { padding: 10px 20px; font-size: 1.1em; background-color: #1e8449; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
         .list-btn { padding: 10px 20px; font-size: 1.1em; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
+
+        /* 테이블 스타일 (DB 구조에 맞춤) */
+        .survey-reg-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .survey-reg-table th, .survey-reg-table td { border: 1px solid #e0e0e0; padding: 10px; text-align: left; vertical-align: top; }
+        .survey-reg-table th { background-color: #f2f2f2; font-weight: bold; }
+        .question-text-cell { width: 40%; background-color: #f9f9f9; }
+        .option-cell { width: 60%; }
     </style>
 </head>
 <body>
@@ -27,13 +34,23 @@
         <input type="hidden" id="SESSION_KEY" name="SESSION_KEY" th:value="${sessionKey}">
         <p>평가자: [[${userId}]] | 응시 회차: [[${sessionKey}]]</p>
 
-        <div id="questionsContainer">
-            <p style="text-align: center; color: gray;">설문 문항을 불러오는 중입니다...</p>
-        </div>
+        <table class="survey-reg-table">
+            <thead>
+                <tr>
+                    <th style="width: 40%;">문항 번호 및 내용</th>
+                    <th style="width: 60%;">선택 옵션</th>
+                </tr>
+            </thead>
+            <tbody id="questionsBody">
+                <tr id="loadingRow">
+                     <td colspan="2" style="text-align: center; color: gray;">설문 문항을 불러오는 중입니다...</td>
+                </tr>
+            </tbody>
+        </table>
 
         <div class="button-container">
             <button type="button" id="listBtn" class="list-btn">목록으로 돌아가기</button>
-            <button type="button" id="submitBtn" class="submit-btn">설문 제출하기</button>
+            <button type="button" id="submitBtn" class="submit-btn" disabled>설문 제출하기</button>
         </div>
     </form>
 
@@ -46,76 +63,95 @@
 
         function loadSurveyQuestions() {
             $.ajax({
-                url: '/survey/api/questions', // 🔑 JSON API 호출
+                url: '/survey/api/questions',
                 type: 'GET',
                 dataType: 'json',
                 success: function(surveyData) {
-                    // 2. AJAX 성공 시, HTML 동적 생성
                     renderQuestions(surveyData);
-                    $('#submitBtn').prop('disabled', false); // 제출 버튼 활성화
+                    $('#submitBtn').prop('disabled', false);
                 },
                 error: function(xhr) {
-                    $('#questionsContainer').html('<p style="color:red; text-align:center;">문항을 불러오는데 실패했습니다.</p>');
+                    $('#questionsBody').html('<tr><td colspan="2" style="color:red; text-align:center;">문항을 불러오는데 실패했습니다. (서버 API 확인)</td></tr>');
                     console.error("Failed to load questions:", xhr);
                 }
             });
         }
 
+        // 🔑 -----------------------------------------------------
+        // 🔑 계층적 JSON 구조를 처리하며 TR을 생성하는 핵심 함수
+        // 🔑 -----------------------------------------------------
         function renderQuestions(surveyData) {
-            const container = $('#questionsContainer');
-            container.empty();
+            const tbody = $('#questionsBody');
+
+            $('.part-header').remove();
+            tbody.empty();
 
             let currentPartNumber = 0;
 
+            // 1. Question 객체를 순회하는 주 Loop
             $.each(surveyData, function(qIndex, question) {
-                // Part Header 구분
+
+                // Question Data는 question 객체에서 직접 참조 (카멜 케이스)
+                const questionId = question.questionId;
                 const qNum = question.questionNum;
                 const typeCode = question.typeCodeNm;
+                const questionText = question.questionText; 
 
-                if (qNum === 1) {
+                // 1-1. Part Header 출력 및 Part Number 업데이트
+                if (qNum === 1 || qNum === 4) { // QNUM 1과 4가 Part 시작이라고 가정
                     let headerText = '';
-                    if (typeCode && typeCode.includes('기본정보')) {
+                    if (qNum === 1) {
                         headerText = 'Part 1. (기본정보) 공통사항';
                         currentPartNumber = 1;
-                    } else if (typeCode && typeCode.includes('위험')) {
+                    } else if (qNum === 4) {
                         headerText = 'Part 2. 위험 및 대응';
                         currentPartNumber = 2;
                     }
-                    // TYPE_CODE_NM이 예상 범위에 있을 때만 헤더 출력
                     if (headerText) {
-                         container.append(`<div class="part-header">${headerText}</div>`);
+                         tbody.append(`
+                            <tr class="part-header-row">
+                                <td colspan="2"><div class="part-header-text">${headerText}</div></td>
+                            </tr>
+                         `);
                     }
                 }
 
-                const displayNum = (currentPartNumber > 0)
-                                   ? `${currentPartNumber}-${qNum}`
-                                   : `${qNum}`;
+                // 2. 새 TR 및 TD 시작
+                const displayNum = (currentPartNumber > 0) ? `${currentPartNumber}-${qNum}` : `${qNum}`;
 
-                let questionHtml = `
-                    <div class="question-group" data-qid="${question.questionId}">
-                        <p class="question-text">${displayNum}. ${question.questionText}</p>
-                        <input type="hidden" name="Q_${question.questionId}_ID" value="${question.questionId}">
-                `;
+                const $currentQuestionRow = $(`<tr class="question-row" data-qid="${questionId}"></tr>`);
+                tbody.append($currentQuestionRow);
 
+                // 3. 문항 텍스트 TD (첫 번째 셀)
+                $currentQuestionRow.append(`
+                    <td class="question-text-cell">
+                        <p class="question-text">${displayNum}. ${questionText}</p>
+                        <input type="hidden" name="Q_${questionId}_ID" value="${questionId}">
+                    </td>
+                `);
+
+                // 4. 옵션 셀 (두 번째 셀) 시작 및 옵션 추가
+                const $optionCell = $('<td class="option-cell"></td>');
+                $currentQuestionRow.append($optionCell);
+
+                // 5. 🔑 options 배열을 중첩 순회하며 옵션 HTML 생성
                 $.each(question.options, function(oIndex, option) {
                     const optionId = option.optionId;
-                    const qId = question.questionId;
                     const score = option.optionScore === null ? '' : option.optionScore;
                     const scoreText = score === '' ? '' : ` (${score}점)`;
 
-                    questionHtml += `
+                    const optionHtml = `
                         <div class="option-item">
-                            <input type="radio" id="q${qId}_opt${optionId}" name="Q_${qId}_OPT" value="${optionId}">
-                            <label for="q${qId}_opt${optionId}">${option.optionText} ${scoreText}</label>
-                            <input type="hidden" name="Q_${qId}_SCORE_${optionId}" value="${score}">
+                            <input type="radio" id="q${questionId}_opt${optionId}" name="Q_${questionId}_OPT" value="${optionId}">
+                            <label for="q${questionId}_opt${optionId}">${option.optionText} ${scoreText}</label>
+                            <input type="hidden" name="Q_${questionId}_SCORE_${optionId}" value="${score}">
                         </div>
                     `;
+                    $optionCell.append(optionHtml); // 옵션 셀에 삽입
                 });
-
-                questionHtml += `</div>`; // .question-group 닫기
-                container.append(questionHtml);
             });
         }
+
 
         // 🔑 제출 버튼 클릭 이벤트
         $('#submitBtn').on('click', function() {
@@ -126,20 +162,27 @@
 
             const formData = collectFormData();
 
-            // 🚨 경고: 미응답 문항이 있으면 경고 후 강제 제출 (개발 테스트용)
             if (formData.answers.length !== 9) {
                 alert(`경고: ${9 - formData.answers.length}개 문항에 답변하지 않았습니다. 미응답 항목은 0점으로 처리 후 강제 제출됩니다.`);
                 return;
             }
 
             $.ajax({
-                url: '/survey/ext/save',
+                url: '/survey/save',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    alert('설문이 성공적으로 저장되었습니다.');
-                    window.location.href = '/survey/ext/list?userId=' + $('#USER_ID').val();
+                    if (response.startsWith('/survey/ext/detail')) {
+                        const detailUrl = response;
+                        const windowOptions = 'width=1000, height=700, toolbar=no, menubar=no, location=no, status=no, resizable=yes, scrollbars=yes';
+                        window.open(detailUrl, 'SurveyDetailPopup', windowOptions);
+
+                        alert('설문이 성공적으로 저장되었습니다. 상세 내역을 팝업으로 확인합니다.');
+                        window.location.href = '/survey/ext/list?userId=' + $('#USER_ID').val();
+                    } else {
+                         alert('설문 저장 실패: ' + response);
+                    }
                 },
                 error: function(xhr) {
                     alert('설문 저장 중 오류가 발생했습니다.');
@@ -160,19 +203,20 @@
             const sessionKey = $('#SESSION_KEY').val();
             const answers = [];
 
-            $('.question-group').each(function() {
-                const qid = $(this).data('qid');
-                const selectedRadio = $(`input[name="Q_${qid}_OPT"]:checked`);
+            // 🔑 tbody 내의 모든 tr.question-row를 순회하며 데이터 수집
+            $('#questionsBody tr.question-row').each(function() {
+                const $row = $(this);
+                const qid = $row.data('qid');
+                const selectedRadio = $row.find(`input[name="Q_${qid}_OPT"]:checked`);
 
                 if (selectedRadio.length > 0) {
                     const optionId = selectedRadio.val();
-                    // 점수 Hidden Field는 Q_ID와 OPTION_ID를 조합하여 정확히 찾음
-                    const scoreField = $(`input[name="Q_${qid}_SCORE_${optionId}"]`);
+                    const scoreField = $row.find(`input[name="Q_${qid}_SCORE_${optionId}"]`);
 
                     let scoreValue = scoreField.val();
 
                     if (scoreValue === "" || scoreValue === "NULL" || scoreValue === null) {
-                         scoreValue = null; // DB의 NULL 처리 (Mapper에서 0으로 NVL 처리됨)
+                        scoreValue = null;
                     } else {
                         scoreValue = parseInt(scoreValue, 10);
                     }
