@@ -65,6 +65,8 @@
             const container = $('#questionsContainer');
             container.empty();
 
+            let currentPartNumber = 0;
+
             $.each(surveyData, function(qIndex, question) {
                 // Part Header 구분
                 const qNum = question.questionNum;
@@ -74,8 +76,10 @@
                     let headerText = '';
                     if (typeCode && typeCode.includes('기본정보')) {
                         headerText = 'Part 1. (기본정보) 공통사항';
+                        currentPartNumber = 1;
                     } else if (typeCode && typeCode.includes('위험')) {
                         headerText = 'Part 2. 위험 및 대응';
+                        currentPartNumber = 2;
                     }
                     // TYPE_CODE_NM이 예상 범위에 있을 때만 헤더 출력
                     if (headerText) {
@@ -83,9 +87,13 @@
                     }
                 }
 
+                const displayNum = (currentPartNumber > 0)
+                                   ? `${currentPartNumber}-${qNum}`
+                                   : `${qNum}`;
+
                 let questionHtml = `
                     <div class="question-group" data-qid="${question.questionId}">
-                        <p class="question-text">${question.questionNum}. ${question.questionText}</p>
+                        <p class="question-text">${displayNum}. ${question.questionText}</p>
                         <input type="hidden" name="Q_${question.questionId}_ID" value="${question.questionId}">
                 `;
 
