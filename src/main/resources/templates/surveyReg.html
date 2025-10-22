@@ -6,23 +6,24 @@
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <style>
         body { font-family: 'Malgun Gothic', sans-serif; max-width: 900px; margin: 20px auto; padding: 25px; background-color: #f8f8f8; }
-        .question-group { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; }
+        .question-group { margin-bottom: 0; padding: 0; border: none; background-color: transparent; } /* TR 내부에서 DIV는 스타일 최소화 */
         .question-text { font-weight: bold; margin-bottom: 10px; color: #1e8449; }
         .option-item { margin-left: 15px; margin-bottom: 5px; }
         .option-item label { cursor: pointer; }
-        .part-header { font-size: 1.3em; color: navy; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid navy; padding-bottom: 5px; }
+        .part-header { font-size: 1.3em; color: navy; margin-top: 0; margin-bottom: 0; border-bottom: 2px solid navy; padding-bottom: 5px; }
 
-        /* 버튼 스타일 */
-        .button-container { text-align: center; margin-top: 40px; }
-        .submit-btn { padding: 10px 20px; font-size: 1.1em; background-color: #1e8449; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
-        .list-btn { padding: 10px 20px; font-size: 1.1em; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
-
-        /* 테이블 스타일 (DB 구조에 맞춤) */
+        /* 테이블 스타일 */
         .survey-reg-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .survey-reg-table th, .survey-reg-table td { border: 1px solid #e0e0e0; padding: 10px; text-align: left; vertical-align: top; }
         .survey-reg-table th { background-color: #f2f2f2; font-weight: bold; }
         .question-text-cell { width: 40%; background-color: #f9f9f9; }
         .option-cell { width: 60%; }
+        .part-header-row td { background-color: #d1e7dd; color: navy; font-size: 1.2em; font-weight: bold; text-align: left !important; padding: 10px; }
+
+        /* 버튼 스타일 */
+        .button-container { text-align: center; margin-top: 40px; }
+        .submit-btn { padding: 10px 20px; font-size: 1.1em; background-color: #1e8449; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
+        .list-btn { padding: 10px 20px; font-size: 1.1em; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; }
     </style>
 </head>
 <body>
@@ -77,42 +78,34 @@
             });
         }
 
-        // 🔑 -----------------------------------------------------
-        // 🔑 계층적 JSON 구조를 처리하며 TR을 생성하는 핵심 함수
-        // 🔑 -----------------------------------------------------
         function renderQuestions(surveyData) {
             const tbody = $('#questionsBody');
-
-            $('.part-header').remove();
             tbody.empty();
 
             let currentPartNumber = 0;
 
-            // 1. Question 객체를 순회하는 주 Loop
+            // 1. Question 객체를 순회하는 주 Loop (surveyData는 Question List)
             $.each(surveyData, function(qIndex, question) {
 
                 // Question Data는 question 객체에서 직접 참조 (카멜 케이스)
                 const questionId = question.questionId;
                 const qNum = question.questionNum;
                 const typeCode = question.typeCodeNm;
-                const questionText = question.questionText; 
+                const questionText = question.questionText;
 
                 // 1-1. Part Header 출력 및 Part Number 업데이트
-                if (qNum === 1 || qNum === 4) { // QNUM 1과 4가 Part 시작이라고 가정
+                if (qNum === 1) {
                     let headerText = '';
-                    if (qNum === 1) {
+                    if (typeCode && typeCode.includes('기본정보')) {
                         headerText = 'Part 1. (기본정보) 공통사항';
                         currentPartNumber = 1;
-                    } else if (qNum === 4) {
+                    } else if (typeCode && typeCode.includes('위험')) {
                         headerText = 'Part 2. 위험 및 대응';
                         currentPartNumber = 2;
                     }
                     if (headerText) {
-                         tbody.append(`
-                            <tr class="part-header-row">
-                                <td colspan="2"><div class="part-header-text">${headerText}</div></td>
-                            </tr>
-                         `);
+                         // 🔑 TR 형태로 TBODY에 Part Header 삽입
+                         tbody.append(`<tr class="part-header-row"><td colspan="2"><div class="part-header">${headerText}</div></td></tr>`);
                     }
                 }
 
@@ -130,7 +123,7 @@
                     </td>
                 `);
 
-                // 4. 옵션 셀 (두 번째 셀) 시작 및 옵션 추가
+                // 4. 옵션 셀 (두 번째 셀) 시작
                 const $optionCell = $('<td class="option-cell"></td>');
                 $currentQuestionRow.append($optionCell);
 
@@ -152,7 +145,6 @@
             });
         }
 
-
         // 🔑 제출 버튼 클릭 이벤트
         $('#submitBtn').on('click', function() {
 
@@ -168,7 +160,7 @@
             }
 
             $.ajax({
-                url: '/survey/save',
+                url: '/survey/ext/save',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
@@ -197,16 +189,17 @@
         });
 
 
-        // 🔑 제출 데이터 수집 및 가공 함수
+        // 🔑 제출 데이터 수집 및 가공 함수 (TR 구조에 맞게 Selector 사용)
         function collectFormData() {
             const userId = $('#USER_ID').val();
             const sessionKey = $('#SESSION_KEY').val();
             const answers = [];
 
-            // 🔑 tbody 내의 모든 tr.question-row를 순회하며 데이터 수집
+            // TBODY 내의 모든 TR.question-row를 순회
             $('#questionsBody tr.question-row').each(function() {
                 const $row = $(this);
                 const qid = $row.data('qid');
+                // 해당 TR 내부에서 선택된 Radio 버튼을 찾음
                 const selectedRadio = $row.find(`input[name="Q_${qid}_OPT"]:checked`);
 
                 if (selectedRadio.length > 0) {
