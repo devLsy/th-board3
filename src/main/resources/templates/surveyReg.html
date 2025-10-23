@@ -165,16 +165,8 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    if (response.startsWith('/survey/ext/detail')) {
-                        const detailUrl = response;
-                        const windowOptions = 'width=1000, height=700, toolbar=no, menubar=no, location=no, status=no, resizable=yes, scrollbars=yes';
-                        window.open(detailUrl, 'SurveyDetailPopup', windowOptions);
-
-                        alert('설문이 성공적으로 저장되었습니다. 상세 내역을 팝업으로 확인합니다.');
-                        window.location.href = '/survey/ext/list?userId=' + $('#USER_ID').val();
-                    } else {
-                         alert('설문 저장 실패: ' + response);
-                    }
+                        alert('설문이 성공적으로 저장되었습니다.');
+                        location.href = "/survey/ext/list";
                 },
                 error: function(xhr) {
                     alert('설문 저장 중 오류가 발생했습니다.');
