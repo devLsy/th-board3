@@ -112,7 +112,7 @@
                 // 2. 새 TR 및 TD 시작
                 const displayNum = (currentPartNumber > 0) ? `${currentPartNumber}-${qNum}` : `${qNum}`;
 
-                const $currentQuestionRow = $(`<tr class="question-row" data-qid="${questionId}"></tr>`);
+                const $currentQuestionRow = $(`<tr class="question-row" data-qid="${questionId}" data-displaynum="${displayNum}"></tr>`);
                 tbody.append($currentQuestionRow);
 
                 // 3. 문항 텍스트 TD (첫 번째 셀)
@@ -152,12 +152,17 @@
                 return;
             }
 
-            const formData = collectFormData();
+            // 1. 유효성 검사만 실행
+            const missingQuestionNum = validateFirstMissingQuestion();
 
-            if (formData.answers.length !== 9) {
-                alert(`경고: ${9 - formData.answers.length}개 문항에 답변하지 않았습니다. 미응답 항목은 0점으로 처리 후 강제 제출됩니다.`);
+            // 2. 미응답 문항 처리 및 필수 검증
+            if (missingQuestionNum) {
+                alert(`오류: [${missingQuestionNum}]번 문항에 반드시 답변해야 합니다.`);
                 return;
             }
+
+            // 3. 유효성 검사 통과 후, 데이터 수집
+            const formData = collectFormData();
 
             $.ajax({
                 url: '/survey/ext/save',
@@ -179,7 +184,6 @@
             const userId = $('#USER_ID').val();
             window.location.href = '/survey/ext/list?userId=' + userId;
         });
-
 
         // 🔑 제출 데이터 수집 및 가공 함수 (TR 구조에 맞게 Selector 사용)
         function collectFormData() {
@@ -221,6 +225,26 @@
                 sessionKey: sessionKey,
                 answers: answers
             };
+        }
+
+        // 첫 번째 미응답 문항 번호만 찾아 반환하는 함수 (validation)
+        function validateFirstMissingQuestion() {
+            let missingNum = null;
+
+            // TR을 순회하며 첫 번째 미응답 문항을 찾습니다.
+            $('#questionsBody tr.question-row').each(function() {
+                const $row = $(this);
+                const qid = $row.data('qid');
+                const selectedRadio = $row.find(`input[name="Q_${qid}_OPT"]:checked`);
+
+                if (selectedRadio.length === 0) {
+                    // 미응답 발견 시 번호 저장 후 루프 중단 (break)
+                    missingNum = $row.data('displaynum');
+                    return false; // jQuery .each() 루프를 중단하는 방법
+                }
+            });
+
+            return missingNum; // '1-1' 형태의 번호 또는 null 반환
         }
     });
     /* ]]> */
