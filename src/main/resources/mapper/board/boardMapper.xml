@@ -12,11 +12,11 @@
                       FROM
                             (
                                 SELECT  ROW_NUMBER() over (order by REG_DATE DESC) as no
-                                      , BOARD_SNO
-                                      , TITLE
-                                      , CONTENT
-                                      , USER_ID
-                                      , REG_DATE
+                                      , BOARD_SNO AS boardSno
+                                      , TITLE AS title
+                                      , CONTENT As content
+                                      , USER_ID AS userId
+                                      , REG_DATE AS regDate
                                    FROM BOARD_INFO A
                                  <where>
                                      A.USE_YN = 'Y'
@@ -42,15 +42,18 @@
         SELECT COUNT(*)
           FROM
                (
-                 SELECT ROW_NUMBER() over (order by REG_DATE DESC) as no
-                      , BOARD_SNO boardSno
-                      , TITLE AS title
-                      , CONTENT as content
-                      , USER_ID as userId
-                      , REG_DATE as regDate
-                   FROM BOARD_INFO A
+                 SELECT 1 FROM BOARD_INFO A
                  <where>
                     A.USE_YN = 'Y'
+                   <if test="type == 'T'.toString()">
+                        AND A.TITLE LIKE '%' || #{keyword} || '%'
+                   </if>
+                   <if test="type == 'C'.toString()">
+                        AND A.CONTENT LIKE '%' || #{keyword} || '%'
+                   </if>
+                   <if test="type == 'W'.toString()">
+                        AND A.USER_ID LIKE '%' || #{keyword} || '%'
+                    </if>
                  </where>
                )
     </select>

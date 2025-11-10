@@ -94,41 +94,40 @@
      * @param gubun
      */
     function drawTbody(data, gubun) {
-        //drawHtml, draw 대상 tbody
-        let htmlData, targetTbody = "";
-        targetTbody = "boardBody";
+        let targetTbody = "boardBody"; // draw 대상 tbody ID는 문자열로 선언
+
+        // 🔑 핵심 수정: htmlData 변수를 빈 문자열로 초기화
+        let htmlData, countHtml = "";
 
         // foreach start
         for (let i = 0; i < data.list.length; i++) {
-            htmlData += "<tr ";
-            htmlData += "data-sno=" + data.list[i].boardSno + ">";
-            htmlData += "<td>";
-            htmlData += data.list[i].no;
-            htmlData += "</td>";
-            htmlData += "<td>";
-            htmlData += "<a href='#' onclick='detail(\"" + data.list[i].boardSno + "\")'>";
-            htmlData += data.list[i].title;
-            htmlData += "</a>";
-            htmlData += "</td>";
-            htmlData += "<td>";
-            htmlData += data.list[i].content;
-            htmlData += "</td>";
-            htmlData += "<td>";
-            htmlData += data.list[i].userId;
-            htmlData += "</td>";
-            htmlData += "<td>";
-            htmlData += data.list[i].regDate;
-            htmlData += "</td>";
-            htmlData += "<td>";
-            htmlData += "<a href='#' onclick='delBoard(\"" + data.list[i].boardSno + "\")'>삭제</a>";
-            htmlData += "</td>";
-            htmlData += "</tr>";
+            const item = data.list[i]; // item 변수로 데이터 접근 간결화
+
+            // 🔑 템플릿 문자열 (Template Literal) 사용
+            htmlData += `
+                <tr data-sno="${item.boardSno}">
+                    <td>${item.no}</td>
+                    <td>
+                        <a href='#' onclick='detail("${item.boardSno}")'>
+                            ${item.title}
+                        </a>
+                    </td>
+                    <td>${item.content}</td>
+                    <td>${item.userId}</td>
+                    <td>${item.regDate}</td>
+                    <td>
+                        <a href='#' onclick='delBoard("${item.boardSno}")'>삭제</a>
+                    </td>
+                </tr>
+            `;
         }
         // foreach end
-        //tbody에 반영
-        $("#" + targetTbody + "").html(htmlData);
-        countHtml = "";
-        countHtml += data.count + "건";
+
+        // 🔑 tbody에 반영 (targetTbody 변수 활용)
+        $("#" + targetTbody).html(htmlData);
+
+        // 🔑 카운트 반영
+        countHtml = data.count + "건";
         $("#count").text(countHtml);
     }
     // end function getList()
