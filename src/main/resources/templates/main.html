@@ -1,40 +1,179 @@
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>게시판 목록</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <style>
+    /* 🔑 전체 영역 기본 스타일 */
+    body {
+        font-family: 'Malgun Gothic', sans-serif;
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f8f8f8;
+    }
+
     li {
         list-style: none;
         float: left;
     }
+
+    /* ======================================= */
+    /* 🔑 액션바 및 검색 영역 스타일 (개선된 부분) */
+    .action-bar-container {
+        display: flex;
+        justify-content: space-between; /* 검색창 그룹과 글쓰기 버튼 분리 */
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e0e0; /* 하단 구분선 */
+        margin-bottom: 20px;
+    }
+
+    /* 🔑 검색 폼 및 카운트 그룹 */
+    #searchGroup {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* 요소 간 간격 */
+    }
+
+    /* 🔑 카운트 표시 스타일 */
+    #count {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: #d35400; /* 주황색 계열로 강조 */
+        padding-left: 10px;
+        border-left: 1px solid #ccc;
+        height: 25px; /* 세로 중앙 정렬을 위해 높이 조정 */
+        line-height: 25px;
+    }
+
+    /* 🔑 버튼 공통 스타일 */
+    .action-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    /* 🔑 검색 버튼 스타일 */
+    #searchBtn {
+        background-color: #3f51b5; /* Primary Color */
+        color: white;
+    }
+    #searchBtn:hover { background-color: #334298; }
+
+    /* 🔑 글쓰기 버튼 스타일 */
+    .write-btn {
+        background-color: #1e8449; /* Success Color */
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+    .write-btn:hover { background-color: #1a6f3b; }
+
+    /* ======================================= */
+    /* 🔑 테이블 및 페이지네이션 스타일 유지 */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 0.95em;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+    }
+
+    .styled-table thead th {
+        background-color: #3f51b5;
+        color: white;
+        padding: 12px 8px;
+        text-align: center;
+        font-weight: 600;
+        border: none;
+    }
+
+    .styled-table tbody td {
+        border-bottom: 1px solid #eeeeee;
+        padding: 10px 8px;
+        text-align: center;
+        transition: background-color 0.2s;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f0f8ff;
+        cursor: pointer;
+    }
+
+    .styled-table tbody td:nth-child(2) {
+        text-align: left;
+    }
+
+    .tbl-paging ul {
+        display: flex;
+        justify-content: center;
+        padding-left: 0;
+        margin-top: 20px;
+    }
+    .tbl-paging li {
+        margin: 0 3px;
+    }
+    .tbl-paging .page-link {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 6px 12px;
+        background-color: white;
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .tbl-paging .active .page-link {
+        background-color: #3f51b5;
+        color: white;
+        border-color: #3f51b5;
+    }
+    .tbl-paging .page-link:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 </style>
 </head>
 <body>
-<form id="searchForm">
-    <select name="type" id="type">
-        <option value="">전체</option>
-        <option value="T">제목</option>
-        <option value="C">내용</option>
-        <option value="W">작성자</option>
-    </select>
-    <input type="text" name="keyword" id="keyword">
-    <button type="button" id="searchBtn">검색</button>
-    <a th:href="@{/board/reg}">글쓰기</a>
-    <div id="count"></div>
-<table>
+<div class="action-bar-container">
+    <div id="searchGroup">
+        <form id="searchForm" class="d-flex">
+            <select name="type" id="type" class="form-select">
+                <option value="">전체</option>
+                <option value="T">제목</option>
+                <option value="C">내용</option>
+                <option value="W">작성자</option>
+            </select>
+            <input type="text" name="keyword" id="keyword" class="form-control">
+            <button type="button" id="searchBtn" class="action-btn">검색</button>
+        </form>
+        <div id="count"></div>
+    </div>
+    <a th:href="@{/board/reg}" class="write-btn">글쓰기</a>
+</div>
+
+<table class="styled-table">
     <thead>
-        <th>번호</th>
-        <th>제목</th>
-        <th>내용</th>
-        <th>작성자</th>
-        <th>등록일</th>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>작성자</th>
+            <th>등록일</th>
+            <th>삭제</th>
+        </tr>
     </thead>
     <tbody id="boardBody"></tbody>
 </table>
-    <div class="tbl-paging"></div>
-</form>
+<div class="tbl-paging"></div>
 
 <script th:inline="javascript" type="text/javascript">
     //구분
@@ -43,7 +182,7 @@
     let searchData = "";
 
     $(function () {
-
+        // 페이지 로드 시 초기 리스트 조회
         getList("", 1, menu);
     });
 
@@ -59,51 +198,41 @@
      * @param currentPage
      */
     function movePage(currentPage){
-    	//검색조건이 있을 경우에만 검색조건 추가(검색조건 유지한 채 페이지 이동)
-    	(searchData != null) ? getList(searchData, currentPage, menu) : getList("", currentPage, menu);
+        (searchData !== "") ? getList(searchData, currentPage, menu) : getList("", currentPage, menu);
     }
 
     /**
      * ajax 통신으로 리스트를 조회한다.
-     * @param searchParam 검색조건
-     * @param currentPage 현재 페이지
-     * @param type 메뉴타입
      */
     function getList(searchParam, currentPage, type){
         console.log("getList!!!!");
-    	$.ajax({
-    		url: "/api/" + type +"?currentPage=" + currentPage,
-    		type:"get",
-    		//IE 브라우저 사용 안한다는 가정하에 주석처리
-    		// cache: false,
-    		data: searchParam,
-    		success: function (data){
-    			//draw tbody
-    			drawTbody(data, type);
-    			//draw pagination
-    			drawPagination(data.paging);
-    		},
-    		error:function(e){
-    		}
-    	});
+        $.ajax({
+           url: "/api/" + type +"?currentPage=" + currentPage,
+           type:"get",
+           data: searchParam,
+           success: function (data){
+              drawTbody(data, type);
+              drawPagination(data.paging);
+           },
+           error:function(e){
+               console.error("AJAX Error:", e);
+           }
+        });
     }
 
     /**
-     * tbody에 html을 덮어쓴다.
-     * @param data
-     * @param gubun
+     * tbody에 html을 덮어쓴다. (템플릿 문자열 사용)
      */
     function drawTbody(data, gubun) {
-        let targetTbody = "boardBody"; // draw 대상 tbody ID는 문자열로 선언
-
-        // 🔑 핵심 수정: htmlData 변수를 빈 문자열로 초기화
-        let htmlData, countHtml = "";
+        let targetTbody = "boardBody";
+        let htmlData = "";
+        let countHtml = "";
 
         // foreach start
         for (let i = 0; i < data.list.length; i++) {
-            const item = data.list[i]; // item 변수로 데이터 접근 간결화
+            const item = data.list[i];
 
-            // 🔑 템플릿 문자열 (Template Literal) 사용
+            // 템플릿 문자열 (Template Literal) 사용
             htmlData += `
                 <tr data-sno="${item.boardSno}">
                     <td>${item.no}</td>
@@ -123,14 +252,13 @@
         }
         // foreach end
 
-        // 🔑 tbody에 반영 (targetTbody 변수 활용)
+        // tbody에 반영
         $("#" + targetTbody).html(htmlData);
 
-        // 🔑 카운트 반영
+        // 카운트 반영
         countHtml = data.count + "건";
         $("#count").text(countHtml);
     }
-    // end function getList()
 
     //상세보기
     function detail(sno) {
@@ -138,17 +266,18 @@
     }
 
     function delBoard(sno) {
+        if (!confirm("정말로 삭제하시겠습니까?")) return;
+
         $.ajax({
             url: "/api/board/" + sno,
             type:"delete",
-            //IE 브라우저 사용 안한다는 가정하에 주석처리
-            // cache: false,
             success: function (data) {
                 if(data.code === "1") alert("삭제 되었습니다.");
                 location.href = "/board/list"
             },
             error:function(e){
                 console.log(e);
+                alert("삭제 중 오류가 발생했습니다.");
             }
         });
     }
@@ -159,83 +288,83 @@
      */
     function drawPagination(paging) {
 
-    	let pageHtml = "";
-    	pageHtml += "<ul class='pagination'>";
+        let pageHtml = "";
+        pageHtml += "<ul class='pagination'>";
 
-    	//first
-    	const first = parseInt(paging.firstPage);
-    	pageHtml += "<li class='paginate_button page-item first'>";
+        //first
+        const first = parseInt(paging.firstPage);
+        pageHtml += "<li class='paginate_button page-item first'>";
 
-    	if (paging.currentPage === paging.firstPage) {
-    		pageHtml += "<button type='button' class='page-link' disabled>";
-    	} else {
-    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ first +")'>";
-    	}
-    	pageHtml += "<span class='hidden'>first page</span>";
-    	pageHtml += "</button>";
-    	pageHtml += "</li>"
+        if (paging.currentPage === paging.firstPage) {
+           pageHtml += "<button type='button' class='page-link' disabled>";
+        } else {
+           pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ first +")'>";
+        }
+        pageHtml += "<span class='hidden'>first page</span>";
+        pageHtml += "</button>";
+        pageHtml += "</li>"
 
-    	//prev
-    	const prev = parseInt(paging.currentPage) -1;
-    	pageHtml += "<li class='paginate_button page-item prev'>";
+        //prev
+        const prev = parseInt(paging.currentPage) -1;
+        pageHtml += "<li class='paginate_button page-item prev'>";
 
-    	if (paging.firstPage === paging.currentPage) {
-    		pageHtml += "<button type='button'  class='page-link' disabled>";
-    	} else {
-    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ prev +")'>";
-    	}
-    	pageHtml += "<span class='hidden'>prev page</span>";
-    	pageHtml += "</button>";
-    	pageHtml += "</li>";
+        if (paging.firstPage === paging.currentPage) {
+           pageHtml += "<button type='button'  class='page-link' disabled>";
+        } else {
+           pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ prev +")'>";
+        }
+        pageHtml += "<span class='hidden'>prev page</span>";
+        pageHtml += "</button>";
+        pageHtml += "</li>";
 
-    	//① ~ ⑩
-    	for (let i = paging.firstPageNo; i <= paging.lastPageNo; i++) {
-    		pageHtml += "<li class='paginate_button page-item";
-    		//현재 페이지가 인덱스와 같으면 active class 추가
-    		if (paging.currentPage === i) {
-    			pageHtml += " active'>";
-    			pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
-    			pageHtml += i;
-    			pageHtml += "</button>";
-    			pageHtml += "</li>"
-    		} else {
-    			pageHtml += "'>";
-    			pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
-    			pageHtml += i;
-    			pageHtml += "</button>";
-    			pageHtml += "</li>"
-    		}
-    	}
+        //① ~ ⑩
+        for (let i = paging.firstPageNo; i <= paging.lastPageNo; i++) {
+           pageHtml += "<li class='paginate_button page-item";
+           //현재 페이지가 인덱스와 같으면 active class 추가
+           if (paging.currentPage === i) {
+              pageHtml += " active'>";
+              pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
+              pageHtml += i;
+              pageHtml += "</button>";
+              pageHtml += "</li>"
+           } else {
+              pageHtml += "'>";
+              pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ i +")'>";
+              pageHtml += i;
+              pageHtml += "</button>";
+              pageHtml += "</li>"
+           }
+        }
 
-    	//next
-    	const next = parseInt(paging.currentPage) + 1;
-    	pageHtml += "<li class='paginate_button page-item next'>";
+        //next
+        const next = parseInt(paging.currentPage) + 1;
+        pageHtml += "<li class='paginate_button page-item next'>";
 
-    	if (paging.currentPage === paging.lastPage) {
-    		pageHtml += "<button type='button'  class='page-link' disabled>";
-    	} else {
-    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ next +")'>";
-    	}
-    	pageHtml += "<span class='hidden'>next page</span>";
-    	pageHtml += "</button>";
-    	pageHtml += "</li>"
+        if (paging.currentPage === paging.lastPage) {
+           pageHtml += "<button type='button'  class='page-link' disabled>";
+        } else {
+           pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ next +")'>";
+        }
+        pageHtml += "<span class='hidden'>next page</span>";
+        pageHtml += "</button>";
+        pageHtml += "</li>"
 
-    	//last
-    	const last = parseInt(paging.lastPage);
-    	pageHtml += "<li class='paginate_button page-item last'>";
+        //last
+        const last = parseInt(paging.lastPage);
+        pageHtml += "<li class='paginate_button page-item last'>";
 
-    	if (paging.currentPage === paging.lastPage) {
-    		pageHtml += "<button type='button'  class='page-link' disabled>";
-    	} else {
-    		pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ last +")'>";
-    	}
-    	pageHtml += "<span class='hidden'>last page</span>";
-    	pageHtml += "</button>";
-    	pageHtml += "</li>"
+        if (paging.currentPage === paging.lastPage) {
+           pageHtml += "<button type='button'  class='page-link' disabled>";
+        } else {
+           pageHtml += "<button type='button'  class='page-link' style='cursor: pointer;' onclick='movePage("+ last +")'>";
+        }
+        pageHtml += "<span class='hidden'>last page</span>";
+        pageHtml += "</button>";
+        pageHtml += "</li>"
 
-    	pageHtml += "</ul>";
-    	//페이지네이션 영역에 반영
-    	$(".tbl-paging").html(pageHtml);
+        pageHtml += "</ul>";
+        //페이지네이션 영역에 반영
+        $(".tbl-paging").html(pageHtml);
     }
 
 

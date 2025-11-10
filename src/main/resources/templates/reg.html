@@ -1,94 +1,143 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>상세</title>
+    <title>게시글 상세 보기 및 수정</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        body { background-color: #f8f9fa; padding-top: 30px; }
+        .container { max-width: 900px; }
+
+        /* 🔑 게시글 영역 스타일 */
+        .post-header { margin-bottom: 20px; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; }
+        .post-header h1 { font-size: 1.8rem; font-weight: 700; color: #343a40; }
+        .post-content-area {
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            min-height: 150px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+
+        /* 🔑 댓글 영역 스타일 */
+        .comment-container {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .comment-header { font-size: 0.9rem; color: #6c757d; }
+        .replyContentArea {
+            border: none;
+            width: 100%;
+            background: transparent;
+            resize: none;
+            padding: 0;
+            font-size: 1rem;
+        }
+        .replyContentArea:focus {
+            outline: none;
+        }
+    </style>
 </head>
 <body>
-  <!-- 상세 -->
-  <th:block th:if="${info?.boardSno != null}">
-  <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
-  <input type="text" name="title" id="title" th:value="${info.title}">
-  <input type="text" name="content" id="content" th:value="${info.content}">
-    <button id="modBtn" type="button">수정</button>
+    <div class="container">
 
-      <!-- 댓글 시작 -->
-      <section class="mb-5">
-          <div class="card bg-light">
-              <div class="card-body">
-                  <!-- Comment form-->
-                      <input type="hidden" name="boardSno" id="boardSno" th:value="${boardSno}">
-                      <textarea class="form-control" id="replyContent" name="replyContent" rows="3" placeholder="댓글을 작성 해주세요."></textarea>
-                      <button type="button" id="replySave" class="btn btn-dark">저장</button>
-                  <!-- Comment with nested comments-->
-                  <div class="d-flex mb-4" th:each="list : ${replyList}">
-                      <!-- Parent comment-->
-                      <div class="flex-shrink-0"></div>
-                      <div class="ms-3">
-                          <div class="fw-bold" th:text="${list.userId}"></div>
-                              <input type="hidden" name="replyNo" th:value="${list.replySno}">
-                              <input type="text" id="replyContent" class="replyContentArea" th:value="${list.replyContent}" readonly />
-                              <a href="#" th:onclick="'javascript:updateReplyModalForm('+${list.replySno}+')'" class="btn btn-info updateReply">수정</a>
-                              <a href="#" th:onclick="'javascript:delReply('+${list.replySno}+')'" class="btn btn-danger delReply">삭제</a>
+        <form id="boardForm">
+        <th:block th:if="${info?.boardSno != null}">
+            <div class="post-header">
+                <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
+                <h1><input type="text" name="title" id="title" th:value="${info.title}" class="form-control fw-bold fs-5"></h1>
+            </div>
 
-                          <!--modal-->
-                          <div class="modal fade" id="updateReplyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">댓글 수정</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                     <div class="col-md-4">
-                                         <input type="hidden" id="modalReplyNo" value="">
-                                        <textarea class="form-control" id="modalReplyContent" rows="3" placeholder="댓글을 작성 해주세요."></textarea>
-                                      </div>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="modalReplyUpdate" >저장</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                  </div>
+            <div class="post-content-area">
+                <textarea name="content" id="content" th:text="${info.content}" class="form-control" style="border: none; height: 100%; min-height: 150px;"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end mb-4">
+                <button id="modBtn" type="button" class="btn btn-primary me-2">수정</button>
+                <a th:href="@{/board/list}" class="btn btn-secondary">목록</a>
+            </div>
+        </th:block>
+
+        <th:block th:unless="${info?.boardSno != null}">
+            <h1 class="mb-4">새 글 작성</h1>
+            <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
+            <input type="text" id="title" name="title" placeholder="제목" class="form-control mb-3">
+            <textarea id="content" name="content" placeholder="내용" class="form-control mb-3" rows="8"></textarea>
+
+            <div class="d-flex justify-content-end">
+                <button id="modBtn" type="button" class="btn btn-success me-2">저장</button>
+                <a th:href="@{/board/list}" class="btn btn-secondary">목록</a>
+            </div>
+        </th:block>
+        </form>
+
+        <section class="mt-5">
+            <h3 class="mb-3">댓글</h3>
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <textarea class="form-control" id="replyContent" name="replyContent" rows="2" placeholder="댓글을 작성 해주세요."></textarea>
+                        <button type="button" id="replySave" class="btn btn-dark ms-2">저장</button>
+                    </div>
+
+                    <div th:each="list : ${replyList}" class="comment-container">
+                        <div class="d-flex mb-2">
+                            <div class="flex-shrink-0"></div>
+                            <div class="ms-3 w-100">
+                                <div class="comment-header">작성자: <span class="fw-bold" th:text="${list.userId}"></span></div>
+
+                                <div class="d-flex align-items-center">
+                                    <input type="hidden" name="replyNo" th:value="${list.replySno}">
+                                    <input type="text" id="replyContentDisplay" class="replyContentArea form-control" th:value="${list.replyContent}" readonly />
+
+                                    <a href="#" th:onclick="'javascript:updateReplyModalForm('+${list.replySno}+')'" class="btn btn-sm btn-info updateReply ms-2">수정</a>
+                                    <a href="#" th:onclick="'javascript:delReply('+${list.replySno}+')'" class="btn btn-sm btn-danger delReply ms-2">삭제</a>
                                 </div>
-                              </div>
-                          </div>
-                          <!--modal 종료-->
-                      </div>
-                  </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="modal fade" id="updateReplyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">댓글 수정</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                   <div class="col-md-12">
+                       <input type="hidden" id="modalReplyNo" value="">
+                      <textarea class="form-control" id="modalReplyContent" rows="3" placeholder="수정 내용을 입력하세요."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="modalReplyUpdate" >저장</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
               </div>
-          </div>
-      </section>
-      <!-- 댓글 종료 -->
+            </div>
+        </div>
+        </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  </th:block>
-
-  <!--글쓰기-->
-  <th:block th:unless="${info?.boardSno != null}">
-  <input type="hidden" name="boardSno" id="boardSno" th:value="${info.boardSno}">
-  <input type="text" id="title" name="title">
-  <input type="text" id="content" name="content">
-  <button id="modBtn" type="button">저장</button>
-  </th:block>
-
-
-      <a href="/board/list">목록</a>
-  </form>
 <script th:inline="javascript" type="text/javascript">
 
     $(function () {
+        // [1] 게시글 수정/저장
         $("#modBtn").on("click", function () {
-
             const boardSno = $("#boardSno").val();
-            const params = {title: $("#title").val(), content: $("#content").val()};
+            const params = {boardSno: boardSno, title: $("#title").val(), content: $("#content").val()};
 
+            // URL을 /api/board/{boardSno} 형태로 구성하거나, /api/board/로 통일
             $.ajax({
-                url: "/api/board/",
+                url: "/api/board/" + (boardSno ? '' : 'reg'), // boardSno가 있으면 수정, 없으면 등록
                 type:"post",
-                //IE 브라우저 사용 안한다는 가정하에 주석처리
-                // cache: false,
                 data: params,
                 success: function (data) {
                     if(data.code === "1") alert("저장 되었습니다.");
@@ -96,76 +145,97 @@
                 },
                 error:function(e){
                     console.log(e);
+                    alert("저장 중 오류가 발생했습니다.");
                 }
             });
         });
 
-        //댓글 등록
+        // [2] 댓글 등록
        $("#replySave").on("click", function () {
-
+           // boardSno는 게시글의 고유 번호입니다.
            const params = {boardSno : $("#boardSno").val(), replyContent: $("#replyContent").val()};
+
+           if (!params.replyContent.trim()) {
+               alert("댓글 내용을 입력해주세요.");
+               return;
+           }
 
            $.ajax({
                url: "/api/reply",
                type:"post",
-               //IE 브라우저 사용 안한다는 가정하에 주석처리
-               // cache: false,
                data: params,
                success: function (data) {
-                   if(data.code === "1") alert("저장 되었습니다.");
-                   location.href = "/board/mod/" + $("#boardSno").val();
+                   if(data.code === "1") alert("댓글이 등록되었습니다.");
+                   // 현재 페이지로 새로고침하여 댓글 리스트를 업데이트
+                   location.reload();
                },
                error:function(e){
                    console.log(e);
+                   alert("댓글 등록 중 오류가 발생했습니다.");
                }
            });
        });
     });
 
     /**
-     * 댓글 수정
-     * @param sno
+     * 댓글 수정 모달 폼 열기 (미완성 로직 대체)
+     * 실제로는 해당 댓글의 내용을 AJAX로 조회하여 모달에 채워야 합니다.
      */
     function updateReplyModalForm(sno) {
+        // 1. 모달에 댓글 ID 저장
+        $("#modalReplyNo").val(sno);
 
-        const params = {replySno: sno, boardSno: $("#boardSno").val()};
+        // 2. 현재 댓글 내용을 찾아 모달 textarea에 설정 (임시 대체)
+        const currentContent = $(`input[name="replyNo"][value="${sno}"]`).closest('.ms-3').find('.replyContentArea').val();
+        $("#modalReplyContent").val(currentContent);
+
+        // 3. 모달 열기 (Bootstrap API)
+        const updateReplyModal = new bootstrap.Modal(document.getElementById('updateReplyModal'));
+        updateReplyModal.show();
+    }
+
+    // [3] 모달 내 댓글 수정 최종 저장
+    $("#modalReplyUpdate").on("click", function() {
+        const replySno = $("#modalReplyNo").val();
+        const replyContent = $("#modalReplyContent").val();
+        const boardSno = $("#boardSno").val();
+
+        const params = {replySno: replySno, replyContent: replyContent, boardSno: boardSno};
 
         $.ajax({
-           url: "/api/reply",
-           type:"post",
-           //IE 브라우저 사용 안한다는 가정하에 주석처리
-           // cache: false,
+           url: "/api/reply/update", // 🔑 수정 전용 API URL 필요
+           type:"post", // PUT 메소드 사용이 정석이지만, 호환성을 위해 POST 사용
            data: params,
            success: function (data) {
-               if(data.code === "1") alert("저장 되었습니다.");
-               location.href = "/board/mod/" + $("#boardSno").val();
+               if(data.code === "1") alert("댓글이 수정되었습니다.");
+               location.reload();
            },
            error:function(e){
                console.log(e);
+               alert("댓글 수정 중 오류가 발생했습니다.");
            }
        });
-    }
+    });
 
     /**
      * 댓글 삭제
-     * @param sno
      */
     function delReply(sno) {
+        if (!confirm("댓글을 삭제하시겠습니까?")) return;
 
-        const params = {replySno: sno, boardSno: $("#boardSno").val()}
+        const params = {replySno: sno, boardSno: $("#boardSno").val()} // boardSno는 페이지 새로고침을 위해 전달
 
         $.ajax({
            url: "/api/reply",
            type:"delete",
-           //IE 브라우저 사용 안한다는 가정하에 주석처리
-           // cache: false,
            data: params,
            success: function (data) {
                if(data.code === "1") alert("삭제 되었습니다.");
-               location.href = "/board/mod/" + $("#boardSno").val();
+               location.reload(); // 댓글 삭제 후 페이지 새로고침
            },
            error:function(e){
                console.log(e);
+               alert("댓글 삭제 중 오류가 발생했습니다.");
            }
        });
     }   
