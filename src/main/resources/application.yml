@@ -1,6 +1,6 @@
 #로컬DB니까 그냥 암호화 안하고 올렸음
 server:
-  port: 9090
+  port: 9017
   servlet:
     session:
       #임시로 타임아웃 해제

@@ -5,6 +5,14 @@
     <title>게시판 목록</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <style>
+    /* 🔑 메인 컨텐츠 영역 Wrapper 스타일 */
+.main-content-wrapper {
+    /* body 태그와 동일하게 중앙에 위치 */
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0;
+}
+
     /* 🔑 전체 영역 기본 스타일 */
     body {
         font-family: 'Malgun Gothic', sans-serif;
@@ -20,7 +28,7 @@
     }
 
     /* ======================================= */
-    /* 🔑 액션바 및 검색 영역 스타일 (개선된 부분) */
+    /* 🔑 액션바 및 검색 영역 스타일 */
     .action-bar-container {
         display: flex;
         justify-content: space-between; /* 검색창 그룹과 글쓰기 버튼 분리 */
@@ -37,15 +45,43 @@
         gap: 10px; /* 요소 간 간격 */
     }
 
-    /* 🔑 카운트 표시 스타일 */
+    /* 🔑 검색 폼 자체 스타일 */
+    #searchForm {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* 요소 간 간격 */
+    }
+
+    /* 🔑 카운트 표시 스타일 (재정의: 테이블 좌측 하단 배치) */
     #count {
         font-size: 1.1em;
         font-weight: 700;
-        color: #d35400; /* 주황색 계열로 강조 */
-        padding-left: 10px;
-        border-left: 1px solid #ccc;
-        height: 25px; /* 세로 중앙 정렬을 위해 높이 조정 */
-        line-height: 25px;
+        color: #34495e; /* 어두운 색상으로 변경 */
+        margin-top: 10px;
+        text-align: left; /* 텍스트를 좌측으로 정렬 */
+        padding-left: 0;
+        border-left: none; /* 세로선 제거 */
+
+        /* 🔑 Action Bar의 35px 정렬 스타일 제거 */
+        height: auto;
+        line-height: normal;
+    }
+
+    /* 🔑 Select 및 Input 필드 스타일 */
+    #searchForm select, #searchForm input[type="text"] {
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 0.95em;
+        height: 35px; /* 높이 통일 */
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    #searchForm select {
+        appearance: none; /* 기본 OS 스타일 제거 */
+        -webkit-appearance: none;
+        background-color: white;
     }
 
     /* 🔑 버튼 공통 스타일 */
@@ -76,7 +112,7 @@
     .write-btn:hover { background-color: #1a6f3b; }
 
     /* ======================================= */
-    /* 🔑 테이블 및 페이지네이션 스타일 유지 */
+    /* 🔑 테이블 스타일 */
     .styled-table {
         width: 100%;
         border-collapse: collapse;
@@ -113,68 +149,91 @@
         text-align: left;
     }
 
-    .tbl-paging ul {
-        display: flex;
-        justify-content: center;
-        padding-left: 0;
-        margin-top: 20px;
-    }
-    .tbl-paging li {
-        margin: 0 3px;
-    }
-    .tbl-paging .page-link {
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 6px 12px;
-        background-color: white;
-        color: #333;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .tbl-paging .active .page-link {
-        background-color: #3f51b5;
-        color: white;
-        border-color: #3f51b5;
-    }
-    .tbl-paging .page-link:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
+/* 🔑 Pagination 스타일 (강화) */
+.tbl-paging {
+    text-align: center; /* div를 중앙 정렬 */
+    margin-top: 25px;
+}
+
+.tbl-paging ul {
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    margin: 0;
+}
+
+.tbl-paging li {
+    margin: 0 4px; /* 버튼 간격 조정 */
+    list-style: none;
+    float: left;
+}
+
+/* 🔑 페이지 링크 버튼 스타일 */
+.tbl-paging .page-link {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px; /* 패딩 증가 */
+    background-color: white;
+    color: #3f51b5; /* 버튼 텍스트 색상 */
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    min-width: 38px; /* 버튼 최소 너비 */
+    display: block;
+}
+
+/* 🔑 현재 페이지 (Active) 스타일 */
+.tbl-paging .active .page-link {
+    background-color: #3f51b5; /* Primary Color */
+    color: white;
+    border-color: #3f51b5;
+    font-weight: bold;
+}
+
+/* 🔑 비활성화 버튼 스타일 */
+.tbl-paging .page-link:disabled {
+    background-color: #f8f8f8;
+    color: #a0a0a0;
+    cursor: not-allowed;
+    border-color: #e0e0e0;
+}
 </style>
 </head>
 <body>
-<div class="action-bar-container">
-    <div id="searchGroup">
-        <form id="searchForm" class="d-flex">
-            <select name="type" id="type" class="form-select">
-                <option value="">전체</option>
-                <option value="T">제목</option>
-                <option value="C">내용</option>
-                <option value="W">작성자</option>
-            </select>
-            <input type="text" name="keyword" id="keyword" class="form-control">
-            <button type="button" id="searchBtn" class="action-btn">검색</button>
-        </form>
-        <div id="count"></div>
+<div class="main-content-wrapper">
+    <div class="action-bar-container">
+        <div id="searchGroup">
+            <form id="searchForm" class="d-flex">
+                <select name="type" id="type" class="form-select">
+                    <option value="">전체</option>
+                    <option value="T">제목</option>
+                    <option value="C">내용</option>
+                    <option value="W">작성자</option>
+                </select>
+                <input type="text" name="keyword" id="keyword" class="form-control">
+                <button type="button" id="searchBtn" class="action-btn">검색</button>
+            </form>
+        </div>
+        <a th:href="@{/board/reg}" class="write-btn">글쓰기</a>
     </div>
-    <a th:href="@{/board/reg}" class="write-btn">글쓰기</a>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성자</th>
+                <th>등록일</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody id="boardBody"></tbody>
+    </table>
+    <div id="count"></div>
+
+    <div class="tbl-paging"></div>
 </div>
-
-<table class="styled-table">
-    <thead>
-        <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>내용</th>
-            <th>작성자</th>
-            <th>등록일</th>
-            <th>삭제</th>
-        </tr>
-    </thead>
-    <tbody id="boardBody"></tbody>
-</table>
-<div class="tbl-paging"></div>
-
 <script th:inline="javascript" type="text/javascript">
     //구분
     const menu = "board";
