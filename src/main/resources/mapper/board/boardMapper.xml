@@ -17,6 +17,7 @@
                                       , CONTENT As content
                                       , USER_ID AS userId
                                       , REG_DATE AS regDate
+                                      , (SELECT count(*) FROM BOARD_INFO BI JOIN REPLY_INFO RI ON BI.BOARD_SNO = RI.BOARD_SNO WHERE RI.BOARD_SNO = A.BOARD_SNO) AS replyCnt
                                    FROM BOARD_INFO A
                                  <where>
                                      A.USE_YN = 'Y'
