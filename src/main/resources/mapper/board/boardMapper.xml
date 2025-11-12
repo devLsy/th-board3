@@ -17,7 +17,7 @@
                                       , CONTENT As content
                                       , USER_ID AS userId
                                       , REG_DATE AS regDate
-                                      , (SELECT count(*) FROM BOARD_INFO BI JOIN REPLY_INFO RI ON BI.BOARD_SNO = RI.BOARD_SNO WHERE RI.BOARD_SNO = A.BOARD_SNO) AS replyCnt
+                                      , (SELECT count(*) FROM BOARD_INFO BI JOIN REPLY_INFO RI ON BI.BOARD_SNO = RI.BOARD_SNO WHERE RI.BOARD_SNO = A.BOARD_SNO AND RI.DEL_YN = 'N') AS replyCnt
                                    FROM BOARD_INFO A
                                  <where>
                                      A.USE_YN = 'Y'
@@ -65,6 +65,7 @@
         SELECT  ROW_NUMBER() over (order by REG_DATE DESC) as no
               , BOARD_SNO AS boardSno
               , TITLE AS title
+              , (SELECT count(*) FROM BOARD_INFO BI JOIN REPLY_INFO RI ON BI.BOARD_SNO = RI.BOARD_SNO WHERE RI.BOARD_SNO = A.BOARD_SNO AND RI.DEL_YN ='N') AS replyCnt
               , CONTENT as content
               , USER_ID as userId
               , REG_DATE as regDate

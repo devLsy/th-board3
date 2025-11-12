@@ -149,25 +149,38 @@
         text-align: left;
     }
 
-/* 🔑 Pagination 스타일 (강화) */
-.tbl-paging {
-    text-align: center; /* div를 중앙 정렬 */
-    margin-top: 25px;
-}
+    /* 🔑 Pagination 스타일 (강화) */
+    .tbl-paging {
+        text-align: center; /* div를 중앙 정렬 */
+        margin-top: 25px;
+    }
 
-.tbl-paging ul {
-    display: flex;
-    justify-content: center;
-    padding-left: 0;
-    margin: 0;
-}
+    .tbl-paging ul {
+        display: flex;
+        justify-content: center;
+        padding-left: 0;
+        margin: 0;
+    }
 
-.tbl-paging li {
-    margin: 0 4px; /* 버튼 간격 조정 */
-    list-style: none;
-    float: left;
-}
+    .tbl-paging li {
+        margin: 0 4px; /* 버튼 간격 조정 */
+        list-style: none;
+        float: left;
+    }
 
+    /* 🔑 삭제 링크 버튼 스타일 (경고색) */
+    .delete-link-btn {
+        background-color: #dc3545; /* Danger Color (빨간색) */
+        color: white;
+        padding: 6px 10px; /* 테이블 셀에 맞게 크기 조정 */
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9em;
+        display: inline-block; /* a 태그를 버튼처럼 보이게 */
+        transition: background-color 0.2s;
+        font-weight: 600;
+    }
+    .delete-link-btn:hover { background-color: #a82733; }
 /* 🔑 페이지 링크 버튼 스타일 */
 .tbl-paging .page-link {
     border: 1px solid #ccc;
@@ -287,36 +300,45 @@
         let htmlData = "";
         let countHtml = "";
 
-        // foreach start
-        for (let i = 0; i < data.list.length; i++) {
-            const item = data.list[i];
+        if(!data || !data.list || data.list.length !== 0) {
+            // foreach start
+            for (let i = 0; i < data.list.length; i++) {
+                const item = data.list[i];
 
-            // 템플릿 문자열 (Template Literal) 사용
-            htmlData += `
-                <tr data-sno="${item.boardSno}">
-                    <td>${item.no}</td>
-                    <td>
-                        <a href='#' onclick='detail("${item.boardSno}")'>
-                            ${item.title} [${item.replyCnt}]
-                        </a>
-                    </td>
-                    <td>${item.content}</td>
-                    <td>${item.userId}</td>
-                    <td>${item.regDate}</td>
-                    <td>
-                        <a href='#' onclick='delBoard("${item.boardSno}")'>삭제</a>
+                // 템플릿 문자열 (Template Literal) 사용
+                htmlData += `
+                    <tr data-sno="${item.boardSno}">
+                        <td>${item.no}</td>
+                        <td>
+                            <a href='#' onclick='detail("${item.boardSno}")'>
+                                ${item.title} [${item.replyCnt}]
+                            </a>
+                        </td>
+                        <td>${item.content}</td>
+                        <td>${item.userId}</td>
+                        <td>${item.regDate}</td>
+                        <td>
+                            <a href='#' onclick='delBoard("${item.boardSno}")' class="delete-link-btn">삭제</a>
+                        </td>
+                    </tr>
+                `;
+            }
+            // foreach end
+        } else {
+            htmlData = `
+                <tr>
+                    <td colspan="6" style="text-align: center; color: gray; padding: 20px;">
+                        조회된 데이터가 없습니다.
                     </td>
                 </tr>
             `;
         }
-        // foreach end
-
         // tbody에 반영
         $("#" + targetTbody).html(htmlData);
 
         // 카운트 반영
-        countHtml = data.count + "건";
-        $("#count").text(countHtml);
+        const displayCount = (data && data.count) ? data.count : 0;
+        $("#count").text(displayCount + "건");
     }
 
     //상세보기

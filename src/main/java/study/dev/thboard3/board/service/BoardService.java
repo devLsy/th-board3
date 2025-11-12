@@ -41,19 +41,20 @@ public class BoardService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         List<BoardVo> boardList = new ArrayList<>();
         int boardCount = 0;
+
         boardCount = boardMapper.selectBoardCount(cmmnVo);
 
         PaginationInfo pageVo = cmmnService.setPagination(cmmnVo.getCurrentPage(), boardCount);
         cmmnVo.setFirstRecordIndex(pageVo.getFirstRecordIndex());
         cmmnVo.setLastRecordIndex(pageVo.getLastRecordIndex());
 
-        boardList = boardMapper.selectBoard(cmmnVo);
-
         if(boardCount > 0) {
-            resultMap.put("list", boardList);
-            resultMap.put("count", boardCount);
-            resultMap.put("paging", pageVo);
+            boardList = boardMapper.selectBoard(cmmnVo);
         }
+
+        resultMap.put("list", boardList);
+        resultMap.put("count", boardCount);
+        resultMap.put("paging", pageVo);
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 

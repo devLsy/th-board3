@@ -48,6 +48,7 @@
 
         <form id="boardForm">
         <th:block th:if="${info?.boardSno != null}">
+            <input type="hidden" id="replyCnt" th:value="${info?.replyCnt}">
             <div class="post-header">
                 <input type="hidden" name="boardSno" id="boardSno" th:value="${info?.boardSno}">
                 <h1><input type="text" name="title" id="title" th:value="${info?.title}" class="form-control fw-bold fs-5"></h1>
@@ -131,12 +132,16 @@
     $(function () {
         // [1] 게시글 수정/저장
         $("#modBtn").on("click", function () {
+
+            if (!confirm("등록 하시겠습니까?")) return;
+
             const boardSno = $("#boardSno").val();
             const params = {boardSno: boardSno, title: $("#title").val(), content: $("#content").val()};
 
             // URL을 /api/board/{boardSno} 형태로 구성하거나, /api/board/로 통일
             $.ajax({
-                url: "/api/board/" + (boardSno ? '' : 'reg'), // boardSno가 있으면 수정, 없으면 등록
+                // url: "/api/board/" + (boardSno ? '' : 'reg'), // boardSno가 있으면 수정, 없으면 등록
+                url: "/api/board/", // boardSno가 있으면 수정, 없으면 등록
                 type:"post",
                 data: params,
                 success: function (data) {
@@ -152,6 +157,14 @@
 
         // [2] 댓글 등록
        $("#replySave").on("click", function () {
+
+           if (!confirm("등록 하시겠습니까?")) return;
+
+           if(parseInt($("#replyCnt").val()) >= 10) {
+               alert("댓글은 10개 이상 입력할 수 없습니다.");
+               return;
+           }
+
            // boardSno는 게시글의 고유 번호입니다.
            const params = {boardSno : $("#boardSno").val(), replyContent: $("#replyContent").val()};
 
