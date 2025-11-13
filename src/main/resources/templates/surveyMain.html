@@ -4,61 +4,66 @@
     <meta charset="UTF-8">
     <title>(외부)설문 응시 목록</title>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 1100px; margin: 20px auto; padding: 0 10px; }
-        .button-container { text-align: right; margin-bottom: 15px; padding-right: 10px; }
-        .register-btn { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.3s; }
-        .register-btn:hover { background-color: #0056b3; }
-        .styled-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .styled-table th, .styled-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        .styled-table th { background-color: #f2f2f2; color: #333; }
-        .styled-table tbody tr:hover { background-color: #e6f7ff; cursor: pointer; }
-    </style>
+    <script th:src="@{/js/common.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
+<div class="main-content-wrapper">
 
-<h1>[[${userId}]]님의 설문 응시 목록</h1>
+    <div class="sidebar-menu">
+        <h3>게시판 메뉴</h3>
+        <ul>
+            <li><a th:href="@{/board/list}">게시판 목록</a></li>
+            <li class="active"><a th:href="@{/survey/ext/list}">설문조사 관리</a></li>
+            <li><a href="#">커뮤니티</a></li>
+            <li><a href="#">관리자 대시보드</a></li>
+        </ul>
+    </div>
 
-<div class="button-container">
-    <button type="button" class="register-btn" id="registerBtn"
-            th:attr="data-user-id=${userId}">
-        + 설문 등록하기
-    </button>
+    <div class="content-area">
+
+        <h1>[[${userId}]]님의 설문 응시 목록</h1>
+
+        <div class="button-container">
+            <button type="button" class="survey-register-btn" id="registerBtn" th:attr="data-user-id=${userId}">
+                + 설문 등록하기
+            </button>
+        </div>
+
+        <form id="searchForm">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>업체명</th>
+                        <th>평가자ID</th>
+                        <th>평가자명</th>
+                        <th>점검일시</th>
+                        <th>종합점수</th>
+                    </tr>
+                </thead>
+                <tbody id="boardBody">
+                    <tr th:each="survey, stat : ${surveyList}"
+                        th:if="${not #lists.isEmpty(surveyList)}"  th:data-session-key="${survey.SESSIONKEY}"
+                        th:data-user-id="${survey.USERID}">
+
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${survey.COMPANYNM}"></td>
+                        <td th:text="${survey.USERID}"></td>
+                        <td th:text="${survey.USERNM}"></td>
+                        <td th:text="${#dates.format(survey.ANSWERAT, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${survey.TOTALSCORE}"></td>
+                    </tr>
+
+                    <tr th:unless="${not #lists.isEmpty(surveyList)}"> <td colspan="6" style="text-align: center; color: gray; padding: 20px;">
+                            <p>조회할 데이터가 없습니다.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
 </div>
-
-<form id="searchForm">
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>번호</th>
-                <th>업체명</th>
-                <th>평가자ID</th>
-                <th>평가자명</th>
-                <th>점검일시</th>
-                <th>종합점수</th>
-            </tr>
-        </thead>
-        <tbody id="boardBody">
-            <tr th:each="survey, stat : ${surveyList}"
-                th:if="${not #lists.isEmpty(surveyList)}"  th:data-session-key="${survey.SESSIONKEY}"
-                th:data-user-id="${survey.USERID}">
-
-                <td th:text="${stat.count}"></td>
-                <td th:text="${survey.COMPANYNM}"></td>
-                <td th:text="${survey.USERID}"></td>
-                <td th:text="${survey.USERNM}"></td>
-                <td th:text="${#dates.format(survey.ANSWERAT, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${survey.TOTALSCORE}"></td>
-            </tr>
-
-            <tr th:unless="${not #lists.isEmpty(surveyList)}"> <td colspan="6" style="text-align: center; color: gray; padding: 20px;">
-                    <p>조회할 데이터가 없습니다.</p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</form>
-
 <script th:inline="javascript" type="text/javascript">
     /* <![CDATA[ */
     $(document).ready(function() {

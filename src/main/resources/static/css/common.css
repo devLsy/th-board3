@@ -1,0 +1,273 @@
+    /* 🔑 메인 레이아웃 (Sidebar + Content) */
+    .main-content-wrapper {
+        display: flex;
+        max-width: 1600px; /* 전체 너비 확대 */
+        margin: 0 auto;
+        padding: 0;
+        gap: 20px; /* 사이드바와 컨텐츠 사이 간격 */
+    }
+
+    /* 🔑 전체 영역 기본 스타일 */
+    body {
+        font-family: 'Malgun Gothic', sans-serif;
+        padding: 20px;
+        background-color: #f0f2f5; /* 전체 배경색 변경 */
+        margin: 0;
+        max-width: none;
+    }
+
+    li {
+        list-style: none;
+        float: none; /* Sidebar 메뉴용 */
+    }
+
+    /* 🔑 좌측 메뉴바 영역 (Sidebar) */
+    .sidebar-menu {
+        width: 220px;
+        min-height: 85vh;
+        background-color: #34495e; /* 어두운 색상 */
+        padding: 20px 0;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+    .sidebar-menu h3 {
+        color: #4a90e2;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding: 0 20px;
+        border-bottom: 1px solid #4a657c;
+        padding-bottom: 15px;
+    }
+    .sidebar-menu ul {
+        padding-left: 0;
+        list-style-type: none;
+    }
+    .sidebar-menu li {
+        margin-bottom: 5px;
+    }
+    .sidebar-menu a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px 20px;
+        transition: background-color 0.2s;
+    }
+    .sidebar-menu a:hover {
+        background-color: #4a657c;
+    }
+    /* 현재 활성화된 메뉴 스타일 */
+    .sidebar-menu .active a {
+        background-color: #4a90e2;
+        font-weight: bold;
+    }
+
+    /* 🔑 메인 컨텐츠 영역 */
+    .content-area {
+        flex-grow: 1; /* 남은 공간을 모두 차지 */
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ======================================= */
+    /* 🔑 액션바 및 검색 영역 스타일 */
+    .action-bar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 20px;
+    }
+
+    /* 🔑 버튼 그룹 (글쓰기, 설문조사) */
+    .button-group {
+        display: flex;
+        gap: 8px; /* 버튼 사이 간격 */
+    }
+
+    /* 🔑 검색 폼 및 카운트 그룹 */
+    #searchGroup {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* 🔑 검색 폼 자체 스타일 */
+    #searchForm {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* 🔑 Select 및 Input 필드 스타일 */
+    #searchForm select, #searchForm input[type="text"] {
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 0.95em;
+        height: 35px;
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    #searchForm select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-color: white;
+    }
+
+    /* 🔑 카운트 표시 스타일 */
+    #count {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: #d35400;
+
+        padding-left: 0;
+        border-left: none;
+        height: auto;
+        line-height: normal;
+        text-align: left; /* 좌측 정렬 */
+    }
+
+    /* 🔑 버튼 공통 스타일 */
+    .action-btn, .register-btn, .write-btn, .survey-register-btn{
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        height: 35px;
+    }
+
+    /* 🔑 [추가/수정] 설문 등록하기 버튼 스타일 */
+    .survey-register-btn {
+        background-color: #007bff; /* 파란색 계열 */
+        color: white;
+        font-weight: 600;
+        padding: 10px 15px; /* 글쓰기 버튼과 동일하게 높이 맞춤 */
+        height: 35px;
+        line-height: 15px;
+    }
+    .survey-register-btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* 🔑 검색 버튼 스타일 */
+    #searchBtn {
+        background-color: #3f51b5;
+        color: white;
+    }
+    #searchBtn:hover { background-color: #334298; }
+
+    /* 🔑 글쓰기 버튼 스타일 */
+    .write-btn {
+        background-color: #1e8449;
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 600;
+        height: 35px;
+        line-height: 19px;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+    .write-btn:hover { background-color: #1a6f3b; }
+
+    /* 🔑 설문조사 버튼 스타일 */
+    .survey-btn {
+        background-color: #17a2b8;
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 600;
+        height: 35px;
+        line-height: 19px;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+    .survey-btn:hover { background-color: #138496; }
+
+
+    /* ======================================= */
+    /* 🔑 테이블 스타일 */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 0.95em;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+    }
+
+    .styled-table thead th {
+        background-color: #3f51b5;
+        color: white;
+        padding: 12px 8px;
+        text-align: center;
+        font-weight: 600;
+        border: none;
+    }
+
+    .styled-table tbody td {
+        border-bottom: 1px solid #eeeeee;
+        padding: 10px 8px;
+        text-align: center;
+        transition: background-color 0.2s;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f0f8ff;
+        cursor: pointer;
+    }
+
+    .styled-table tbody td:nth-child(2) {
+        text-align: left;
+    }
+
+    /* 🔑 Pagination 스타일 */
+    .tbl-paging {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .tbl-paging ul {
+        display: flex;
+        justify-content: center;
+        padding-left: 0;
+        margin: 0;
+    }
+    .tbl-paging li {
+        margin: 0 4px;
+    }
+    .tbl-paging .page-link {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px 12px;
+        background-color: white;
+        color: #3f51b5;
+        font-weight: 500;
+        text-decoration: none;
+        min-width: 38px;
+        display: block;
+    }
+
+    .tbl-paging .active .page-link {
+        background-color: #3f51b5;
+        color: white;
+        border-color: #3f51b5;
+        font-weight: bold;
+    }
+
+    .tbl-paging .page-link:disabled {
+        background-color: #f8f8f8;
+        color: #a0a0a0;
+        cursor: not-allowed;
+        border-color: #e0e0e0;
+    }
