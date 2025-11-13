@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="sidebar" class="sidebar-menu">
+        <h3>게시판 메뉴</h3>
+        <ul>
+            <li class="active"><a th:href="@{/board/list}">게시판 목록</a></li>
+            <li><a th:href="@{/survey/ext/list}">설문조사 관리</a></li>
+            <li><a href="#">커뮤니티</a></li>
+            <li><a href="#">관리자 대시보드</a></li>
+        </ul>
+    </div>
+</body>
+</html>
