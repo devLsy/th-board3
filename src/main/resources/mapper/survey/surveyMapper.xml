@@ -4,38 +4,54 @@
 
     <!-- (외부)사용자가 응시한 설문 목록 조회 -->
     <select id="selectExtSurveyList" parameterType="map" resultType="map">
-    /* (외부)사용자가 응시한 설문 목록 조회 */
-    WITH G AS (
+        /* 🔑 (외부)사용자가 응시한 설문 목록 조회 (Pagination + Total Count) */
+        WITH G AS (
+            -- 1. 응시 회차별 기본 집계 데이터 생성
+            SELECT
+                UA.COMPANY_NM,
+                UA.USER_ID,
+                UA.USER_NM,
+                SA.SESSION_KEY,
+                MAX(SA.ANSWER_AT) AS ANSWERAT,
+                SUM(SA.SELECTED_SCORE) AS TOTALSCORE
+            FROM SURVEY_ANSWER SA
+            JOIN USER_ACCOUNT UA
+              ON UA.USER_ID = SA.USER_ID
+            WHERE SA.USER_ID = #{userId} /* 🔑 로그인한 사용자 ID 바인딩 */
+            GROUP BY
+                UA.COMPANY_NM,
+                UA.USER_ID,
+                UA.USER_NM,
+                SA.SESSION_KEY
+        ),
+        RankedList AS (
+            -- 2. 🔑 ROW_NUMBER()와 전체 COUNT(*) OVER()를 동시에 계산하여 순위를 매김
+            SELECT
+                ROW_NUMBER() OVER (ORDER BY G.ANSWER_AT DESC) AS rn,  /* 🔑 순위 번호 */
+                COUNT(*) OVER() AS totalCount,                      /* 🔑 전체 행 개수 */
+                G.COMPANY_NM           AS companyNm,
+                G.USER_ID              AS userId,
+                G.USER_NM              AS userNm,
+                G.SESSION_KEY          AS sessionKey,
+                G.ANSWER_AT            AS answerAt,
+                G.TOTAL_SCORE          AS totalScore
+            FROM G
+        )
+        -- 3. 최종 Pagination 필터링 및 컬럼 선택
         SELECT
-            UA.COMPANY_NM,
-            UA.USER_ID,
-            UA.USER_NM,
-            SA.SESSION_KEY,
-            MAX(SA.ANSWER_AT) AS ANSWER_AT,
-            SUM(SA.SELECTED_SCORE) AS SELECTED_SCORE
-        FROM SURVEY_ANSWER SA
-        JOIN USER_ACCOUNT UA
-          ON UA.USER_ID = SA.USER_ID
-        WHERE SA.USER_ID = #{userId} /* 🔑 로그인한 사용자 ID 바인딩 */
-        GROUP BY
-            UA.COMPANY_NM,
-            UA.USER_ID,
-            UA.USER_NM,
-            SA.SESSION_KEY
-    )
-    SELECT
-      ROWNUM                 AS no,
-      T.COMPANY_NM           AS companyNm,
-      T.USER_ID              AS userId,
-      T.USER_NM              AS userNm,
-      T.SESSION_KEY AS sessionKey,
-      T.ANSWER_AT             AS answerAt,
-      T.SELECTED_SCORE            AS totalScore
-    FROM (
-      SELECT *
-      FROM G
-      ORDER BY G.ANSWER_AT DESC
-    ) T
+          rn AS no, /* 🔑 순위 번호를 'no'로 반환 */
+          totalCount AS extSurveyListCount, /* 🔑 전체 개수를 'extSurveyListCount'로 반환 */
+          companyNm,
+          userId,
+          userNm,
+          sessionKey,
+          answerAt,
+          totalScore
+        FROM RankedList
+        /* 🔑 Pagination 범위 조건 */
+        WHERE rn <![CDATA[ <= ]]> #{lastRecordIndex}
+          AND rn <![CDATA[ >= ]]> #{firstRecordIndex}
+        ORDER BY rn
     </select>
 
     <!-- 사용자 별 설문 상세 조회-->
