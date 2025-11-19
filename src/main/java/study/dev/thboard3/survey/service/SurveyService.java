@@ -2,14 +2,16 @@ package study.dev.thboard3.survey.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.dev.thboard3.cmm.model.CmmnVo;
+import study.dev.thboard3.cmm.model.PaginationInfo;
+import study.dev.thboard3.cmm.service.CmmnService;
 import study.dev.thboard3.survey.mapper.SurveyMapper;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -18,20 +20,33 @@ import java.util.Map;
 public class SurveyService {
 
     private final SurveyMapper surveyMapper;
+    private final CmmnService cmmnService;
 
-    /**
-     * (외부) 특정 사용자가 응시한 설문 목록을 조회하는 서비스 메서드
-     * @param userId 로그인한 사용자의 ID
-     * @return 응시 회차별 요약 정보 리스트
-     */
-    public List<Map<String, Object>> getExternalSurveyList(String userId) {
-        // 1. (필요하다면) 비즈니스 로직 처리 (예: 권한 검사, 입력값 검증)
-        if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("사용자 ID는 필수입니다.");
+    public ResponseEntity getExternalSurveyList(CmmnVo cmmnVo) {
+        //resultMap
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<Map<String, Object>> surveyList = new ArrayList<>();
+        int surveyCount = 0;
+
+        PaginationInfo pageVo = cmmnService.setPagination(cmmnVo.getCurrentPage(), 0);
+
+        cmmnVo.setFirstRecordIndex(pageVo.getFirstRecordIndex());
+        cmmnVo.setLastRecordIndex(pageVo.getLastRecordIndex());
+
+        surveyList = surveyMapper.selectExtSurveyList(cmmnVo);
+
+        if (surveyList != null && !surveyList.isEmpty()) {
+            Object countObj = surveyList.get(0).get("EXTSURVEYLISTCOUNT");
+            if (countObj != null) {
+                surveyCount = ((Number) countObj).intValue();
+            }
+            pageVo = cmmnService.setPagination(cmmnVo.getCurrentPage(), surveyCount);
         }
-        // 2. Mapper를 호출하여 데이터베이스 작업 수행
-        List<Map<String, Object>> surveyList = surveyMapper.selectExtSurveyList(userId);
-        return surveyList;
+
+        resultMap.put("list", surveyList);
+        resultMap.put("count", surveyCount);
+        resultMap.put("paging", pageVo);
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
     /**

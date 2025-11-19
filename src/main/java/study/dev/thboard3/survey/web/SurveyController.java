@@ -25,13 +25,6 @@ public class SurveyController {
      */
     @GetMapping("/ext/list")
     public ModelAndView extSurveylist(ModelAndView mv) {
-        // 1. 🔑 사용자 ID 하드코딩 (테스트용)
-        String currentUserId = "nyj";
-        // 2. Service 호출 및 데이터 획득 (예외처리 없음)
-        List<Map<String, Object>> externalSurveyList = surveyService.getExternalSurveyList(currentUserId);
-        // 3. 모델에 데이터 추가 및 뷰 설정
-        mv.addObject("surveyList", externalSurveyList);
-        mv.addObject("userId", currentUserId);
         mv.setViewName("surveyMain");
         return mv;
     }

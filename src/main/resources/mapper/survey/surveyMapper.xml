@@ -39,14 +39,14 @@
         )
         -- 3. 최종 Pagination 필터링 및 컬럼 선택
         SELECT
-          rn AS no, /* 🔑 순위 번호를 'no'로 반환 */
-          totalCount AS extSurveyListCount, /* 🔑 전체 개수를 'extSurveyListCount'로 반환 */
-          companyNm,
-          userId,
-          userNm,
-          sessionKey,
-          answerAt,
-          totalScore
+              rn AS no, /* 🔑 순위 번호를 'no'로 반환 */
+              totalCount AS extSurveyListCount, /* 🔑 전체 개수를 'extSurveyListCount'로 반환 */
+              companyNm,
+              userId,
+              userNm,
+              sessionKey,
+              answerAt,
+              totalScore
         FROM RankedList
         /* 🔑 Pagination 범위 조건 */
         WHERE rn <![CDATA[ <= ]]> #{lastRecordIndex}

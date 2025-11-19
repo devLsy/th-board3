@@ -2,6 +2,7 @@ package study.dev.thboard3.survey.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import study.dev.thboard3.cmm.model.CmmnVo;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 @Mapper
 public interface SurveyMapper {
     // 1. (외부) 사용자 응시 목록 조회
-    List<Map<String, Object>> selectExtSurveyList(@Param("userId") String userId);
+    List<Map<String, Object>> selectExtSurveyList(CmmnVo cmmnVo);
 
     // 2. (외부) 사용자별 상세 응시 조회
     Map<String, Object> selectSurveyDetail(@Param("userId") String userId, @Param("sessionKey") String sessionKey);
