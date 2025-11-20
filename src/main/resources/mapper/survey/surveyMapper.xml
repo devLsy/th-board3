@@ -27,14 +27,14 @@
         RankedList AS (
             -- 2. 🔑 ROW_NUMBER()와 전체 COUNT(*) OVER()를 동시에 계산하여 순위를 매김
             SELECT
-                ROW_NUMBER() OVER (ORDER BY G.ANSWER_AT DESC) AS rn,  /* 🔑 순위 번호 */
+                ROW_NUMBER() OVER (ORDER BY G.ANSWERAT DESC) AS rn,  /* 🔑 순위 번호 */
                 COUNT(*) OVER() AS totalCount,                      /* 🔑 전체 행 개수 */
                 G.COMPANY_NM           AS companyNm,
                 G.USER_ID              AS userId,
                 G.USER_NM              AS userNm,
                 G.SESSION_KEY          AS sessionKey,
-                G.ANSWER_AT            AS answerAt,
-                G.TOTAL_SCORE          AS totalScore
+                G.ANSWERAT            AS answerAt,
+                G.TOTALSCORE          AS totalScore
             FROM G
         )
         -- 3. 최종 Pagination 필터링 및 컬럼 선택
@@ -49,8 +49,8 @@
               totalScore
         FROM RankedList
         /* 🔑 Pagination 범위 조건 */
-        WHERE rn <![CDATA[ <= ]]> #{lastRecordIndex}
-          AND rn <![CDATA[ >= ]]> #{firstRecordIndex}
+        WHERE rn <![CDATA[ <= ]]> #{cmmnVo.lastRecordIndex}
+          AND rn <![CDATA[ >= ]]> #{cmmnVo.firstRecordIndex}
         ORDER BY rn
     </select>
 

@@ -71,44 +71,11 @@
         getList("", 1, menu);
     });
 
-    //검색
-    $("#searchBtn").on("click", function (e) {
-        e.preventDefault();
-        searchData = $('#searchForm').serialize();
-        getList(searchData, 1, menu);
-    });
-
     /**
-     * 페이지 이동
-     * @param currentPage
-     */
-    function movePage(currentPage){
-        (searchData !== "") ? getList(searchData, currentPage, menu) : getList("", currentPage, menu);
-    }
-
-    /**
-     * ajax 통신으로 리스트를 조회한다.
-     */
-    function getList(searchParam, currentPage, type){
-        console.log("getList!!!!");
-        $.ajax({
-           url: "/api/" + type +"?currentPage=" + currentPage,
-           type:"get",
-           data: searchParam,
-           success: function (data){
-              drawTbody(data, type);
-              drawPagination(data.paging);
-           },
-           error:function(e){
-               console.error("AJAX Error:", e);
-           }
-        });
-    }
-
-    /**
-     * tbody에 html을 덮어쓴다. (템플릿 문자열 사용)
+     * tbody에 html을 덮어쓴다.
      */
     function drawTbody(data, gubun) {
+        console.log('request drawTbody~!!');
         let targetTbody = "boardBody";
         let htmlData = "";
         let countHtml = "";
@@ -153,6 +120,13 @@
         const displayCount = (data && data.count) ? data.count : 0;
         $("#count").text(displayCount + "건");
     }
+
+    //검색
+    $("#searchBtn").on("click", function (e) {
+        e.preventDefault();
+        searchData = $('#searchForm').serialize();
+        getList(searchData, 1, menu);
+    });
 
     //상세보기
     function detail(sno) {

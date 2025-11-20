@@ -17,7 +17,7 @@ public class SurveyRestController {
 
     private final SurveyService surveyService;
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity selectSurvey(CmmnVo cmmnVo) throws Exception {
         return surveyService.getExternalSurveyList(cmmnVo);
     }

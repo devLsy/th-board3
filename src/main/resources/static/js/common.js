@@ -82,3 +82,30 @@ function drawPagination(paging) {
     //페이지네이션 영역에 반영
     $(".tbl-paging").html(pageHtml);
 }
+
+/**
+ * 페이지 이동
+ * @param currentPage
+ */
+function movePage(currentPage){
+    (searchData !== "") ? getList(searchData, currentPage, menu) : getList("", currentPage, menu);
+}
+
+/**
+ * ajax 통신으로 리스트를 조회한다.
+ */
+function getList(searchParam, currentPage, type){
+    console.log("getList!!!!");
+    $.ajax({
+       url: "/api/" + type +"?currentPage=" + currentPage,
+       type:"get",
+       data: searchParam,
+       success: function (data){
+          drawTbody(data, type);
+          drawPagination(data.paging);
+       },
+       error:function(e){
+           console.error("AJAX Error:", e);
+       }
+    });
+}

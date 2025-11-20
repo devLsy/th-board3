@@ -22,15 +22,28 @@
 
     <div class="content-area">
 
-        <h1>[[${userId}]]님의 설문 응시 목록</h1>
+        <div class="action-bar-container">
+            <div id="searchGroup">
+                <form id="searchForm" class="d-flex">
+                    <select name="type" id="type" class="form-select">
+                        <option value="">전체</option>
+                        <option value="T">제목</option>
+                        <option value="C">내용</option>
+                        <option value="W">작성자</option>
+                    </select>
+                    <input type="text" name="keyword" id="keyword" class="form-control">
+                    <button type="button" id="searchBtn" class="action-btn">검색</button>
+            </div>
 
-        <div class="button-container">
-            <button type="button" class="survey-register-btn" id="registerBtn" th:attr="data-user-id=${userId}">
+            <div class="button-group">
+                <button type="button" class="survey-register-btn" id="registerBtn" th:attr="data-user-id=${userId}">
                 + 설문 등록하기
-            </button>
+                </button>
+            </div>
         </div>
 
-        <form id="searchForm">
+        <h1>[[${userId}]]님의 설문 응시 목록</h1>
+
             <table class="styled-table">
                 <thead>
                     <tr>
@@ -65,8 +78,16 @@
     </div>
 </div>
 <script th:inline="javascript" type="text/javascript">
+    //구분
+    const menu = "survey";
+    //검색조건
+    let searchData = "";
+
     /* <![CDATA[ */
     $(document).ready(function() {
+        // 페이지 로드 시 초기 리스트 조회
+        getList("", 1, menu);
+
         // 목록 행 클릭 (상세 페이지 이동)
         $('#boardBody tr').on('click', function() {
             const sessionKey = $(this).data('session-key');

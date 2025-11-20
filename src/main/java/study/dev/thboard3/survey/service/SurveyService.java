@@ -22,6 +22,11 @@ public class SurveyService {
     private final SurveyMapper surveyMapper;
     private final CmmnService cmmnService;
 
+    /**
+     * (외부) 설문조사 응시 목록 조회
+     * @param cmmnVo
+     * @return
+     */
     public ResponseEntity getExternalSurveyList(CmmnVo cmmnVo) {
         //resultMap
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -33,7 +38,7 @@ public class SurveyService {
         cmmnVo.setFirstRecordIndex(pageVo.getFirstRecordIndex());
         cmmnVo.setLastRecordIndex(pageVo.getLastRecordIndex());
 
-        surveyList = surveyMapper.selectExtSurveyList(cmmnVo);
+        surveyList = surveyMapper.selectExtSurveyList(cmmnVo, "lsy");
 
         if (surveyList != null && !surveyList.isEmpty()) {
             Object countObj = surveyList.get(0).get("EXTSURVEYLISTCOUNT");
